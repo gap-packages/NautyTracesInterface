@@ -24,7 +24,7 @@ it is necessary to check they are correct.
 #define HAS_STDIO_UNLOCK 1  /* Whether there are getc_unlocked, */
 		               /* putc_unlocked,flockfile and funlockfile*/
 
-#define DEFAULT_WORDSIZE 32
+#define DEFAULT_WORDSIZE 0
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
 #define SIZEOF_LONG_LONG 8   /* 0 if nonexistent */
@@ -48,9 +48,9 @@ it is necessary to check they are correct.
 #endif
 
 /* Support of gcc extensions __builtin_clz, __builtin_clzl, __builtin_clzll */
-#define HAVE_CLZ 0
-#define HAVE_CLZL 0
-#define HAVE_CLZLL 0
+#define HAVE_CLZ 1
+#define HAVE_CLZL 1
+#define HAVE_CLZLL 1
 
 /* Support of gcc extensions
       __builtin_popcount, __builtin_popcountl, __builtin_popcountll
@@ -60,10 +60,10 @@ it is necessary to check they are correct.
       _mm_popcnt_u32, _mm_popcnt_u64
    for the Intel compiler icc.  These need no compiler switch.
 */
-#define HAVE_HWPOPCMT 0
-#define HAVE_POPCNT 0
-#define HAVE_POPCNTL 0
-#define HAVE_POPCNTLL 0
+#define HAVE_HWPOPCMT 1
+#define HAVE_POPCNT 1
+#define HAVE_POPCNTL 1
+#define HAVE_POPCNTLL 1
 #define HAVE_MMPOP32 0
 #define HAVE_MMPOP64 0
 
