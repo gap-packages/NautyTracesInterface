@@ -1,3 +1,19 @@
 The GAP 4 package `NautyInterface'
 ==============================
 
+First compile nauty with
+```
+cd nauty26r7
+./configure
+make
+```
+
+Next compile NautyInterface with
+```
+./autogen.sh
+./configure --with-gaproot=<GAPROOTDIR>
+make
+```
+
+Please see `examples/Test.g` for a usecase.
+
