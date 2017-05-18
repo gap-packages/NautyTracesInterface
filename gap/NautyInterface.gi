@@ -3,8 +3,14 @@
 #
 # Implementations
 #
-InstallGlobalFunction( NautyInterface_Example,
-function()
-	Print( "This is a placeholder function, replace it with your own code.\n" );
+InstallGlobalFunction( NautyGraphFromEdges,
+  
+  function( edges )
+    local source_list, range_list;
+    
+    source_list := List( edges, i -> i[ 1 ] );
+    range_list := List( edges, i -> i[ 2 ] );
+    
+    return [ source_list, range_list ];
+    
 end );
-
