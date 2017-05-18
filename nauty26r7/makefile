@@ -3,9 +3,9 @@
 
 SHELL=/bin/sh
 CC=gcc
-CFLAGS= -O3  -mpopcnt
+CFLAGS= -O3  -mpopcnt -fPIC
 SAFECFLAGS= -O3
-LDFLAGS= 
+LDFLAGS=-fPIC 
 THREADLIB=-lpthread
 LOK=1         # 0 if no 64-bit integers
 TESTPROGS=dreadtest dreadtestS dreadtestS1 dreadtest4K dreadtest1 dreadtestW dreadtestW1 dreadtestL1 dreadtestL

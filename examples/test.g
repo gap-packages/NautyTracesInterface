@@ -7,4 +7,4 @@ Petersen := Digraph( Petersen );
 edg := DigraphEdges( Petersen );
 pet_source := List( edg, i -> i[1] );
 pet_range := List( edg, i -> i[2] );
-NautyDense( pet_source, pet_range, 10 );
+NautyDense( pet_source, pet_range, 10, false );

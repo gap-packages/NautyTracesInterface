@@ -1,6 +1,8 @@
 The GAP 4 package `NautyInterface'
 ==============================
 
+First, add `-fPIC` to CFLAGS in nauty makefile.
+
 First compile nauty with
 ```
 cd nauty26r7
@@ -16,4 +18,11 @@ make
 ```
 
 Please see `examples/Test.g` for a usecase.
+
+TODO:
+* Graphenobjekte
+* Isomorphietest
+* Sparse nauty
+* Traces
+* Cleanup
 
