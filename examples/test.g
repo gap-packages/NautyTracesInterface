@@ -8,4 +8,4 @@ edg := DigraphEdges( Petersen );
 pet_nauty := NautyGraphFromEdges( edg );
 pet_source := pet_nauty[ 1 ];
 pet_range := pet_nauty[ 2 ];
-NautyDense( pet_source, pet_range, 10, false );
+NautyDense( pet_source, pet_range, 10, false, false );

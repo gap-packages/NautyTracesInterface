@@ -31,7 +31,7 @@ void userautomproc(int count, int* perm, int* orbits, int numorbits, int stabver
     CHANGED_BAG( automorphism_list );
 }
 
-Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed )
+Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
 {
     
     // Declare nauty variables.
@@ -109,6 +109,20 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
         }
     }
     
+    if( color_data != False ){
+        
+        options.defaultptn = FALSE;
+        
+        Obj obj_lab = ELM_PLIST( color_data, 1 );
+        Obj obj_ptn = ELM_PLIST( color_data, 2 );
+        
+        for(int i=0;i<n;i++){
+            lab[ i ] = INT_INTOBJ( ELM_PLIST( obj_lab, i + 1 ) ) - 1;
+            ptn[ i ] = INT_INTOBJ( ELM_PLIST( obj_ptn, i + 1 ) );
+        }
+    
+    }
+    
     // Call nauty
     densenauty(g,lab,ptn,orbits,&options,&stats,m,n,NULL);
     
@@ -140,7 +154,7 @@ typedef Obj (* GVarFunc)(/*arguments*/);
 
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
-    GVAR_FUNC_TABLE_ENTRY("NautyInterface.c", NautyDense, 4, "source_list,range_list,n,is_directed"),
+    GVAR_FUNC_TABLE_ENTRY("NautyInterface.c", NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
 
 	{ 0 } /* Finish with an empty entry */
 
