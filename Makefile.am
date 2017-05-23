@@ -12,9 +12,9 @@ GAPINSTALLLIB = $(abs_top_srcdir)/$(BINARCHDIR)/NautyInterface.so
 lib_LTLIBRARIES = NautyInterface.la
 
 NautyInterface_la_SOURCES = src/NautyInterface.c
-NautyInterface_la_CPPFLAGS = $(GAP_CPPFLAGS) -DCONFIG_H
+NautyInterface_la_CPPFLAGS = $(GAP_CPPFLAGS) $(NAUTY_CPPFLAGS) -DCONFIG_H
 # Note that the latter is only for GAP 4.4.12
-NautyInterface_la_LDFLAGS = nauty26r7/nauty.o nauty26r7/nautil.o nauty26r7/naugraph.o nauty26r7/schreier.o nauty26r7/naurng.o nauty26r7/naugroup.o nauty26r7/nautinv.o -module -avoid-version
+NautyInterface_la_LDFLAGS = $(NAUTY_PATH)/nauty.o $(NAUTY_PATH)/nautil.o $(NAUTY_PATH)/naugraph.o $(NAUTY_PATH)/schreier.o $(NAUTY_PATH)/naurng.o $(NAUTY_PATH)/naugroup.o $(NAUTY_PATH)/nautinv.o -module -avoid-version
 if SYS_IS_CYGWIN
 NautyInterface_la_LDFLAGS += -no-undefined -version-info 0:0:0 -Wl,$(GAPROOT)/bin/$(GAPARCH)/gap.dll
 endif

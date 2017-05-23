@@ -3,9 +3,9 @@
  */
 
 #include "src/compiled.h"          /* GAP headers */
-#include "../nauty26r7/nauty.h"
-#include "../nauty26r7/naugroup.h"
-#include "../nauty26r7/nautinv.h"
+#include <nauty.h>
+#include <naugroup.h>
+#include <nautinv.h>
 
 static Obj automorphism_list;
 

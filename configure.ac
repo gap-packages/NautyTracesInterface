@@ -63,6 +63,16 @@ else
   AC_DEFINE(SYS_IS_CYGWIN32, 0, are we on CYGWIN?)
 fi
 
+AC_ARG_WITH([nauty],
+    [AC_HELP_STRING([--with-nauty=<path>], [specify root of nauty directory])],
+    [NAUTY="$with_nauty"],
+    [NAUTY="$PWD/nauty26r7"]
+)
+NAUTY_CPPFLAGS="-I$NAUTY"
+NAUTY_PATH="$NAUTY"
+AC_SUBST(NAUTY_CPPFLAGS)
+AC_SUBST(NAUTY_PATH)
+
 dnl ##
 dnl ## Rebuild configure if VERSION file changes
 dnl ##
