@@ -1,19 +1,31 @@
 The GAP 4 package `NautyInterface'
 ==============================
 
-First, add `-fPIC` to CFLAGS in nauty makefile.
+Installation
+------------
 
-First compile nauty with
+Currently, an appropriate version of nauty
+is provided in this repository. The following
+installation guide is for the checked in version of nauty.
+
+First, configure nauty
 ```
 cd nauty26r7
 ./configure
+```
+
+Then edit `makefile` to have the variable `CFLAGS` contain `-fPIC`.
+(TODO: Provide appropriate patch for configure.)
+
+Afterwards, compile nauty.
+```
 make
 ```
 
 Next compile NautyInterface with
 ```
 ./autogen.sh
-./configure --with-gaproot=<GAPROOTDIR>
+./configure --with-gaproot=<GAPROOTDIR> --with-nauty=${PWD}/nauty26r7
 make
 ```
 
