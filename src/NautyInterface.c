@@ -85,7 +85,7 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     
     // Allocate graph
     DYNALLOC2(graph,g,g_sz,m,n,"malloc");
-    DYNALLOC1(UInt4,lab,lab_sz,n,"malloc");
+    DYNALLOC1(int,lab,lab_sz,n,"malloc");
     DYNALLOC1(int,ptn,ptn_sz,n,"malloc");
     DYNALLOC1(int,orbits,orbits_sz,n,"malloc");
 
