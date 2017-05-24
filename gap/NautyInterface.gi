@@ -88,3 +88,74 @@ InstallGlobalFunction( NautyGraphDataForColoredEdges,
     return [ new_edges, color_list ];
     
 end );
+
+BindGlobal( "NAUTYINTERFACE_POSINT_TO_BIT_LIST",
+  function( integer )
+    local bitlist, current_bit;
+    
+    bitlist := [ ];
+    
+    while integer > 0 do
+        current_bit := integer mod 2;
+        Add( bitlist, current_bit );
+        if current_bit = 0 then
+            integer := integer / 2;
+        else
+            integer := ( integer - 1 ) / 2;
+        fi;
+    od;
+    
+    return bitlist;
+    
+end );
+
+InstallGlobalFunction( NautyGraphDataForColoredEdges2,
+  
+  function( edges, nr_nodes, coloring )
+    local nr_edge_colors, nr_node_layers, new_edges, color_list, current_edge_color,
+          bitlist, current_layer, edge, range_layer, current_node;
+    
+    nr_edge_colors := Length( edges );
+    
+    nr_node_layers := Log2Int( nr_edge_colors ) + 1;
+    
+    new_edges := [ ];
+    
+    color_list := Flat( List( [ 1 .. nr_node_layers ], i -> List( [ 1 .. nr_nodes ], j -> i ) ) );
+    
+    ## Colored edges
+    for current_edge_color in [ 1 .. nr_edge_colors ] do
+        
+        bitlist := NAUTYINTERFACE_POSINT_TO_BIT_LIST( current_edge_color );
+        
+        for current_layer in [ 1 .. Length( bitlist ) ] do
+            
+            if bitlist[ current_layer ] = 0 then
+                continue;
+            fi;
+            
+            for edge in edges[ current_edge_color ] do
+                
+                Add( new_edges, edge + ( (current_layer-1) * nr_nodes ) );
+                
+            od;
+            
+        od;
+        
+    od;
+    
+    ## Vertical edges
+    for current_layer in [ 1 .. nr_node_layers ] do
+        for range_layer in [ 1 .. nr_node_layers ] do
+            if range_layer = current_layer then
+                continue;
+            fi;
+            for current_node in [ 1 .. nr_nodes ] do
+                Add( new_edges, [ nr_nodes * (current_layer - 1) + current_node, nr_nodes * (range_layer - 1) + current_node ] );
+            od;
+        od;
+    od;
+    
+    return [ new_edges, color_list ];
+    
+end );

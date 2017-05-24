@@ -13,3 +13,5 @@ DeclareGlobalFunction( "NautyGraphFromEdges" );
 DeclareGlobalFunction( "NautyColorData" );
 
 DeclareGlobalFunction( "NautyGraphDataForColoredEdges" );
+
+DeclareGlobalFunction( "NautyGraphDataForColoredEdges2" );
