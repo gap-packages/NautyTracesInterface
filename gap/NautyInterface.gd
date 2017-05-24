@@ -5,3 +5,5 @@
 #
 
 DeclareGlobalFunction( "NautyGraphFromEdges" );
+
+DeclareGlobalFunction( "NautyColorData" );
