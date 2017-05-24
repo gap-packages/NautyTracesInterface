@@ -10,3 +10,5 @@ fi;
 Unbind(_PATH_SO);
 
 ReadPackage( "NautyInterface", "gap/NautyInterface.gd");
+
+ReadPackage( "NautyInterface", "gap/NautyGraph.gd");
