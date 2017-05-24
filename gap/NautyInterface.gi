@@ -53,3 +53,38 @@ InstallGlobalFunction( NautyColorData,
     
 end );
 
+InstallGlobalFunction( NautyGraphDataForColoredEdges,
+  
+  function( edges, nr_nodes, color_list )
+    local new_edges, current_edge_list, current_color, current_edge, node_count, nr_colors;
+    
+    if color_list = false then
+        color_list := List( [ 1 .. nr_nodes ], i -> 1 );
+        nr_colors := 1;
+    else
+        nr_colors := MaximumList( color_list );
+    fi;
+    
+    node_count := nr_nodes + 1;
+    
+    new_edges := [ ];
+    
+    for current_color in [ nr_colors + 1 .. Length( edges ) + nr_colors ] do
+        
+        current_edge_list := edges[ current_color - nr_colors ];
+        
+        for current_edge in current_edge_list do
+            
+            Append( new_edges, [ [ current_edge[ 1 ], node_count ], [ node_count, current_edge[ 2 ] ] ] );
+            
+            color_list[ node_count ] := current_color;
+            
+            node_count := node_count + 1;
+            
+        od;
+        
+    od;
+    
+    return [ new_edges, color_list ];
+    
+end );
