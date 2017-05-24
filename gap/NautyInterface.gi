@@ -1,8 +1,13 @@
-#
-# NautyInterface: An interface to nauty
-#
-# Implementations
-#
+#############################################################################
+##
+##                                NautyInterface package
+##
+##  Copyright 2017, Sebastian Gutsche, Universität Siegen
+##                  Alice Niemeyer,    RWTH Aachen
+##                  Pascal Schweitzer, RWTH Aachen
+##
+#############################################################################
+
 InstallGlobalFunction( NautyGraphFromEdges,
   
   function( edges )
