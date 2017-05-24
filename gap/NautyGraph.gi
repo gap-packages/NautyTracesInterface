@@ -150,7 +150,7 @@ end );
 InstallGlobalFunction( CALL_NAUTY_ON_GRAPH_AND_SET_PROPERTIES,
   
   function( nauty_graph )
-    local colors, nauty_data;
+    local colors, nauty_data, automorphism_group;
     
     if IsColored( nauty_graph ) then
         colors := [ nauty_graph!.color_labels, nauty_graph!.color_partition ];
@@ -164,7 +164,11 @@ InstallGlobalFunction( CALL_NAUTY_ON_GRAPH_AND_SET_PROPERTIES,
                               IsDirected( nauty_graph ),
                               colors );
     
-    SetAutomorphismGroup( nauty_graph, Group( nauty_data[ 1 ] ) );
+    if nauty_data[ 1 ] <> [ ] then
+        SetAutomorphismGroup( nauty_graph, Group( nauty_data[ 1 ] ) );
+    else
+        SetAutomorphismGroup( nauty_graph, Group( () ) );
+    fi;
     SetAutomorphismGroupGenerators( nauty_graph, nauty_data[ 1 ] );
     SetCanonicalLabeling( nauty_graph, nauty_data[ 2 ] );
     
