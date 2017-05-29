@@ -140,7 +140,7 @@ InstallMethod( NautyColoredDiGraph,
     
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
-                      directed := false,
+                      directed := true,
                       colors := colors );
     
     return CREATE_NAUTY_GRAPH_OBJECT( graph_rec );
