@@ -36,6 +36,7 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     
     // Declare nauty variables.
     DYNALLSTAT(graph,g,g_sz);
+    DYNALLSTAT(graph,cg,cg_sz);
     DYNALLSTAT(int,lab,lab_sz);
     DYNALLSTAT(int,ptn,ptn_sz);
     DYNALLSTAT(int,orbits,orbits_sz);
@@ -77,7 +78,7 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     SET_LEN_PLIST( automorphism_list, 0 );
     options.userautomproc = userautomproc;
     
-//     options.getcanon = TRUE;
+    options.getcanon = TRUE;
 
     m = SETWORDSNEEDED(n);
 
@@ -85,11 +86,13 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     
     // Allocate graph
     DYNALLOC2(graph,g,g_sz,m,n,"malloc");
+    DYNALLOC2(graph,cg,cg_sz,m,n,"malloc");
     DYNALLOC1(int,lab,lab_sz,n,"malloc");
     DYNALLOC1(int,ptn,ptn_sz,n,"malloc");
     DYNALLOC1(int,orbits,orbits_sz,n,"malloc");
 
     EMPTYGRAPH(g,m,n);
+    EMPTYGRAPH(cg,m,n);
     
     // Create nauty graph
     len_source = LEN_PLIST( source_list );
@@ -124,7 +127,7 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     }
     
     // Call nauty
-    densenauty(g,lab,ptn,orbits,&options,&stats,m,n,NULL);
+    densenauty(g,lab,ptn,orbits,&options,&stats,m,n,cg);
     
     //Convert labeling permutation
     p   = NEW_PERM4(n);
