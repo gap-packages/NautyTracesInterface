@@ -36,6 +36,21 @@ Persons := [
     Place := "Aachen",
     Institution := "RWTH Aachen University",
   ),
+  rec(
+    IsAuthor := true,
+    IsMaintainer := true,
+    FirstNames := "Pascal",
+    LastName := "Schweitzer",
+    WWWHome := "https://lii.rwth-aachen.de/~schweitzer",
+    Email := "schweitzer@informatik.rwth-aachen.de",
+    PostalAddress := Concatenation( [
+                      "Pascal Schweitzer\n",
+                      "RWTH Aachen\n",
+                      "Lehrstuhl für Informatik 7\n",
+                      "52056 Aachen" ] ),
+    Place := "Aachen",
+    Institution := "RWTH Aachen University",
+  ),
 ],
 
 PackageWWWHome := "http://TODO/",
