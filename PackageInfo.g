@@ -1,5 +1,5 @@
 #
-# NautyInterface: An interface to nauty
+# NautyTracesInterface: An interface to nauty
 #
 # This file contains package meta data. For additional information on
 # the meaning and correct usage of these fields, please consult the
@@ -8,7 +8,7 @@
 #
 SetPackageInfo( rec(
 
-PackageName := "NautyInterface",
+PackageName := "NautyTracesInterface",
 Subtitle := "An interface to nauty",
 Version := "0.1",
 Date := "23/03/2017", # dd/mm/yyyy format
@@ -55,7 +55,7 @@ Persons := [
 
 PackageWWWHome := "http://TODO/",
 
-ArchiveURL     := Concatenation( ~.PackageWWWHome, "NautyInterface-", ~.Version ),
+ArchiveURL     := Concatenation( ~.PackageWWWHome, "NautyTracesInterface-", ~.Version ),
 README_URL     := Concatenation( ~.PackageWWWHome, "README" ),
 PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
 
@@ -74,7 +74,7 @@ Status := "dev",
 AbstractHTML   :=  "",
 
 PackageDoc := rec(
-  BookName  := "NautyInterface",
+  BookName  := "NautyTracesInterface",
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",

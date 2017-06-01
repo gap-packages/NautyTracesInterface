@@ -1,5 +1,5 @@
 #
-# NautyInterface: An interface to nauty
+# NautyTracesInterface: An interface to nauty
 #
 # This file is part of the build system of a GAP kernel extension.
 # Requires automake.
@@ -7,24 +7,24 @@
 ACLOCAL_AMFLAGS = -I m4
 
 BINARCHDIR = bin/$(GAPARCH)
-GAPINSTALLLIB = $(abs_top_srcdir)/$(BINARCHDIR)/NautyInterface.so
+GAPINSTALLLIB = $(abs_top_srcdir)/$(BINARCHDIR)/NautyTracesInterface.so
 
-lib_LTLIBRARIES = NautyInterface.la
+lib_LTLIBRARIES = NautyTracesInterface.la
 
-NautyInterface_la_SOURCES = src/NautyInterface.c
-NautyInterface_la_CPPFLAGS = $(GAP_CPPFLAGS) $(NAUTY_CPPFLAGS) -DCONFIG_H
+NautyTracesInterface_la_SOURCES = src/NautyTracesInterface.c
+NautyTracesInterface_la_CPPFLAGS = $(GAP_CPPFLAGS) $(NAUTY_CPPFLAGS) -DCONFIG_H
 # Note that the latter is only for GAP 4.4.12
-NautyInterface_la_LDFLAGS = $(NAUTY_PATH)/nauty.o $(NAUTY_PATH)/nautil.o $(NAUTY_PATH)/naugraph.o $(NAUTY_PATH)/schreier.o $(NAUTY_PATH)/naurng.o $(NAUTY_PATH)/naugroup.o $(NAUTY_PATH)/nautinv.o -module -avoid-version
+NautyTracesInterface_la_LDFLAGS = $(NAUTY_PATH)/nauty.o $(NAUTY_PATH)/nautil.o $(NAUTY_PATH)/naugraph.o $(NAUTY_PATH)/schreier.o $(NAUTY_PATH)/naurng.o $(NAUTY_PATH)/naugroup.o $(NAUTY_PATH)/nautinv.o -module -avoid-version
 if SYS_IS_CYGWIN
-NautyInterface_la_LDFLAGS += -no-undefined -version-info 0:0:0 -Wl,$(GAPROOT)/bin/$(GAPARCH)/gap.dll
+NautyTracesInterface_la_LDFLAGS += -no-undefined -version-info 0:0:0 -Wl,$(GAPROOT)/bin/$(GAPARCH)/gap.dll
 endif
 
-all-local: NautyInterface.la
+all-local: NautyTracesInterface.la
 	$(mkdir_p) $(top_srcdir)/$(BINARCHDIR)
 if SYS_IS_CYGWIN
-	cp .libs/NautyInterface.dll $(GAPINSTALLLIB)
+	cp .libs/NautyTracesInterface.dll $(GAPINSTALLLIB)
 else
-	cp .libs/NautyInterface.so $(GAPINSTALLLIB)
+	cp .libs/NautyTracesInterface.so $(GAPINSTALLLIB)
 endif
 	@echo "SUCCESS!"
 

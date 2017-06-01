@@ -1,9 +1,9 @@
 #
-# NautyInterface: An interface to nauty
+# NautyTracesInterface: An interface to nauty
 #
 # Reading the implementation part of the package.
 #
-ReadPackage( "NautyInterface", "gap/NautyInterface.gi");
+ReadPackage( "NautyTracesInterface", "gap/NautyTracesInterface.gi");
 
-ReadPackage( "NautyInterface", "gap/NautyGraph.gi");
+ReadPackage( "NautyTracesInterface", "gap/NautyGraph.gi");
 

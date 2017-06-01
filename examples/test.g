@@ -1,4 +1,4 @@
-LoadPackage( "NautyInterface" );
+LoadPackage( "NautyTracesInterface" );
 LoadPackage( "Grape" );
 LoadPackage( "Digraph" );
 Petersen := Graph( SymmetricGroup(5), [[1,2]], OnSets,

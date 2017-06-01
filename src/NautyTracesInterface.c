@@ -1,5 +1,5 @@
 /*
- * NautyInterface: An interface to nauty
+ * NautyTracesInterface: An interface to nauty
  */
 
 #include "src/compiled.h"          /* GAP headers */
@@ -150,7 +150,7 @@ typedef Obj (* GVarFunc)(/*arguments*/);
 
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
-    GVAR_FUNC_TABLE_ENTRY("NautyInterface.c", NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
 
 	{ 0 } /* Finish with an empty entry */
 
@@ -185,7 +185,7 @@ static Int InitLibrary( StructInitInfo *module )
 */
 static StructInitInfo module = {
  /* type        = */ MODULE_DYNAMIC,
- /* name        = */ "NautyInterface",
+ /* name        = */ "NautyTracesInterface",
  /* revision_c  = */ 0,
  /* revision_h  = */ 0,
  /* version     = */ 0,

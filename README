@@ -1,4 +1,4 @@
-The GAP 4 package `NautyInterface'
+The GAP 4 package `NautyTracesInterface'
 ==============================
 
 Installation
@@ -22,7 +22,7 @@ Afterwards, compile nauty.
 make
 ```
 
-Next compile NautyInterface with
+Next compile NautyTracesInterface with
 ```
 ./autogen.sh
 ./configure --with-gaproot=<GAPROOTDIR> --with-nauty=${PWD}/nauty26r7
@@ -37,7 +37,3 @@ TODO:
 * Documentation
 
 * Rename: NautyTracesInterface
-
-* IsomorphicGraphs
-* IsomorphismGraphs
-* CanonicalForm

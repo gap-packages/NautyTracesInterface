@@ -1,11 +1,11 @@
 #
-# NautyInterface: An interface to nauty
+# NautyTracesInterface: An interface to nauty
 #
 # This file runs package tests. It is also referenced in the package
 # metadata in PackageInfo.g.
 #
-LoadPackage( "NautyInterface" );
-dirs := DirectoriesPackageLibrary( "NautyInterface", "tst" );
+LoadPackage( "NautyTracesInterface" );
+dirs := DirectoriesPackageLibrary( "NautyTracesInterface", "tst" );
 
 HasSuffix := function(list, suffix)
   local len;

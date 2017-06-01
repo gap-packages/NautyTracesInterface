@@ -1,4 +1,4 @@
-LoadPackage( "NautyInterface" );
+LoadPackage( "NautyTracesInterface" );
 
 edg := [[1,2],[2,3],[1,3]];
 

@@ -1,6 +1,6 @@
 #############################################################################
 ##
-##                                NautyInterface package
+##                                NautyTracesInterface package
 ##
 ##  Copyright 2017, Sebastian Gutsche, Universität Siegen
 ##                  Alice Niemeyer,    RWTH Aachen
