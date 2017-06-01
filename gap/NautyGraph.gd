@@ -17,6 +17,11 @@ DeclareProperty( "IsColored", IsNautyGraph );
 DeclareAttribute( "AutomorphismGroup", IsNautyGraph );
 DeclareAttribute( "AutomorphismGroupGenerators", IsNautyGraph );
 DeclareAttribute( "CanonicalLabeling", IsNautyGraph );
+DeclareAttribute( "CanonicalForm", IsNautyGraph );
+
+DeclareOperation( "IsomorphismGraphs", [ IsNautyGraph, IsNautyGraph ] );
+DeclareOperation( "IsomorphicGraphs", [ IsNautyGraph, IsNautyGraph ] );
+
 
 ## Constructors
 DeclareGlobalFunction( "CREATE_NAUTY_GRAPH_OBJECT" );

@@ -283,3 +283,123 @@ InstallMethod( CanonicalLabeling,
     return CanonicalLabeling( graph );
     
 end );
+
+InstallMethod( CanonicalForm,
+               [ IsNautyGraph ],
+               
+  function( graph )
+    local colors, edges, perm, new_graph;
+    
+    perm := CanonicalLabeling( graph );
+    
+    edges := graph!.edges;
+    
+    edges := OnTuplesTuples( edges, perm^(-1) );
+    
+    if IsColored( graph ) then
+        colors := graph!.colors;
+        colors := Permuted( colors, perm^(-1) );
+    fi;
+    
+    if IsDirected( graph ) then
+        
+        if IsColored( graph ) then
+            new_graph := NautyColoredDiGraph( edges, colors );
+        else
+            new_graph := NautyDiGraph( edges, graph!.nr_nodes  );
+        fi;
+    
+    else
+        
+        if IsColored( graph ) then
+            new_graph := NautyColoredGraph( edges, colors );
+        else
+            new_graph := NautyGraph( edges, graph!.nr_nodes );
+        fi;
+    fi;
+    
+    return new_graph;
+    
+end );
+
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraph and IsDirected, IsNautyGraph and IsDirected ],
+               
+  function( graph1, graph2 )
+    local edges1, edges2, perm1, perm2;
+    
+    edges1 := graph1!.edges;
+    edges2 := graph2!.edges;
+    
+    perm1 := CanonicalLabeling( graph1 );
+    perm2 := CanonicalLabeling( graph2 );
+    
+    edges1 := Set( OnTuplesTuples( edges1, perm1^(-1) ) );
+    edges2 := Set( OnTuplesTuples( edges2, perm2^(-1) ) );
+    
+    if edges1 = edges2 then
+        
+        return perm1^(-1)*perm2;
+        
+    fi;
+    
+    return fail;
+    
+end );
+
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraph, IsNautyGraph ],
+               
+  function( graph1, graph2 )
+    local edges1, edges2, perm1, perm2;
+    
+    edges1 := graph1!.edges;
+    edges2 := graph2!.edges;
+    
+    perm1 := CanonicalLabeling( graph1 );
+    perm2 := CanonicalLabeling( graph2 );
+    
+    edges1 := Set( List( OnTuplesTuples( edges1, perm1^(-1) ), Set ) );
+    edges2 := Set( List( OnTuplesTuples( edges2, perm2^(-1) ), Set ) );
+    
+    if edges1 = edges2 then
+        
+        return perm1^(-1)*perm2;
+        
+    fi;
+    
+    return fail;
+    
+end );
+
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraph and IsColored, IsNautyGraph and IsColored ],
+               
+  function( graph1, graph2 )
+    local color1, color2, perm1, perm2;
+    
+    perm1 := CanonicalLabeling( graph1 );
+    perm2 := CanonicalLabeling( graph2 );
+    
+    color1 := Permuted( graph1!.colors, perm1^(-1) );
+    color2 := Permuted( graph2!.colors, perm2^(-1) );
+    
+    if color1 = color2 then
+        TryNextMethod();
+    fi;
+    
+    return fail;
+    
+end );
+
+InstallMethod( IsomorphicGraphs,
+               [ IsNautyGraph, IsNautyGraph ],
+               
+  function( graph1, graph2 )
+    local isomorphism;
+    
+    isomorphism := IsomorphismGraphs( graph1, graph2 );
+    
+    return isomorphism <> fail;
+    
+end );

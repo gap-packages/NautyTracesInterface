@@ -120,7 +120,7 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     }
     
     // Call nauty
-    densenauty(g,lab,ptn,orbits,&options,&stats,m,n,NULL);
+    densenauty(g,lab,ptn,orbits,&options,&stats,m,n,cg);
     
     //Convert labeling permutation
     p   = NEW_PERM4(n);
