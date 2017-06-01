@@ -32,11 +32,14 @@ make
 Please see `examples/Test.g` for a usecase.
 
 TODO:
-* Graphenobjekte
-* Isomorphietest
 * Sparse nauty
 * Traces
-* Cleanup
+* Documentation
+
+* Rename: NautyTracesInterface
+
 * Sanity checks in C-Code!
 
-
+* IsomorphicGraphs
+* IsomorphismGraphs
+* CanonicalForm

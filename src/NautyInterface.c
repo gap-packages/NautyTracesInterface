@@ -65,13 +65,7 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     Obj p;
     UInt4               *ptr;
     
-//     options.userautomproc = groupautomproc;
-//     options.userlevelproc = grouplevelproc;
-    
     n = INT_INTOBJ( nr_vertices_gap );
-
-    // Uncomment this line to have nauty output the permutations.
-//     options.writeautoms = TRUE;
     
     // Write automorphisms
     automorphism_list = NEW_PLIST(T_PLIST, 0);
@@ -123,11 +117,10 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
             lab[ i ] = INT_INTOBJ( ELM_PLIST( obj_lab, i + 1 ) ) - 1;
             ptn[ i ] = INT_INTOBJ( ELM_PLIST( obj_ptn, i + 1 ) );
         }
-    
     }
     
     // Call nauty
-    densenauty(g,lab,ptn,orbits,&options,&stats,m,n,cg);
+    densenauty(g,lab,ptn,orbits,&options,&stats,m,n,NULL);
     
     //Convert labeling permutation
     p   = NEW_PERM4(n);
