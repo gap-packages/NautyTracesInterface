@@ -7,3 +7,5 @@ ReadPackage( "NautyTracesInterface", "gap/NautyTracesInterface.gi");
 
 ReadPackage( "NautyTracesInterface", "gap/NautyGraph.gi");
 
+ReadPackage( "NautyTracesInterface", "gap/NautyGraphWithNodeLabels.gi" );
+
