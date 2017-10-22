@@ -155,6 +155,13 @@ InstallMethod( AutomorphismGroup,
                [ IsNautyGraphWithNodeLabels ],
                
   function( graph )
+    local generators;
+    
+    generators := AutomorphismGroupGenerators( graph );
+    
+    if generators = [ ] then
+        return Group( () );
+    fi;
     
     return Group( AutomorphismGroupGenerators( graph ) );
     
