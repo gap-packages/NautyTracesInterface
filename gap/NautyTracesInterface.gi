@@ -23,15 +23,15 @@ end );
 InstallGlobalFunction( NautyColorData,
   
   function( list )
-    local color_list, node_list, nr_colors, list_pos, current_color, current_entry;
+    local color_list, node_list, list_pos, current_color, current_entry, colors;
     
-    nr_colors := MaximumList( list );
+    colors := DuplicateFreeList( list );
     
     color_list := [];
     node_list := [];
     list_pos := 0;
     
-    for current_color in [ 1 .. nr_colors ] do
+    for current_color in colors do
         
         for current_entry in [ 1 .. Length( list ) ] do
             
