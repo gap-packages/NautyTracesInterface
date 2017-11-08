@@ -8,17 +8,10 @@ Currently, an appropriate version of nauty
 is provided in this repository. The following
 installation guide is for the checked in version of nauty.
 
-First, configure nauty
+First, configure and compile nauty
 ```
 cd nauty26r7
 ./configure
-```
-
-Then edit `makefile` to have the variable `CFLAGS` contain `-fPIC`.
-(TODO: Provide appropriate patch for configure.)
-
-Afterwards, compile nauty.
-```
 make
 ```
 
