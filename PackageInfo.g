@@ -90,7 +90,16 @@ Dependencies := rec(
 ),
 
 AvailabilityTest := function()
-        return true;
+      local so_file;
+      so_file := Filename(DirectoriesPackagePrograms("NautyTracesInterface"),
+                              "NautyTracesInterface.so");
+      if (not "NautyTracesInterface" in SHOW_STAT()) and so_file = fail then
+         LogPackageLoadingMessage(PACKAGE_WARNING,
+                                  ["the kernel module is not compiled, ", 
+                                   "the package cannot be loaded."] );
+         return fail;
+      fi;
+      return true;
     end,
 
 TestFile := "tst/testall.g",
