@@ -5,21 +5,11 @@ Installation
 ------------
 
 Currently, an appropriate version of nauty
-is provided in this repository. The following
-installation guide is for the checked in version of nauty.
+is provided in this repository.
 
-First, configure and compile nauty
+To compile NautyTracesInterface usec
 ```
-cd nauty26r7
-./configure
-make
-```
-
-Next compile NautyTracesInterface with
-```
-./autogen.sh
-./configure --with-gaproot=<GAPROOTDIR> --with-nauty=${PWD}/nauty26r7
-make
+./install.sh --gaproot <PATH_TO_GAP>
 ```
 
 Please see `examples/Test.g` for a usecase.
