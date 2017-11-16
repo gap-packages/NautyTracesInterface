@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "NautyTracesInterface",
 Subtitle := "An interface to nauty",
-Version := "0.1",
-Date := "23/03/2017", # dd/mm/yyyy format
+Version := "0.2",
+Date := "16/11/2017", # dd/mm/yyyy format
 
 Persons := [
   rec(
