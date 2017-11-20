@@ -27,7 +27,7 @@ void userautomproc(int count, int* perm, int* orbits, int numorbits, int stabver
       ptr[v] = perm[v];
     }
     
-    AssPlist( automorphism_list, count, p );
+    AddList( automorphism_list, p );
     CHANGED_BAG( automorphism_list );
 }
 
