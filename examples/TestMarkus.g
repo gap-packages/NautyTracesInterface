@@ -1,4 +1,4 @@
-LoadPackage( "NautyInterface" );
+LoadPackage( "NautyTracesInterface" );
 
 
 edges1 := [ [ 8, 1 ], [ 8, 4 ], [ 9, 1 ], [ 9, 5 ], [ 10, 1 ], [ 10, 6 ], [ 11, 1

@@ -65,11 +65,15 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     Obj p;
     UInt4               *ptr;
     
+    UInt global_list;
+    
     n = INT_INTOBJ( nr_vertices_gap );
     
     // Write automorphisms
+    global_list = GVarName( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST" );
     automorphism_list = NEW_PLIST(T_PLIST, 0);
     SET_LEN_PLIST( automorphism_list, 0 );
+    AssGVar( global_list, automorphism_list );
     options.userautomproc = userautomproc;
     
     options.getcanon = TRUE;
@@ -135,6 +139,10 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     
     SET_ELM_PLIST( return_list, 1, automorphism_list );
     SET_ELM_PLIST( return_list, 2, p );
+    
+    automorphism_list = NEW_PLIST(T_PLIST, 0);
+    SET_LEN_PLIST( automorphism_list, 0 );
+    AssGVar( global_list, automorphism_list );
     
     return return_list;
 

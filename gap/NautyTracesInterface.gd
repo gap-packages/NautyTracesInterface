@@ -8,6 +8,9 @@
 ##
 #############################################################################
 
+BindGlobal( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST", true );
+MakeReadWriteGlobal( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST" );
+
 DeclareGlobalFunction( "NautyGraphFromEdges" );
 
 DeclareGlobalFunction( "NautyColorData" );
