@@ -17,6 +17,7 @@ DeclareProperty( "IsColored", IsNautyGraph );
 DeclareAttribute( "AutomorphismGroup", IsNautyGraph );
 DeclareAttribute( "AutomorphismGroupGenerators", IsNautyGraph );
 DeclareAttribute( "CanonicalLabeling", IsNautyGraph );
+DeclareAttribute( "CanonicalLabelingInverse", IsNautyGraph );
 DeclareAttribute( "CanonicalForm", IsNautyGraph );
 
 DeclareOperation( "IsomorphismGraphs", [ IsNautyGraph, IsNautyGraph ] );
