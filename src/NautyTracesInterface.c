@@ -8,6 +8,50 @@
 #include <nautinv.h>
 
 static Obj automorphism_list;
+Obj TheTypeNautyInternalGraphObject;
+UInt T_NAUTY_OBJ = 0;
+
+Obj NautyObjCopyFunc(Obj obj, Int mut)
+{
+    return obj;
+}
+
+void NautyObjCleanFunc(Obj obj)
+{
+}
+
+Int NautyObjIsMutableFunc(Obj obj)
+{
+    return 0L;
+}
+
+Obj NautyObjTypeFunc(Obj o)
+{
+    return TheTypeNautyInternalGraphObject;
+}
+
+#define IS_NAUTY_GRAPH_OBJ(o) (TNUM_OBJ(o) == T_NAUTY_OBJ)
+
+#define NAUTY_GRAPH_PTR(o) (graph*)ADDR_OBJ(o)[0]
+#define NAUTY_GRAPH_SIZE(o) (size_t)ADDR_OBJ(o)[1]
+#define NAUTY_GRAPH_ROWS(o) (size_t)ADDR_OBJ(o)[2]
+#define NAUTY_GRAPH_COLS(o) (size_t)ADDR_OBJ(o)[3]
+
+Obj NEW_NAUTY_GRAPH_OBJ(graph* graph_pointer, size_t size, size_t rows, size_t cols )
+{
+    Obj o;
+    o = NewBag(T_NAUTY_OBJ, 4 * sizeof(Obj));
+    ADDR_OBJ(o)[0] = (Obj)(graph_pointer);
+    ADDR_OBJ(o)[1] = (Obj)(size);
+    ADDR_OBJ(o)[2] = (Obj)(rows);
+    ADDR_OBJ(o)[3] = (Obj)(cols);
+    return o;
+}
+
+void NautyObjFreeFunc( Obj o )
+{
+    DYNFREE(ADDR_OBJ(o)[0],ADDR_OBJ(o)[1]);
+}
 
 void
 writeautom(int *p, int n)
@@ -31,11 +75,35 @@ void userautomproc(int count, int* perm, int* orbits, int numorbits, int stabver
     CHANGED_BAG( automorphism_list );
 }
 
-Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
+Obj NAUTY_GRAPH(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed)
 {
-    
-    // Declare nauty variables.
     DYNALLSTAT(graph,g,g_sz);
+    int n,m, len_source, len_range, current_source, current_range, v;
+    n = INT_INTOBJ( nr_vertices_gap );
+    m = SETWORDSNEEDED(n);
+    DYNALLOC2(graph,g,g_sz,m,n,"malloc");
+    EMPTYGRAPH(g,m,n);
+    len_source = LEN_PLIST( source_list );
+    len_range = LEN_PLIST( range_list );
+    if( len_source!=len_range ){
+        ErrorQuit( "source and range lists are of different length", 0, 0 );
+        return Fail;
+    }
+    for(v=1;v <= len_source;v++){
+        current_source = INT_INTOBJ( ELM_PLIST( source_list, v ) ) - 1;
+        current_range = INT_INTOBJ( ELM_PLIST( range_list, v ) ) - 1;
+        if( is_directed == True ){
+          ADDONEARC(g,current_source,current_range,m);
+        }
+        else{
+          ADDONEEDGE(g,current_source,current_range,m);
+        }
+    }
+    return NEW_NAUTY_GRAPH_OBJ( g, g_sz, n, m );
+}
+
+Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
+{
     DYNALLSTAT(graph,cg,cg_sz);
     DYNALLSTAT(int,lab,lab_sz);
     DYNALLSTAT(int,ptn,ptn_sz);
@@ -67,7 +135,10 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     
     UInt global_list;
     
-    n = INT_INTOBJ( nr_vertices_gap );
+    graph* g = NAUTY_GRAPH_PTR( nauty_graph );
+    size_t g_sz = NAUTY_GRAPH_SIZE( nauty_graph );
+    n = NAUTY_GRAPH_ROWS( nauty_graph );
+    m = NAUTY_GRAPH_COLS( nauty_graph );
     
     // Write automorphisms
     global_list = GVarName( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST" );
@@ -78,37 +149,15 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     
     options.getcanon = TRUE;
 
-    m = SETWORDSNEEDED(n);
-
     nauty_check(WORDSIZE,m,n,NAUTYVERSIONID);
     
     // Allocate graph
-    DYNALLOC2(graph,g,g_sz,m,n,"malloc");
     DYNALLOC2(graph,cg,cg_sz,m,n,"malloc");
     DYNALLOC1(int,lab,lab_sz,n,"malloc");
     DYNALLOC1(int,ptn,ptn_sz,n,"malloc");
     DYNALLOC1(int,orbits,orbits_sz,n,"malloc");
 
-    EMPTYGRAPH(g,m,n);
     EMPTYGRAPH(cg,m,n);
-    
-    // Create nauty graph
-    len_source = LEN_PLIST( source_list );
-    len_range = LEN_PLIST( range_list );
-    if( len_source!=len_range ){
-        ErrorQuit( "source and range lists are of different length", 0, 0 );
-        return Fail;
-    }
-    for(v=1;v <= len_source;v++){
-        current_source = INT_INTOBJ( ELM_PLIST( source_list, v ) ) - 1;
-        current_range = INT_INTOBJ( ELM_PLIST( range_list, v ) ) - 1;
-        if( is_directed == True ){
-          ADDONEARC(g,current_source,current_range,m);
-        }
-        else{
-            ADDONEEDGE(g,current_source,current_range,m);
-        }
-    }
     
     if( color_data != False ){
         
@@ -144,8 +193,21 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     SET_LEN_PLIST( automorphism_list, 0 );
     AssGVar( global_list, automorphism_list );
     
+    DYNFREE(cg,cg_sz);
+    DYNFREE(lab,lab_sz);
+    DYNFREE(ptn,ptn_sz);
+    DYNFREE(orbits,orbits_sz);
+    
     return return_list;
+}
 
+Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
+{
+    Obj graph, return_list;
+    graph = NAUTY_GRAPH(self, source_list,range_list,nr_vertices_gap,is_directed);
+    return_list = NAUTY_DENSE( self, graph, is_directed, color_data );
+    NautyObjFreeFunc( graph );
+    return return_list;
 }
 
 typedef Obj (* GVarFunc)(/*arguments*/);
@@ -159,6 +221,8 @@ typedef Obj (* GVarFunc)(/*arguments*/);
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed" ),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE, 3, "graph,is_directed,color_data" ),
 
 	{ 0 } /* Finish with an empty entry */
 
@@ -171,6 +235,18 @@ static Int InitKernel( StructInitInfo *module )
 {
     /* init filters and functions                                          */
     InitHdlrFuncsFromTable( GVarFuncs );
+    
+    InitCopyGVar( "TheTypeNautyInternalGraphObject", &TheTypeNautyInternalGraphObject );
+
+    T_NAUTY_OBJ = RegisterPackageTNUM("NautyInternalGraph", NautyObjTypeFunc );
+
+    InitMarkFuncBags(T_NAUTY_OBJ, &MarkNoSubBags);
+    InitFreeFuncBag(T_NAUTY_OBJ, &NautyObjFreeFunc );
+    
+    CopyObjFuncs[T_NAUTY_OBJ] = &NautyObjCopyFunc;
+    CleanObjFuncs[T_NAUTY_OBJ] = &NautyObjCleanFunc;
+    IsMutableObjFuncs[T_NAUTY_OBJ] = &NautyObjIsMutableFunc;
+
 
     /* return success                                                      */
     return 0;

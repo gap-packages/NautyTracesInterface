@@ -159,3 +159,17 @@ InstallGlobalFunction( NautyGraphDataForColoredEdges2,
     return [ new_edges, color_list ];
     
 end );
+
+InstallMethod( ViewString,
+               [ IsNautyInternalGraphObject ],
+               
+  function( obj )
+    return "<internal nauty graph>";
+end );
+
+InstallMethod( DisplayString,
+               [ IsNautyInternalGraphObject ],
+               
+  function( obj )
+    return "internal nauty graph\n";
+end );

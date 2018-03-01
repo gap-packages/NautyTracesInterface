@@ -11,7 +11,7 @@ SetPackageInfo( rec(
 PackageName := "NautyTracesInterface",
 Subtitle := "An interface to nauty",
 Version := "0.2",
-Date := "16/11/2017", # dd/mm/yyyy format
+Date := "01/03/2018", # dd/mm/yyyy format
 
 Persons := [
   rec(
@@ -19,7 +19,7 @@ Persons := [
     IsMaintainer := true,
     FirstNames := "Sebastian",
     LastName := "Gutsche",
-    WWWHome := "TODO",
+    WWWHome := "https://sebasguts.github.io",
     Email := "gutsche@mathematik.uni-siegen.de",
     PostalAddress := "TODO",
     Place := "Siegen",
