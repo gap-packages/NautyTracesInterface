@@ -251,6 +251,7 @@ InstallGlobalFunction( CALL_NAUTY_ON_EDGE_COLORED_GRAPH,
     
 end );
 
+
 InstallMethod( AutomorphismGroup,
                [ IsNautyGraph ],
                
@@ -284,21 +285,55 @@ InstallMethod( CanonicalLabeling,
     
 end );
 
+InstallMethod( CanonicalLabelingInverse, [IsNautyGraph],
+  function( graph )
+
+    return CanonicalLabeling( graph )^(-1);
+
+end );
+
 InstallMethod( CanonicalForm,
                [ IsNautyGraph ],
                
   function( graph )
-    local colors, edges, perm, new_graph;
+    local colors, edges, perm, new_graph, permEdges, pos, i,
+        edge, v1, v2, permInv;
     
     perm := CanonicalLabeling( graph );
+    permInv := CanonicalLabelingInverse( graph );
     
     edges := graph!.edges;
-    
-    edges := OnTuplesTuples( edges, perm^(-1) );
+
+    permEdges := [];
+    pos := 1;
+    # Since this computation should be efficient we do it manually
+    if IsDirected( graph ) then
+        for i in [ 1 .. Length( edges ) ] do
+            if IsBound( edges[ i ] ) then
+                permEdges[ pos ] := Permuted( edges[ i ], permInv);
+                pos := pos + 1;
+            fi;
+        od;
+    else
+        for i in [ 1 .. Length( edges ) ] do
+            if IsBound( edges[ i ] ) then
+                edge := edges[ i ];
+                v1 := edge[ 1 ]^permInv;
+                v2 := edge[ 2 ]^permInv;
+                if v1 < v2 then
+                    permEdges[ pos ] := [ v1, v2 ];
+                else
+                    permEdges[ pos ] := [ v2, v1 ];
+                fi;
+                pos := pos + 1; 
+            fi;
+        od;
+    fi;
+    edges := Set( permEdges );
     
     if IsColored( graph ) then
         colors := graph!.colors;
-        colors := Permuted( colors, perm^(-1) );
+        colors := Permuted( colors, permInv );
     fi;
     
     if IsDirected( graph ) then
@@ -326,50 +361,30 @@ InstallMethod( IsomorphismGraphs,
                [ IsNautyGraph and IsDirected, IsNautyGraph and IsDirected ],
                
   function( graph1, graph2 )
-    local edges1, edges2, perm1, perm2;
-    
-    edges1 := graph1!.edges;
-    edges2 := graph2!.edges;
-    
-    perm1 := CanonicalLabeling( graph1 );
-    perm2 := CanonicalLabeling( graph2 );
-    
-    edges1 := Set( OnTuplesTuples( edges1, perm1^(-1) ) );
-    edges2 := Set( OnTuplesTuples( edges2, perm2^(-1) ) );
-    
-    if edges1 = edges2 then
-        
-        return perm1^(-1)*perm2;
-        
+    local can1, can2;
+
+    can1 := CanonicalForm( graph1 );
+    can2 := CanonicalForm( graph2 );
+    if can1!.edges = can2!.edges then 
+        return CanonicalLabelingInverse( graph1 ) * CanonicalLabeling( graph2 );
     fi;
     
     return fail;
-    
 end );
 
 InstallMethod( IsomorphismGraphs,
                [ IsNautyGraph, IsNautyGraph ],
                
   function( graph1, graph2 )
-    local edges1, edges2, perm1, perm2;
-    
-    edges1 := graph1!.edges;
-    edges2 := graph2!.edges;
-    
-    perm1 := CanonicalLabeling( graph1 );
-    perm2 := CanonicalLabeling( graph2 );
-    
-    edges1 := Set( List( OnTuplesTuples( edges1, perm1^(-1) ), Set ) );
-    edges2 := Set( List( OnTuplesTuples( edges2, perm2^(-1) ), Set ) );
-    
-    if edges1 = edges2 then
-        
-        return perm1^(-1)*perm2;
-        
+    local can1, can2;
+
+    can1 := CanonicalForm( graph1 );
+    can2 := CanonicalForm( graph2 );
+    if can1!.edges = can2!.edges then 
+        return CanonicalLabelingInverse( graph1 ) * CanonicalLabeling( graph2 );
     fi;
     
     return fail;
-    
 end );
 
 InstallMethod( IsomorphismGraphs,
@@ -390,6 +405,20 @@ InstallMethod( IsomorphismGraphs,
     
     return fail;
     
+end );
+
+InstallMethod( IsomorphicGraphs, 
+    [ IsNautyGraph and IsColored and HasCanonicalForm, 
+        IsNautyGraph and IsColored and HasCanonicalForm ],
+  function( graph1, graph2 )
+    local can1, can2;
+
+    can1 := CanonicalForm( graph1 );
+    can2 := CanonicalForm( graph2 );
+    if can1!.colors = can2!.colors then
+        TryNextMethod();
+    fi;
+    return fail;
 end );
 
 InstallMethod( IsomorphicGraphs,
