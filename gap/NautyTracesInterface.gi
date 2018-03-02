@@ -11,10 +11,16 @@
 InstallGlobalFunction( NautyGraphFromEdges,
   
   function( edges )
-    local source_list, range_list;
-    
-    source_list := List( edges, i -> i[ 1 ] );
-    range_list := List( edges, i -> i[ 2 ] );
+    local source_list, range_list, i;
+
+    source_list := [];
+    range_list := [];
+    for i in [ 1 .. Length( edges ) ] do
+        if IsBound( edges[ i ] ) then
+            source_list[ i ] := edges[ i ][ 1 ];
+            range_list[ i ] := edges[ i ][ 2 ];
+        fi;
+    od;
     
     return [ source_list, range_list ];
     
@@ -25,7 +31,7 @@ InstallGlobalFunction( NautyColorData,
   function( list )
     local color_list, node_list, list_pos, current_color, current_entry, colors;
     
-    colors := SortedList( DuplicateFreeList( list ) );
+    colors := Set( list );
     
     color_list := [];
     node_list := [];
