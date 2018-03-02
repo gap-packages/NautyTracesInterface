@@ -44,3 +44,4 @@
 
 *.la
 src/*.lo
+*.swp

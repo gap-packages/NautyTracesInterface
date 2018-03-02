@@ -17,13 +17,17 @@ BindGlobal( "TheTypeOfNautyGraphsWithNodeLabels",
 
 BindGlobal( "NAUTYTRACESINTERFACE_Translate_Edge_List",
   function( node_labels, edges )
-    local new_edges;
-    
-    new_edges := List( edges, edge -> List( edge, i -> Position( node_labels, i ) ) );
-    
-    if Position( Flat( new_edges ), fail ) <> fail then
-        Error( "some edges have wrong node labels" );
-    fi;
+    local new_edges, nodePos, i, edge;
+
+    # the node_labels have to be positive integers
+    nodePos := [];
+    for i in [ 1 .. Length( node_labels ) ] do
+        nodePos[ node_labels[ i ] ] := i;
+    od;
+    new_edges := [];
+    for edge in edges do
+        Add( new_edges, [ nodePos[ edge[ 1 ] ], nodePos[ edge[ 2 ] ] ] );
+    od;
     
     return new_edges;
     
