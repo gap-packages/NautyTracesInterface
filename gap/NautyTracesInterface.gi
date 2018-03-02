@@ -16,10 +16,9 @@ InstallGlobalFunction( NautyGraphFromEdges,
     source_list := [];
     range_list := [];
     for i in [ 1 .. Length( edges ) ] do
-        if IsBound( edges[ i ] ) then
-            source_list[ i ] := edges[ i ][ 1 ];
-            range_list[ i ] := edges[ i ][ 2 ];
-        fi;
+        # The edge list has to be dense
+        source_list[ i ] := edges[ i ][ 1 ];
+        range_list[ i ] := edges[ i ][ 2 ];
     od;
     
     return [ source_list, range_list ];

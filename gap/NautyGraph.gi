@@ -296,7 +296,7 @@ InstallMethod( CanonicalForm,
                [ IsNautyGraph ],
                
   function( graph )
-    local colors, edges, perm, new_graph, permEdges, pos, i,
+    local colors, edges, perm, new_graph, permEdges, i,
         edge, v1, v2, permInv;
     
     perm := CanonicalLabeling( graph );
@@ -305,13 +305,11 @@ InstallMethod( CanonicalForm,
     edges := graph!.edges;
 
     permEdges := [];
-    pos := 1;
     # Since this computation should be efficient we do it manually
     if IsDirected( graph ) then
         for i in [ 1 .. Length( edges ) ] do
             if IsBound( edges[ i ] ) then
-                permEdges[ pos ] := Permuted( edges[ i ], permInv);
-                pos := pos + 1;
+                Add( permEdges, Permuted( edges[ i ], permInv ) );
             fi;
         od;
     else
@@ -321,11 +319,10 @@ InstallMethod( CanonicalForm,
                 v1 := edge[ 1 ]^permInv;
                 v2 := edge[ 2 ]^permInv;
                 if v1 < v2 then
-                    permEdges[ pos ] := [ v1, v2 ];
+                    Add( permEdges, [ v1, v2 ] );
                 else
-                    permEdges[ pos ] := [ v2, v1 ];
+                    Add( permEdges, [ v2, v1 ] );
                 fi;
-                pos := pos + 1; 
             fi;
         od;
     fi;
