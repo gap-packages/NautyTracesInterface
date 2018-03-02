@@ -6,6 +6,9 @@
 #include <nauty.h>
 #include <naugroup.h>
 #include <nautinv.h>
+#include "nausparse.h"
+#include <gtools.h>
+
 
 static Obj automorphism_list;
 Obj TheTypeNautyInternalGraphObject;
@@ -33,11 +36,23 @@ Obj NautyObjTypeFunc(Obj o)
 #define IS_NAUTY_GRAPH_OBJ(o) (TNUM_OBJ(o) == T_NAUTY_OBJ)
 
 #define NAUTY_GRAPH_PTR(o) (graph*)ADDR_OBJ(o)[0]
+#define NAUTY_GRAPH_PTR_SPARSE(o) (sparsegraph*)ADDR_OBJ(o)[0]
 #define NAUTY_GRAPH_SIZE(o) (size_t)ADDR_OBJ(o)[1]
 #define NAUTY_GRAPH_ROWS(o) (size_t)ADDR_OBJ(o)[2]
 #define NAUTY_GRAPH_COLS(o) (size_t)ADDR_OBJ(o)[3]
 
 Obj NEW_NAUTY_GRAPH_OBJ(graph* graph_pointer, size_t size, size_t rows, size_t cols )
+{
+    Obj o;
+    o = NewBag(T_NAUTY_OBJ, 4 * sizeof(Obj));
+    ADDR_OBJ(o)[0] = (Obj)(graph_pointer);
+    ADDR_OBJ(o)[1] = (Obj)(size);
+    ADDR_OBJ(o)[2] = (Obj)(rows);
+    ADDR_OBJ(o)[3] = (Obj)(cols);
+    return o;
+}
+
+Obj NEW_NAUTY_SPARSEGRAPH_OBJ(sparsegraph* graph_pointer, size_t size, size_t rows, size_t cols )
 {
     Obj o;
     o = NewBag(T_NAUTY_OBJ, 4 * sizeof(Obj));
@@ -101,6 +116,29 @@ Obj NAUTY_GRAPH(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, 
     }
     return NEW_NAUTY_GRAPH_OBJ( g, g_sz, n, m );
 }
+
+
+Obj NAUTY_DENSE_TO_SPARSE(Obj self, Obj nauty_graph )
+{
+
+    int n,m,v;
+
+    graph* g = NAUTY_GRAPH_PTR( nauty_graph );
+    size_t g_sz = NAUTY_GRAPH_SIZE( nauty_graph );
+    n = NAUTY_GRAPH_ROWS( nauty_graph );
+    m = NAUTY_GRAPH_COLS( nauty_graph );
+
+
+    DYNALLSTAT(sparsegraph,sg,sg_sz);
+    DYNALLOC2(sparsegraph,sg,sg_sz,m,n,"malloc");
+    EMPTYGRAPH(sg,m,n);
+
+    nauty_to_sg(g,sg,m,n);
+
+    return NEW_NAUTY_SPARSEGRAPH_OBJ( sg, sg_sz, n, m );
+}
+
+
 
 Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
 {
@@ -201,6 +239,33 @@ Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
     return return_list;
 }
 
+
+Obj NAUTY_SPARSE_GRAPH_PRINT_TEST(Obj self, Obj nauty_graph)
+{
+
+    int n,m;
+
+    sparsegraph* g = NAUTY_GRAPH_PTR_SPARSE( nauty_graph );
+
+    putgraph_sg(stderr, g, 0);
+    return True;
+}
+
+
+Obj NAUTY_DENSE_GRAPH_PRINT_TEST(Obj self, Obj nauty_graph)
+{
+
+    int n,m;
+
+    graph* g = NAUTY_GRAPH_PTR( nauty_graph );
+    n = NAUTY_GRAPH_ROWS( nauty_graph );
+    m = NAUTY_GRAPH_COLS( nauty_graph );
+
+    putgraph(stderr, g, 0, m, n);
+    return True;
+}
+
+
 Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
 {
     Obj graph, return_list;
@@ -209,6 +274,7 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     NautyObjFreeFunc( graph );
     return return_list;
 }
+
 
 typedef Obj (* GVarFunc)(/*arguments*/);
 
@@ -222,7 +288,10 @@ typedef Obj (* GVarFunc)(/*arguments*/);
 static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
     GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed" ),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE_TO_SPARSE, 2, "source_list,nr_edges" ),
     GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE, 3, "graph,is_directed,color_data" ),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE_GRAPH_PRINT_TEST, 1, "graph" ),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_SPARSE_GRAPH_PRINT_TEST, 1, "graph" ),
 
 	{ 0 } /* Finish with an empty entry */
 
