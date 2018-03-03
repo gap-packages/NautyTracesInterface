@@ -297,7 +297,7 @@ InstallMethod( CanonicalForm,
                
   function( graph )
     local colors, edges, perm, new_graph, permEdges, i,
-        edge, v1, v2, permInv;
+        permInv;
     
     perm := CanonicalLabeling( graph );
     permInv := CanonicalLabelingInverse( graph );
@@ -307,22 +307,15 @@ InstallMethod( CanonicalForm,
     permEdges := [];
     # Since this computation should be efficient we do it manually
     if IsDirected( graph ) then
-        for i in [ 1 .. Length( edges ) ] do
-            if IsBound( edges[ i ] ) then
-                Add( permEdges, Permuted( edges[ i ], permInv ) );
-            fi;
+        for i in [ 1 .. Length( edges ) ] do # edges is a dense list
+            Add( permEdges, Permuted( edges[ i ], permInv ) );
         od;
     else
-        for i in [ 1 .. Length( edges ) ] do
-            if IsBound( edges[ i ] ) then
-                edge := edges[ i ];
-                v1 := edge[ 1 ]^permInv;
-                v2 := edge[ 2 ]^permInv;
-                if v1 < v2 then
-                    Add( permEdges, [ v1, v2 ] );
-                else
-                    Add( permEdges, [ v2, v1 ] );
-                fi;
+        for i in [ 1 .. Length( edges ) ] do # edges is a dense list
+            # Every line of code in this loop costs a lot of time
+            Add( permEdges, [ edges[ i ][ 1 ]^permInv, edges[ i ][ 2 ]^permInv ] );
+            if permEdges[ i ][ 1 ] > permEdges[ i ][ 2 ] then
+                permEdges[ i ] := [ permEdges[ i ][ 2 ], permEdges[ i ][ 1 ] ];
             fi;
         od;
     fi;
