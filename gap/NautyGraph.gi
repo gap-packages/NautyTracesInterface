@@ -354,9 +354,7 @@ InstallMethod( CanonicalForm,
     
 end );
 
-InstallMethod( IsomorphismGraphs,
-               [ IsNautyGraph and IsDirected, IsNautyGraph and IsDirected ],
-               
+BindGlobal( "NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges",
   function( graph1, graph2 )
     local can1, can2;
 
@@ -370,18 +368,17 @@ InstallMethod( IsomorphismGraphs,
 end );
 
 InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraph and IsDirected, IsNautyGraph and IsDirected ],
+               
+  function( graph1, graph2 )
+    return NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges( graph1, graph2 );
+end );
+
+InstallMethod( IsomorphismGraphs,
                [ IsNautyGraph, IsNautyGraph ],
                
   function( graph1, graph2 )
-    local can1, can2;
-
-    can1 := CanonicalForm( graph1 );
-    can2 := CanonicalForm( graph2 );
-    if can1!.edges = can2!.edges then 
-        return CanonicalLabelingInverse( graph1 ) * CanonicalLabeling( graph2 );
-    fi;
-    
-    return fail;
+    return NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges( graph1, graph2 );
 end );
 
 InstallMethod( IsomorphismGraphs,
@@ -397,14 +394,14 @@ InstallMethod( IsomorphismGraphs,
     color2 := Permuted( graph2!.colors, perm2^(-1) );
     
     if color1 = color2 then
-        TryNextMethod();
+        return NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges( graph1, graph2 );
     fi;
     
     return fail;
     
 end );
 
-InstallMethod( IsomorphicGraphs, 
+InstallMethod( IsomorphismGraphs, 
     [ IsNautyGraph and IsColored and HasCanonicalForm, 
         IsNautyGraph and IsColored and HasCanonicalForm ],
   function( graph1, graph2 )
@@ -412,8 +409,8 @@ InstallMethod( IsomorphicGraphs,
 
     can1 := CanonicalForm( graph1 );
     can2 := CanonicalForm( graph2 );
-    if can1!.colors = can2!.colors then
-        TryNextMethod();
+    if can1!.colors = can2!.colors and can1!.edges = can2!.edges then
+        return CanonicalLabelingInverse( graph1 ) * CanonicalLabeling( graph2 );
     fi;
     return fail;
 end );
