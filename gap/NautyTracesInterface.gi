@@ -28,32 +28,33 @@ end );
 InstallGlobalFunction( NautyColorData,
   
   function( list )
-    local color_list, node_list, list_pos, current_color, current_entry, colors;
+    local color_list, node_list, nodesOfColor, sizeOfColor, c, pos, colors,
+        color_sep;
     
     colors := Set( list );
-    
-    color_list := [];
-    node_list := [];
-    list_pos := 0;
-    
-    for current_color in colors do
-        
-        for current_entry in [ 1 .. Length( list ) ] do
-            
-            if list[ current_entry ] = current_color then
-                
-                list_pos := list_pos + 1;
-                node_list[ list_pos ] := current_entry;
-                color_list[ list_pos ] := 1;
-                
-            fi;
-            
-        od;
-        
-        color_list[ list_pos ] := 0;
-        
+    # Note that 0 is a possible color!
+
+    nodesOfColor := [];
+    sizeOfColor := [];
+    for c in colors do
+        nodesOfColor[ c + 1 ] := [];
+        sizeOfColor[ c + 1 ] := 0;
     od;
-    
+
+    for pos in [ 1 .. Length( list ) ] do
+        Add( nodesOfColor[ list[ pos ] + 1 ], pos );
+        sizeOfColor[ list[ pos ] + 1 ] := sizeOfColor[ list[ pos ] + 1 ] + 1;
+    od;
+
+    node_list := [];
+    color_list := ListWithIdenticalEntries( Length( list ), 1 );
+    color_sep := 0;
+    for c in colors do
+        Append( node_list, nodesOfColor[ c + 1 ] );
+        color_sep := color_sep + sizeOfColor[ c + 1 ];
+        color_list[ color_sep ] := 0;
+    od;
+
     return [ node_list, color_list ];
     
 end );
