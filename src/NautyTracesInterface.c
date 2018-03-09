@@ -50,7 +50,9 @@ Obj NEW_NAUTY_GRAPH_OBJ(graph* graph_pointer, size_t size, size_t rows, size_t c
 
 void NautyObjFreeFunc( Obj o )
 {
-    DYNFREE(ADDR_OBJ(o)[0],ADDR_OBJ(o)[1]);
+//     DYNFREE((graph*)ADDR_OBJ(o)[0],(size_t)ADDR_OBJ(o)[1]);
+    if(ADDR_OBJ(o)[1])
+        free(ADDR_OBJ(o)[0]);
 }
 
 void
@@ -78,10 +80,12 @@ void userautomproc(int count, int* perm, int* orbits, int numorbits, int stabver
 Obj NAUTY_GRAPH(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed)
 {
     DYNALLSTAT(graph,g,g_sz);
-    int n,m, len_source, len_range, current_source, current_range, v;
+    size_t n,m, len_source, len_range, current_source, current_range, v;
     n = INT_INTOBJ( nr_vertices_gap );
     m = SETWORDSNEEDED(n);
-    DYNALLOC2(graph,g,g_sz,m,n,"malloc");
+//     DYNALLOC2(graph,g,g_sz,m,n,"malloc");
+    g_sz = m*n;
+    g = (graph*)malloc(g_sz);
     EMPTYGRAPH(g,m,n);
     len_source = LEN_PLIST( source_list );
     len_range = LEN_PLIST( range_list );
@@ -204,8 +208,8 @@ Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
 Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
 {
     Obj graph, return_list;
-    graph = NAUTY_GRAPH(self, source_list,range_list,nr_vertices_gap,is_directed);
-    return_list = NAUTY_DENSE( self, graph, is_directed, color_data );
+    graph = NAUTY_GRAPH( 0, source_list,range_list,nr_vertices_gap,is_directed);
+    return_list = NAUTY_DENSE( 0, graph, is_directed, color_data );
     NautyObjFreeFunc( graph );
     return return_list;
 }
