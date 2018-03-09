@@ -10,6 +10,8 @@
 
 BindGlobal( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST", true );
 MakeReadWriteGlobal( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST" );
+BindGlobal( "__NAUTY_INTERNAL_GRAPH_STORAGE", true );
+MakeReadWriteGlobal( "__NAUTY_INTERNAL_GRAPH_STORAGE" );
 
 DeclareCategory( "IsNautyInternalGraphObject", IsObject );
 

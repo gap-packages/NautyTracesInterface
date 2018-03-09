@@ -85,7 +85,7 @@ Obj NAUTY_GRAPH(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, 
     m = SETWORDSNEEDED(n);
 //     DYNALLOC2(graph,g,g_sz,m,n,"malloc");
     g_sz = m*n;
-    g = (graph*)malloc(g_sz);
+    g = (graph*)malloc(g_sz*sizeof(graph));
     EMPTYGRAPH(g,m,n);
     len_source = LEN_PLIST( source_list );
     len_range = LEN_PLIST( range_list );
@@ -208,11 +208,11 @@ Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
 Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
 {
     Obj graph, return_list;
-    UInt storage_var = GVarName( "NAUTY_INTERNAL_GRAPH_STORAGE" );
+    UInt storage_var = GVarName( "__NAUTY_INTERNAL_GRAPH_STORAGE" );
     graph = NAUTY_GRAPH( 0, source_list,range_list,nr_vertices_gap,is_directed);
     AssGVar( storage_var, graph );
     return_list = NAUTY_DENSE( 0, graph, is_directed, color_data );
-    AssGVar( storage_var, NULL );
+    AssGVar( storage_var, False );
     return return_list;
 }
 
