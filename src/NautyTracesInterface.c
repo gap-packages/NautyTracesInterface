@@ -208,9 +208,11 @@ Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
 Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
 {
     Obj graph, return_list;
+    UInt storage_var = GVarName( "NAUTY_INTERNAL_GRAPH_STORAGE" );
     graph = NAUTY_GRAPH( 0, source_list,range_list,nr_vertices_gap,is_directed);
+    AssGVar( storage_var, graph );
     return_list = NAUTY_DENSE( 0, graph, is_directed, color_data );
-    NautyObjFreeFunc( graph );
+    AssGVar( storage_var, NULL );
     return return_list;
 }
 
