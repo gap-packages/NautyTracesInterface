@@ -266,9 +266,6 @@ Obj NAUTY_DENSE_REPEATED(Obj self, Obj nauty_graph, Obj is_directed, Obj color_d
     
     // Write automorphisms
     global_list = GVarName( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST" );
-    automorphism_list = NEW_PLIST(T_PLIST, 0);
-    SET_LEN_PLIST( automorphism_list, 0 );
-    AssGVar( global_list, automorphism_list );
     options.userautomproc = userautomproc;
     
     options.getcanon = TRUE;
@@ -283,12 +280,16 @@ Obj NAUTY_DENSE_REPEATED(Obj self, Obj nauty_graph, Obj is_directed, Obj color_d
 
     EMPTYGRAPH(cg,m,n);
     
-    Obj return_list = NEW_PLIST( T_PLIST, 3 );
-    SET_LEN_PLIST( return_list, 3 );
+    Obj return_list = NEW_PLIST( T_PLIST, LEN_PLIST(color_data) );
+    SET_LEN_PLIST( return_list, LEN_PLIST(color_data) );
 
 
     int k;
-    for (k = 0; k < LEN_PLIST(color_data); k++){ 
+    for (k = 0; k < LEN_PLIST(color_data); k++){
+        automorphism_list = NEW_PLIST(T_PLIST, 0);
+        SET_LEN_PLIST( automorphism_list, 0 );
+        AssGVar( global_list, automorphism_list );
+
         Obj temp = NEW_PLIST( T_PLIST, 2 );
         SET_LEN_PLIST( temp, 2 );
         if( color_data != False ){
