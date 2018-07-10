@@ -288,7 +288,7 @@ Obj NAUTY_DENSE_REPEATED(Obj self, Obj nauty_graph, Obj is_directed, Obj color_d
 
 
     int k;
-    for (k = 0; k < 3; k++){ 
+    for (k = 0; k < LEN_PLIST(color_data); k++){ 
         Obj temp = NEW_PLIST( T_PLIST, 2 );
         SET_LEN_PLIST( temp, 2 );
         if( color_data != False ){
