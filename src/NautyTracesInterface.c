@@ -7,6 +7,7 @@
 #include <naugroup.h>
 #include <nautinv.h>
 
+
 static Obj automorphism_list;
 Obj TheTypeNautyInternalGraphObject;
 UInt T_NAUTY_OBJ = 0;
@@ -216,6 +217,128 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     return return_list;
 }
 
+Obj NAUTY_DENSE_REPEATED(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
+{
+    DYNALLSTAT(graph,cg,cg_sz);
+    DYNALLSTAT(int,lab,lab_sz);
+    DYNALLSTAT(int,ptn,ptn_sz);
+    DYNALLSTAT(int,orbits,orbits_sz);
+    static optionblk options;
+    if( is_directed == True ){
+      static DEFAULTOPTIONS_DIGRAPH(temp_options);
+      options=temp_options;
+    }else{
+      static DEFAULTOPTIONS_GRAPH(temp_options2);
+      options=temp_options2;
+    }
+    
+    statsblk stats;
+
+    int n,m,v;
+    set *gv;
+    
+    int nr_edges;
+    
+    int len_source;
+    int len_range;
+    
+    int current_source;
+    int current_range;
+    
+    
+    UInt global_list;
+    
+    graph* g = NAUTY_GRAPH_PTR( nauty_graph );
+    size_t g_sz = NAUTY_GRAPH_SIZE( nauty_graph );
+    n = NAUTY_GRAPH_ROWS( nauty_graph );
+    m = NAUTY_GRAPH_COLS( nauty_graph );
+    
+    // Write automorphisms
+    global_list = GVarName( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST" );
+    options.userautomproc = userautomproc;
+    
+    options.getcanon = TRUE;
+
+    nauty_check(WORDSIZE,m,n,NAUTYVERSIONID);
+    
+    // Allocate graph
+    DYNALLOC2(graph,cg,cg_sz,m,n,"malloc");
+    DYNALLOC1(int,lab,lab_sz,n,"malloc");
+    DYNALLOC1(int,ptn,ptn_sz,n,"malloc");
+    DYNALLOC1(int,orbits,orbits_sz,n,"malloc");
+
+    EMPTYGRAPH(cg,m,n);
+    
+    Obj return_list = NEW_PLIST( T_PLIST, LEN_PLIST(color_data) );
+    SET_LEN_PLIST( return_list, LEN_PLIST(color_data) );
+
+
+    int k;
+    for (k = 0; k < LEN_PLIST(color_data); k++){
+        automorphism_list = NEW_PLIST(T_PLIST, 0);
+        SET_LEN_PLIST( automorphism_list, 0 );
+        AssGVar( global_list, automorphism_list );
+
+        Obj temp = NEW_PLIST( T_PLIST, 2 );
+        SET_LEN_PLIST( temp, 2 );
+        if( color_data != False ){
+            
+            options.defaultptn = FALSE;
+            
+            Obj partition = ELM_PLIST( color_data, k+1 );
+
+            Obj obj_lab = ELM_PLIST( partition, 1 );
+            Obj obj_ptn = ELM_PLIST( partition, 2 );
+            
+            for(int i=0;i<n;i++){
+                lab[ i ] = INT_INTOBJ( ELM_PLIST( obj_lab, i + 1 ) ) - 1;
+                ptn[ i ] = INT_INTOBJ( ELM_PLIST( obj_ptn, i + 1 ) );
+            }
+        }
+        
+        // Call nauty
+        densenauty(g,lab,ptn,orbits,&options,&stats,m,n,cg);
+        
+        Obj p;
+        UInt4               *ptr;
+        //Convert labeling permutation
+        p   = NEW_PERM4(n);
+        ptr = ADDR_PERM4(p);
+    
+        for(int v= 0; v < n; v++){
+          ptr[v] = lab[v];
+        }
+                
+        SET_ELM_PLIST( temp, 1, automorphism_list );
+        SET_ELM_PLIST( temp, 2, p );
+        SET_ELM_PLIST( return_list, k+1, temp);
+        CHANGED_BAG( return_list );
+    }
+        
+    automorphism_list = NEW_PLIST(T_PLIST, 0);
+    SET_LEN_PLIST( automorphism_list, 0 );
+    AssGVar( global_list, automorphism_list );
+
+    DYNFREE(cg,cg_sz);
+    DYNFREE(lab,lab_sz);
+    DYNFREE(ptn,ptn_sz);
+    DYNFREE(orbits,orbits_sz);
+    
+    return return_list;
+}
+
+Obj NautyDenseRepeated(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
+{
+    Obj graph, return_list;
+    UInt storage_var = GVarName( "__NAUTY_INTERNAL_GRAPH_STORAGE" );
+    graph = NAUTY_GRAPH( 0, source_list,range_list,nr_vertices_gap,is_directed);
+    AssGVar( storage_var, graph );
+    return_list = NAUTY_DENSE_REPEATED( 0, graph, is_directed, color_data );
+    AssGVar( storage_var, False );
+    return return_list;
+}
+
+
 typedef Obj (* GVarFunc)(/*arguments*/);
 
 #define GVAR_FUNC_TABLE_ENTRY(srcfile, name, nparam, params) \
@@ -229,6 +352,8 @@ static StructGVarFunc GVarFuncs [] = {
     GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
     GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed" ),
     GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE, 3, "graph,is_directed,color_data" ),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE_REPEATED, 3, "graph,is_directed,color_data" ),
+    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NautyDenseRepeated, 5, "source_list,range_list,n,is_directed,color_data"),
 
 	{ 0 } /* Finish with an empty entry */
 
