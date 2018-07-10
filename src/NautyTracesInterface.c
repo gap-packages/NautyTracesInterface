@@ -6,7 +6,8 @@
 #include <nauty.h>
 #include <naugroup.h>
 #include <nautinv.h>
-
+#include "nausparse.h"
+#include <gtools.h>
 
 static Obj automorphism_list;
 Obj TheTypeNautyInternalGraphObject;
