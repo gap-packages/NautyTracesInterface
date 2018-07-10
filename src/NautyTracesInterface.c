@@ -6,8 +6,6 @@
 #include <nauty.h>
 #include <naugroup.h>
 #include <nautinv.h>
-#include "nausparse.h"
-#include <gtools.h>
 
 
 static Obj automorphism_list;
@@ -208,10 +206,6 @@ Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
     return return_list;
 }
 
-
-
-
-
 Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
 {
     Obj graph, return_list;
@@ -222,11 +216,6 @@ Obj NautyDense(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, O
     AssGVar( storage_var, False );
     return return_list;
 }
-
-
-
-
-
 
 Obj NAUTY_DENSE_REPEATED(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data )
 {
@@ -323,6 +312,7 @@ Obj NAUTY_DENSE_REPEATED(Obj self, Obj nauty_graph, Obj is_directed, Obj color_d
         SET_ELM_PLIST( temp, 1, automorphism_list );
         SET_ELM_PLIST( temp, 2, p );
         SET_ELM_PLIST( return_list, k+1, temp);
+        CHANGED_BAG( return_list );
     }
         
     automorphism_list = NEW_PLIST(T_PLIST, 0);
@@ -336,7 +326,6 @@ Obj NAUTY_DENSE_REPEATED(Obj self, Obj nauty_graph, Obj is_directed, Obj color_d
     
     return return_list;
 }
-
 
 Obj NautyDenseRepeated(Obj self, Obj source_list, Obj range_list, Obj nr_vertices_gap, Obj is_directed, Obj color_data )
 {
