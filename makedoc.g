@@ -9,6 +9,4 @@ fi;
 
 AutoDoc( "NautyTracesInterface" : scaffold := true, autodoc := true );
 
-PrintTo("VERSION", PackageInfo("NautyTracesInterface")[1].Version);
-
 QUIT;
