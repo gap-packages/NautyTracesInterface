@@ -29,6 +29,7 @@ gtnautyL.o
 gtnautyL1.o
 gtnautyW.o
 gtnautyW1.o
+gtools.h
 gtools.o
 gtoolsL.o
 gtoolsW.o
@@ -46,6 +47,7 @@ hamheuristic
 labelg
 linegraphg
 listg
+makefile
 multig
 naugraph.o
 naugraph1.o
@@ -104,4 +106,3 @@ traces.o
 twohamg
 vcolg
 watercluster2
-
