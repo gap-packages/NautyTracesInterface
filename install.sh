@@ -1,6 +1,7 @@
 #!/bin/sh
-
 # Install script for NautyTracesInterface
+
+set -e
 
 help() {
 cat <<EOF
