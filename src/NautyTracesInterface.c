@@ -8,25 +8,25 @@
 #include <nauty.h>
 
 
-static Obj automorphism_list;
-Obj        TheTypeNautyInternalGraphObject;
-UInt       T_NAUTY_OBJ = 0;
+static Obj  automorphism_list;
+static Obj  TheTypeNautyInternalGraphObject;
+static UInt T_NAUTY_OBJ = 0;
 
-Obj NautyObjCopyFunc(Obj obj, Int mut)
+static Obj NautyObjCopyFunc(Obj obj, Int mut)
 {
     return obj;
 }
 
-void NautyObjCleanFunc(Obj obj)
+static void NautyObjCleanFunc(Obj obj)
 {
 }
 
-Int NautyObjIsMutableFunc(Obj obj)
+static Int NautyObjIsMutableFunc(Obj obj)
 {
     return 0L;
 }
 
-Obj NautyObjTypeFunc(Obj o)
+static Obj NautyObjTypeFunc(Obj o)
 {
     return TheTypeNautyInternalGraphObject;
 }
@@ -38,10 +38,10 @@ Obj NautyObjTypeFunc(Obj o)
 #define NAUTY_GRAPH_ROWS(o) (size_t) ADDR_OBJ(o)[2]
 #define NAUTY_GRAPH_COLS(o) (size_t) ADDR_OBJ(o)[3]
 
-Obj NEW_NAUTY_GRAPH_OBJ(graph * graph_pointer,
-                        size_t  size,
-                        size_t  rows,
-                        size_t  cols)
+static Obj NEW_NAUTY_GRAPH_OBJ(graph * graph_pointer,
+                               size_t  size,
+                               size_t  rows,
+                               size_t  cols)
 {
     Obj o;
     o = NewBag(T_NAUTY_OBJ, 4 * sizeof(Obj));
@@ -52,14 +52,14 @@ Obj NEW_NAUTY_GRAPH_OBJ(graph * graph_pointer,
     return o;
 }
 
-void NautyObjFreeFunc(Obj o)
+static void NautyObjFreeFunc(Obj o)
 {
     //     DYNFREE((graph*)ADDR_OBJ(o)[0],(size_t)ADDR_OBJ(o)[1]);
     if (ADDR_OBJ(o)[1])
         free(ADDR_OBJ(o)[0]);
 }
 
-void writeautom(int * p, int n)
+static void writeautom(int * p, int n)
 /* Called by allgroup.  Just writes the permutation p. */
 {
     int i;
@@ -69,7 +69,7 @@ void writeautom(int * p, int n)
     printf("\n");
 }
 
-void userautomproc(
+static void userautomproc(
     int count, int * perm, int * orbits, int numorbits, int stabvertex, int n)
 {
     Obj     p = NEW_PERM4(n);
@@ -83,11 +83,11 @@ void userautomproc(
     CHANGED_BAG(automorphism_list);
 }
 
-Obj NAUTY_GRAPH(Obj self,
-                Obj source_list,
-                Obj range_list,
-                Obj nr_vertices_gap,
-                Obj is_directed)
+static Obj NAUTY_GRAPH(Obj self,
+                       Obj source_list,
+                       Obj range_list,
+                       Obj nr_vertices_gap,
+                       Obj is_directed)
 {
     DYNALLSTAT(graph, g, g_sz);
     size_t n, m, len_source, len_range, current_source, current_range, v;
@@ -116,7 +116,8 @@ Obj NAUTY_GRAPH(Obj self,
     return NEW_NAUTY_GRAPH_OBJ(g, g_sz, n, m);
 }
 
-Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
+static Obj
+NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
 {
     DYNALLSTAT(graph, cg, cg_sz);
     DYNALLSTAT(int, lab, lab_sz);
@@ -217,12 +218,12 @@ Obj NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
     return return_list;
 }
 
-Obj NautyDense(Obj self,
-               Obj source_list,
-               Obj range_list,
-               Obj nr_vertices_gap,
-               Obj is_directed,
-               Obj color_data)
+static Obj NautyDense(Obj self,
+                      Obj source_list,
+                      Obj range_list,
+                      Obj nr_vertices_gap,
+                      Obj is_directed,
+                      Obj color_data)
 {
     Obj  graph, return_list;
     UInt storage_var = GVarName("__NAUTY_INTERNAL_GRAPH_STORAGE");
@@ -234,10 +235,10 @@ Obj NautyDense(Obj self,
     return return_list;
 }
 
-Obj NAUTY_DENSE_REPEATED(Obj self,
-                         Obj nauty_graph,
-                         Obj is_directed,
-                         Obj color_data)
+static Obj NAUTY_DENSE_REPEATED(Obj self,
+                                Obj nauty_graph,
+                                Obj is_directed,
+                                Obj color_data)
 {
     DYNALLSTAT(graph, cg, cg_sz);
     DYNALLSTAT(int, lab, lab_sz);
@@ -349,12 +350,12 @@ Obj NAUTY_DENSE_REPEATED(Obj self,
     return return_list;
 }
 
-Obj NautyDenseRepeated(Obj self,
-                       Obj source_list,
-                       Obj range_list,
-                       Obj nr_vertices_gap,
-                       Obj is_directed,
-                       Obj color_data)
+static Obj NautyDenseRepeated(Obj self,
+                              Obj source_list,
+                              Obj range_list,
+                              Obj nr_vertices_gap,
+                              Obj is_directed,
+                              Obj color_data)
 {
     Obj  graph, return_list;
     UInt storage_var = GVarName("__NAUTY_INTERNAL_GRAPH_STORAGE");
