@@ -218,22 +218,6 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
     return return_list;
 }
 
-static Obj FuncNautyDense(Obj self,
-                          Obj source_list,
-                          Obj range_list,
-                          Obj nr_vertices_gap,
-                          Obj is_directed,
-                          Obj color_data)
-{
-    Obj  graph, return_list;
-    UInt storage_var = GVarName("__NAUTY_INTERNAL_GRAPH_STORAGE");
-    graph = FuncNAUTY_GRAPH(0, source_list, range_list, nr_vertices_gap,
-                            is_directed);
-    AssGVar(storage_var, graph);
-    return_list = FuncNAUTY_DENSE(0, graph, is_directed, color_data);
-    AssGVar(storage_var, False);
-    return return_list;
-}
 
 static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
                                     Obj nauty_graph,
@@ -350,33 +334,11 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
     return return_list;
 }
 
-static Obj FuncNautyDenseRepeated(Obj self,
-                                  Obj source_list,
-                                  Obj range_list,
-                                  Obj nr_vertices_gap,
-                                  Obj is_directed,
-                                  Obj color_data)
-{
-    Obj  graph, return_list;
-    UInt storage_var = GVarName("__NAUTY_INTERNAL_GRAPH_STORAGE");
-    graph = FuncNAUTY_GRAPH(0, source_list, range_list, nr_vertices_gap,
-                            is_directed);
-    AssGVar(storage_var, graph);
-    return_list = FuncNAUTY_DENSE_REPEATED(0, graph, is_directed, color_data);
-    AssGVar(storage_var, False);
-    return return_list;
-}
-
 // Table of functions to export
 static StructGVarFunc GVarFuncs[] = {
-    GVAR_FUNC(
-        NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
     GVAR_FUNC(NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed"),
     GVAR_FUNC(NAUTY_DENSE, 3, "graph,is_directed,color_data"),
     GVAR_FUNC(NAUTY_DENSE_REPEATED, 3, "graph,is_directed,color_data"),
-    GVAR_FUNC(NautyDenseRepeated,
-              5,
-              "source_list,range_list,n,is_directed,color_data"),
 
     { 0 } /* Finish with an empty entry */
 
