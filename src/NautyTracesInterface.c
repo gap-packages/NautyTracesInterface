@@ -341,19 +341,19 @@ Obj NautyDenseRepeated(Obj self, Obj source_list, Obj range_list, Obj nr_vertice
 
 typedef Obj (* GVarFunc)(/*arguments*/);
 
-#define GVAR_FUNC_TABLE_ENTRY(srcfile, name, nparam, params) \
+#define GVAR_FUNC_(name, nparam, params) \
   {#name, nparam, \
    params, \
    (GVarFunc)name, \
-   srcfile ":Func" #name }
+   "NautyTracesInterface.c:Func" #name }
 
 // Table of functions to export
 static StructGVarFunc GVarFuncs [] = {
-    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
-    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed" ),
-    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE, 3, "graph,is_directed,color_data" ),
-    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NAUTY_DENSE_REPEATED, 3, "graph,is_directed,color_data" ),
-    GVAR_FUNC_TABLE_ENTRY("NautyTracesInterface.c", NautyDenseRepeated, 5, "source_list,range_list,n,is_directed,color_data"),
+    GVAR_FUNC_(NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
+    GVAR_FUNC_(NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed" ),
+    GVAR_FUNC_(NAUTY_DENSE, 3, "graph,is_directed,color_data" ),
+    GVAR_FUNC_(NAUTY_DENSE_REPEATED, 3, "graph,is_directed,color_data" ),
+    GVAR_FUNC_(NautyDenseRepeated, 5, "source_list,range_list,n,is_directed,color_data"),
 
 	{ 0 } /* Finish with an empty entry */
 
