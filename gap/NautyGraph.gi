@@ -191,6 +191,20 @@ InstallMethod( ViewObj,
     
 end );
 
+BindGlobal( "NautyDense",
+function( source_list, range_list, n, is_directed, color_data )
+    local graph;
+    graph := NAUTY_GRAPH( source_list, range_list, n, is_directed );
+    return NAUTY_DENSE( graph, is_directed, color_data );
+end );
+
+BindGlobal( "NautyDenseRepeated",
+function( source_list, range_list, n, is_directed, color_data )
+    local graph;
+    graph := NAUTY_GRAPH( source_list, range_list, n, is_directed );
+    return NAUTY_DENSE_REPEATED( graph, is_directed, color_data );
+end );
+
 InstallGlobalFunction( CALL_NAUTY_ON_GRAPH_AND_SET_PROPERTIES,
   
   function( nauty_graph )
