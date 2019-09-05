@@ -83,11 +83,11 @@ static void userautomproc(
     CHANGED_BAG(automorphism_list);
 }
 
-static Obj NAUTY_GRAPH(Obj self,
-                       Obj source_list,
-                       Obj range_list,
-                       Obj nr_vertices_gap,
-                       Obj is_directed)
+static Obj FuncNAUTY_GRAPH(Obj self,
+                           Obj source_list,
+                           Obj range_list,
+                           Obj nr_vertices_gap,
+                           Obj is_directed)
 {
     DYNALLSTAT(graph, g, g_sz);
     size_t n, m, len_source, len_range, current_source, current_range, v;
@@ -117,7 +117,7 @@ static Obj NAUTY_GRAPH(Obj self,
 }
 
 static Obj
-NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
+FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
 {
     DYNALLSTAT(graph, cg, cg_sz);
     DYNALLSTAT(int, lab, lab_sz);
@@ -218,27 +218,27 @@ NAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
     return return_list;
 }
 
-static Obj NautyDense(Obj self,
-                      Obj source_list,
-                      Obj range_list,
-                      Obj nr_vertices_gap,
-                      Obj is_directed,
-                      Obj color_data)
+static Obj FuncNautyDense(Obj self,
+                          Obj source_list,
+                          Obj range_list,
+                          Obj nr_vertices_gap,
+                          Obj is_directed,
+                          Obj color_data)
 {
     Obj  graph, return_list;
     UInt storage_var = GVarName("__NAUTY_INTERNAL_GRAPH_STORAGE");
-    graph =
-        NAUTY_GRAPH(0, source_list, range_list, nr_vertices_gap, is_directed);
+    graph = FuncNAUTY_GRAPH(0, source_list, range_list, nr_vertices_gap,
+                            is_directed);
     AssGVar(storage_var, graph);
-    return_list = NAUTY_DENSE(0, graph, is_directed, color_data);
+    return_list = FuncNAUTY_DENSE(0, graph, is_directed, color_data);
     AssGVar(storage_var, False);
     return return_list;
 }
 
-static Obj NAUTY_DENSE_REPEATED(Obj self,
-                                Obj nauty_graph,
-                                Obj is_directed,
-                                Obj color_data)
+static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
+                                    Obj nauty_graph,
+                                    Obj is_directed,
+                                    Obj color_data)
 {
     DYNALLSTAT(graph, cg, cg_sz);
     DYNALLSTAT(int, lab, lab_sz);
@@ -350,42 +350,33 @@ static Obj NAUTY_DENSE_REPEATED(Obj self,
     return return_list;
 }
 
-static Obj NautyDenseRepeated(Obj self,
-                              Obj source_list,
-                              Obj range_list,
-                              Obj nr_vertices_gap,
-                              Obj is_directed,
-                              Obj color_data)
+static Obj FuncNautyDenseRepeated(Obj self,
+                                  Obj source_list,
+                                  Obj range_list,
+                                  Obj nr_vertices_gap,
+                                  Obj is_directed,
+                                  Obj color_data)
 {
     Obj  graph, return_list;
     UInt storage_var = GVarName("__NAUTY_INTERNAL_GRAPH_STORAGE");
-    graph =
-        NAUTY_GRAPH(0, source_list, range_list, nr_vertices_gap, is_directed);
+    graph = FuncNAUTY_GRAPH(0, source_list, range_list, nr_vertices_gap,
+                            is_directed);
     AssGVar(storage_var, graph);
-    return_list = NAUTY_DENSE_REPEATED(0, graph, is_directed, color_data);
+    return_list = FuncNAUTY_DENSE_REPEATED(0, graph, is_directed, color_data);
     AssGVar(storage_var, False);
     return return_list;
 }
 
-
-typedef Obj (*GVarFunc)(/*arguments*/);
-
-#define GVAR_FUNC_(name, nparam, params)                                     \
-    {                                                                        \
-#name, nparam, params, (GVarFunc)name,                               \
-            "NautyTracesInterface.c:Func" #name                              \
-    }
-
 // Table of functions to export
 static StructGVarFunc GVarFuncs[] = {
-    GVAR_FUNC_(
+    GVAR_FUNC(
         NautyDense, 5, "source_list,range_list,n,is_directed,color_data"),
-    GVAR_FUNC_(NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed"),
-    GVAR_FUNC_(NAUTY_DENSE, 3, "graph,is_directed,color_data"),
-    GVAR_FUNC_(NAUTY_DENSE_REPEATED, 3, "graph,is_directed,color_data"),
-    GVAR_FUNC_(NautyDenseRepeated,
-               5,
-               "source_list,range_list,n,is_directed,color_data"),
+    GVAR_FUNC(NAUTY_GRAPH, 4, "source_list,range_list,n,is_directed"),
+    GVAR_FUNC(NAUTY_DENSE, 3, "graph,is_directed,color_data"),
+    GVAR_FUNC(NAUTY_DENSE_REPEATED, 3, "graph,is_directed,color_data"),
+    GVAR_FUNC(NautyDenseRepeated,
+              5,
+              "source_list,range_list,n,is_directed,color_data"),
 
     { 0 } /* Finish with an empty entry */
 
