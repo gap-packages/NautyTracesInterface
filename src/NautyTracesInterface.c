@@ -318,6 +318,7 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
 
         SET_ELM_PLIST(temp, 1, automorphism_list);
         SET_ELM_PLIST(temp, 2, p);
+        CHANGED_BAG(temp);
         SET_ELM_PLIST(return_list, k + 1, temp);
         CHANGED_BAG(return_list);
     }
