@@ -274,8 +274,6 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
         automorphism_list = NEW_PLIST(T_PLIST, 0);
         SET_LEN_PLIST(automorphism_list, 0);
 
-        Obj temp = NEW_PLIST(T_PLIST, 2);
-        SET_LEN_PLIST(temp, 2);
         if (color_data != False) {
 
             options.defaultptn = FALSE;
@@ -304,6 +302,8 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
             ptr[v] = lab[v];
         }
 
+        Obj temp = NEW_PLIST(T_PLIST, 2);
+        SET_LEN_PLIST(temp, 2);
         SET_ELM_PLIST(temp, 1, automorphism_list);
         SET_ELM_PLIST(temp, 2, p);
         CHANGED_BAG(temp);
