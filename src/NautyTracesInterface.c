@@ -149,19 +149,14 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
     Obj     p;
     UInt4 * ptr;
 
-    UInt global_list;
-
     graph * g = NAUTY_GRAPH_PTR(nauty_graph);
     size_t  g_sz = NAUTY_GRAPH_SIZE(nauty_graph);
     n = NAUTY_GRAPH_ROWS(nauty_graph);
     m = NAUTY_GRAPH_COLS(nauty_graph);
 
     // Write automorphisms
-    global_list =
-        GVarName("__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST");
     automorphism_list = NEW_PLIST(T_PLIST, 0);
     SET_LEN_PLIST(automorphism_list, 0);
-    AssGVar(global_list, automorphism_list);
     options.userautomproc = userautomproc;
 
     options.getcanon = TRUE;
@@ -208,7 +203,6 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
 
     automorphism_list = NEW_PLIST(T_PLIST, 0);
     SET_LEN_PLIST(automorphism_list, 0);
-    AssGVar(global_list, automorphism_list);
 
     DYNFREE(cg, cg_sz);
     DYNFREE(lab, lab_sz);
@@ -251,17 +245,12 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
     int current_source;
     int current_range;
 
-
-    UInt global_list;
-
     graph * g = NAUTY_GRAPH_PTR(nauty_graph);
     size_t  g_sz = NAUTY_GRAPH_SIZE(nauty_graph);
     n = NAUTY_GRAPH_ROWS(nauty_graph);
     m = NAUTY_GRAPH_COLS(nauty_graph);
 
     // Write automorphisms
-    global_list =
-        GVarName("__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST");
     options.userautomproc = userautomproc;
 
     options.getcanon = TRUE;
@@ -284,7 +273,6 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
     for (k = 0; k < LEN_PLIST(color_data); k++) {
         automorphism_list = NEW_PLIST(T_PLIST, 0);
         SET_LEN_PLIST(automorphism_list, 0);
-        AssGVar(global_list, automorphism_list);
 
         Obj temp = NEW_PLIST(T_PLIST, 2);
         SET_LEN_PLIST(temp, 2);
@@ -325,7 +313,6 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
 
     automorphism_list = NEW_PLIST(T_PLIST, 0);
     SET_LEN_PLIST(automorphism_list, 0);
-    AssGVar(global_list, automorphism_list);
 
     DYNFREE(cg, cg_sz);
     DYNFREE(lab, lab_sz);
@@ -353,6 +340,7 @@ static Int InitKernel(StructInitInfo * module)
     /* init filters and functions                                          */
     InitHdlrFuncsFromTable(GVarFuncs);
 
+    InitGlobalBag(&automorphism_list, "NautyTracesInterface:automorphism_list");
     InitCopyGVar("TheTypeNautyInternalGraphObject",
                  &TheTypeNautyInternalGraphObject);
 

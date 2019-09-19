@@ -8,9 +8,6 @@
 ##
 #############################################################################
 
-BindGlobal( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST", true );
-MakeReadWriteGlobal( "__NAUTYTRACESINTERFACE_GLOBAL_AUTOMORPHISM_GROUP_LIST" );
-
 DeclareCategory( "IsNautyInternalGraphObject", IsObject );
 
 NautyInternalFamily := NewFamily( "NautyInternalFamily" );
