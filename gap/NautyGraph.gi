@@ -307,13 +307,12 @@ InstallMethod( CanonicalLabelingInverse, [IsNautyGraph],
 end );
 
 InstallMethod( CanonicalForm,
-               [ IsNautyGraph ],
+               [ IsNautyGraphRep ],
                
   function( graph )
-    local colors, edges, perm, new_graph, permEdges, i,
+    local colors, edges, new_graph, permEdges, i,
         permInv;
     
-    perm := CanonicalLabeling( graph );
     permInv := CanonicalLabelingInverse( graph );
     
     edges := graph!.edges;
@@ -361,6 +360,37 @@ InstallMethod( CanonicalForm,
     
 end );
 
+InstallMethod( CanonicalForm,
+               [ IsNautyEdgeColoredGraphRep ],
+               
+  function( graph )
+    local colors, edges, new_graph, permEdges, i,
+        permInv, edgeClass, newClass, edge;
+    
+    permInv := CanonicalLabelingInverse( graph );
+    
+    edges := graph!.edge_list;
+
+    # Since this computation should be efficient we do it manually
+    # This is benchmarked in benchmarks/Benchmark_CanonicalForm_EdgeColoured.g
+    permEdges := [];
+    for edgeClass in edges do
+        newClass := [];
+
+        for edge in edgeClass do # edges is a dense list
+            Add(newClass, OnSets(edge, permInv));
+        od;
+
+
+        Add(permEdges, Set(newClass) );
+    od;
+    edges := permEdges;
+    
+    return NautyEdgeColoredGraph(edges, graph!.nr_nodes);
+    
+end );
+
+
 BindGlobal( "NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges",
   function( graph1, graph2 )
     local can1, can2;
@@ -373,23 +403,37 @@ BindGlobal( "NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges",
     
     return fail;
 end );
+BindGlobal( "NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges_List",
+  function( graph1, graph2 )
+    local can1, can2;
+
+    can1 := CanonicalForm( graph1 );
+    can2 := CanonicalForm( graph2 );
+    if can1!.edge_list = can2!.edge_list then 
+        return CanonicalLabelingInverse( graph1 ) * CanonicalLabeling( graph2 );
+    fi;
+    
+    return fail;
+end );
+
+# Isomorphism computation for graphs without edge colouring
 
 InstallMethod( IsomorphismGraphs,
-               [ IsNautyGraph and IsDirected, IsNautyGraph and IsDirected ],
+               [ IsNautyGraphRep and IsDirected, IsNautyGraphRep and IsDirected ],
                
   function( graph1, graph2 )
     return NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges( graph1, graph2 );
 end );
 
 InstallMethod( IsomorphismGraphs,
-               [ IsNautyGraph, IsNautyGraph ],
+               [ IsNautyGraphRep, IsNautyGraphRep ],
                
   function( graph1, graph2 )
     return NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges( graph1, graph2 );
 end );
 
 InstallMethod( IsomorphismGraphs,
-               [ IsNautyGraph and IsColored, IsNautyGraph and IsColored ],
+               [ IsNautyGraphRep and IsColored, IsNautyGraphRep and IsColored ],
                
   function( graph1, graph2 )
     local color1, color2, perm1, perm2;
@@ -409,8 +453,8 @@ InstallMethod( IsomorphismGraphs,
 end );
 
 InstallMethod( IsomorphismGraphs, 
-    [ IsNautyGraph and IsColored and HasCanonicalForm, 
-        IsNautyGraph and IsColored and HasCanonicalForm ],
+    [ IsNautyGraphRep and IsColored and HasCanonicalForm, 
+        IsNautyGraphRep and IsColored and HasCanonicalForm ],
   function( graph1, graph2 )
     local can1, can2;
 
@@ -423,7 +467,28 @@ InstallMethod( IsomorphismGraphs,
 end );
 
 InstallMethod( IsomorphicGraphs,
-               [ IsNautyGraph, IsNautyGraph ],
+               [ IsNautyGraphRep, IsNautyGraphRep ],
+               
+  function( graph1, graph2 )
+    local isomorphism;
+    
+    isomorphism := IsomorphismGraphs( graph1, graph2 );
+    
+    return isomorphism <> fail;
+    
+end );
+
+# Isomorphisms for edge coloured graphs
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyEdgeColoredGraphRep, IsNautyEdgeColoredGraphRep ],
+               
+  function( graph1, graph2 )
+    return NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges_List( graph1, graph2 );
+end );
+
+
+InstallMethod( IsomorphicGraphs,
+               [ IsNautyEdgeColoredGraphRep, IsNautyEdgeColoredGraphRep ],
                
   function( graph1, graph2 )
     local isomorphism;
