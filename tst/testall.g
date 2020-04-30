@@ -1,3 +1,4 @@
+SetInfoLevel(InfoPackageLoading,4);
 LoadPackage("NautyTracesInterface");
 LoadPackage("Grape");
 LoadPackage("Digraph");
