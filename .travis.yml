@@ -2,7 +2,7 @@ language: c
 
 env:
   global:
-    - GAP_PKGS_TO_BUILD="io profiling digraphs grape"
+    - GAP_PKGS_TO_BUILD="io profiling datastructures digraphs grape"
 
 addons:
   apt_packages:
