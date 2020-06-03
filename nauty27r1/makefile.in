@@ -3,9 +3,9 @@
 
 SHELL=/bin/sh
 CC=@CC@
-CFLAGS=@CFLAGS@ @MORECFLAGS@
+CFLAGS=@CFLAGS@ -fPIC @MORECFLAGS@
 SAFECFLAGS=@CFLAGS@
-LDFLAGS=@LDFLAGS@ @LIBS@
+LDFLAGS=@LDFLAGS@ -fPIC @LIBS@
 THREADLIB=@threadlib@
 LOK=@lok@         # 0 if no 64-bit integers
 TESTPROGS=@testprogs@
