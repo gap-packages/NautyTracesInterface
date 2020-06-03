@@ -1,4 +1,4 @@
-/* multig.c version 1.7; B D McKay, May 17, 2014 */
+/* multig.c version 1.9; B D McKay, Oct 25, 2019 */
 
 #define USAGE \
 "multig [-q] [-u|-T|-G|-A|-B] [-e#|-e#:#] \n" \
@@ -105,15 +105,17 @@ extern void SUMMARY(void);
 
 /**************************************************************************/
 
+#if 0
 static void
 writeautom(int *p, int n)
-/* Called by allgroup. */
+/* Called by allgroup as a test. */
 {
     int i;
 
     for (i = 0; i < n; ++i) printf(" %2d",p[i]);
     printf("\n");
 }
+#endif
 
 /**************************************************************************/
 
@@ -199,7 +201,7 @@ trythisone(grouprec *group,
        boolean lswitch, int *deg, int maxdeg, int ne, int n)
 /* Try one solution, accept if minimal. */
 {
-    int i,ne2;
+    int i,j,ne2;
     boolean accept;
 
     nix = ne;
@@ -240,6 +242,7 @@ trythisone(grouprec *group,
                     if (deg[i] < maxdeg)
                     {
                         v0[ne2] = v1[ne2] = i;
+			edgeno[i][i] = ne2;
                         ix[ne2] = (maxdeg-deg[i])/2;
                         ++ne2;
                     }
@@ -258,6 +261,11 @@ trythisone(grouprec *group,
                 fprintf(outfile,"\n");
             }
 #endif
+	    for (i = ne2; --i >= ne; )
+	    {
+		j = v0[i];
+		edgeno[j][j] = -1;
+	    }
         }
         return;
     }
