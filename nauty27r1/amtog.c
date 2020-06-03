@@ -25,6 +25,8 @@
     t     Upper triangle of matrix to follow, row by row\n\
            excluding the diagonal.\n\
     T     Complement of upper trangle to follow (as t)\n\
+    s     Upper triangle of matrix to follow, row by row\n\
+           excluding the diagonal; lower triangle is complement.\n\
     q     exit (optional)\n"
 
 /*************************************************************************/
@@ -40,10 +42,11 @@ main(int argc, char *argv[])
 {
     int m,n,outdigit;
     int argnum,i,j,outcode,val;
+    int unsym0,unsym1,loop0;
     char *arg,sw,ochar;
     boolean badargs;
     boolean nswitch,sswitch,gswitch,hswitch,qswitch;
-    boolean warn,loop,unsymm,compl,triangle;
+    boolean warn,loop,unsymm,compl,triangle,tournament;
     boolean zswitch,oswitch,nowarn;
     char *infilename,*outfilename;
     FILE *infile,*outfile;
@@ -155,7 +158,6 @@ main(int argc, char *argv[])
         DYNALLOC2(graph,g,g_sz,n,m,"amtog");
     }
 #endif
-    
 
      /* perform scanning required */
 
@@ -179,8 +181,8 @@ main(int argc, char *argv[])
 #endif
         } 
         else if (s[0] == 'm' || s[0] == 'M' || s[0] == 't' ||
-                 s[0] == 'T' || s[0] == '0' || s[0] == '1' ||
-                 (oswitch && isdigit(s[0])))
+                 s[0] == 'T' || s[0] == 's' || s[0] == '0' ||
+                 s[0] == '1' || (oswitch && isdigit(s[0])))
         {
             if (n < 0)
             {
@@ -193,8 +195,9 @@ main(int argc, char *argv[])
     
             EMPTYSET(g,m*(size_t)n);
 
-            loop = unsymm = FALSE;
-            triangle = (s[0] == 't') || (s[0] == 'T');
+            loop = unsymm = tournament = FALSE;
+            triangle = (s[0] == 't') || (s[0] == 'T') || (s[0] == 's');
+	    tournament = s[0] == 's';
             compl = (s[0] == 'M') || (s[0] == 'T');
 
             ++nin;
@@ -212,7 +215,9 @@ main(int argc, char *argv[])
                     val = ((i != j) & compl) ^ (s[0] == ochar);
                     if (val == 1)
                     {
-                        if (triangle)
+			if (tournament)
+			    ADDELEMENT(GRAPHROW(g,i,m),j);
+                        else if (triangle)
                         {
                             ADDELEMENT(GRAPHROW(g,i,m),j);
                             ADDELEMENT(GRAPHROW(g,j,m),i);
@@ -220,13 +225,25 @@ main(int argc, char *argv[])
                         else
                         {
                             if (j < i && !ISELEMENT(GRAPHROW(g,j,m),i))
+			    {
                                 unsymm = TRUE;
+				unsym0 = i; unsym1 = j;
+			    }
                             ADDELEMENT(GRAPHROW(g,i,m),j);
                         }
-                        if (i == j) loop = TRUE;
+                        if (i == j)
+			{
+			    loop = TRUE;
+			    loop0 = i;
+		        }
                     }
+		    else if (tournament)
+			ADDELEMENT(GRAPHROW(g,j,m),i);
                     else if (j < i && ISELEMENT(GRAPHROW(g,j,m),i))
+		    {
                         unsymm = TRUE;
+			unsym0 = i; unsym1 = j;
+		    }
                 }
                 else
                 {
@@ -237,9 +254,9 @@ main(int argc, char *argv[])
                 }
             }
 
-            if (unsymm && outcode != DIGRAPH6) fprintf(stderr,
-                   ">W amtog: warning, graph "
-                          COUNTER_FMT " is unsymmetric\n",nin);
+            if ((tournament || unsymm) && outcode != DIGRAPH6)
+ 		fprintf(stderr,">W amtog: warning, graph "
+                          COUNTER_FMT " is unsymmetric (%d,%d)\n",nin,unsym0,unsym1);
     
             if (outcode == DIGRAPH6)     writed6(outfile,g,m,n);
             else if (outcode == SPARSE6) writes6(outfile,g,m,n);
@@ -257,7 +274,7 @@ main(int argc, char *argv[])
         }
     }
 
-    if (warn) fprintf(stderr,">Z complg: loops were lost\n");
+    if (warn && !nowarn) fprintf(stderr,">Z amtog: loops were lost (%d)\n",loop0);
 
     if (!qswitch)
         fprintf(stderr,">Z  " COUNTER_FMT " graphs converted from %s to %s.\n",

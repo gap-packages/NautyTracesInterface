@@ -1,4 +1,4 @@
-/* genbg.c : version 2.4; B D McKay, 20 Jan 2016. */
+/* genbg.c : version 2.6; B D McKay, 6 Oct 2019. */
 
 /* TODO: consider colour swaps */
 
@@ -22,9 +22,10 @@
           neighbours of degree at least 2\n\
   -L    : there is no vertex in the first class whose removal leaves\n\
           the vertices in the second class unreachable from each other\n\
-  -Z#   : two vertices in the second class may have at most # common nbrs\n\
-  -A    : no vertex in the second class has a neighbourhood whith is a\n\
-          subset of another vertex in the second class\n\
+  -Y#   : two vertices in the second class must have at least # common nbrs\n\
+  -Z#   : two vertices in the second class must have at most # common nbrs\n\
+  -A    : no vertex in the second class has a neighbourhood which is a\n\
+          subset of another vertex's neighbourhood in the second class\n\
   -D#   : specify an upper bound for the maximum degree\n\
           Example: -D6.  You can also give separate maxima for the\n\
           two parts, for example: -D5:6\n\
@@ -58,8 +59,8 @@ PRUNE feature.
 
    By defining the C preprocessor variables PRUNE1 and/or PRUNE2 at
    compile time, you can filter the output of the program efficiently.
-   The value of the variable is a function name with parameter list
-   (graph *g, int *deg, int n1, int n2, int maxn2)
+   The value of the variable is an int function name with parameter
+   list (graph *g, int *deg, int n1, int n2, int maxn2)
 
    The function will be called for each intermediate graph generated
    by the program, including output graphs.  The parameters are:
@@ -102,11 +103,10 @@ OUTPROC feature.
    genbg can be made to call a procedure of your manufacture with
    each output graph instead of writing anything. Your procedure
    needs to have type void and the argument list (FILE *f, graph *g,
-   int n1, int n2). f is a stream open for writing (in fact, in the
-   current version it is always stdout), g is the graph in nauty
-   format, and n1,n2 are the numbers of vertices on each side. Your
-   procedure can be in a separate file so long as it is linked with
-   genbg. The global variables nooutput, nautyformat and canonise
+   int n1, int n2). f is a stream open for writing, g is the graph in
+   nauty format, and n1,n2 are the numbers of vertices on each side.
+   Your procedure can be in a separate file so long as it is linked
+   with genbg. The global variables nooutput, nautyformat and canonise
    (all type boolean) can be used to test for the presence of the
    flags -u, -n and -l, respectively.
 
@@ -118,7 +118,7 @@ SUMMARY
    If the C preprocessor variable SUMMARY is defined at compile time, the
    procedure SUMMARY(nauty_counter nout, double cpu) is called just before
    the program exits.  The purpose is to allow reporting of statistics
-   collected by PRUNE or OUTPROC.  The values nout and cpu are the output
+   collected by PRUNE1/2 or OUTPROC.  The values nout and cpu are the output
    count and cpu time reported on the >Z line.
    Output should be written to stderr.
 
@@ -131,9 +131,9 @@ INSTRUMENT feature.
 **************************************************************************
 
     Author:   B. D. McKay, Oct 1994.     bdm@cs.anu.edu.au
-              Copyright  B. McKay (1994-2008).  All rights reserved.
+              Copyright  B. McKay (1994-2017).  All rights reserved.
               This software is subject to the conditions and waivers
-              detailed in the file nauty.h.
+              detailed in the file COPYRIGHT.
     1 May 2003 : fixed PRUNE feature
    13 Sep 2003 : added Greechie output, all outprocs have n1,n2
     9 Oct 2003 : changed -l to respect partition
@@ -145,6 +145,8 @@ INSTRUMENT feature.
    23 Jan 2013 : fix splitlevinc initialization
    16 Feb 2014 : add a missing call to PRUNE2
    20 Jan 2016 : changed bigint to nauty_counter
+   14 Nov 2017 : added -Y switch
+    6 Oct 2019 : declare PRUNE1 and PRUNE2
 
 **************************************************************************/
 
@@ -167,6 +169,13 @@ extern void OUTPROC(FILE*,graph*,int,int);
 extern void SUMMARY(nauty_counter,double);
 #endif
 
+#ifdef PRUNE1
+extern int PRUNE1(graph*,int*,int,int,int);
+#endif
+#ifdef PRUNE2
+extern int PRUNE2(graph*,int*,int,int,int);
+#endif
+
 static FILE *outfile;           /* file for output graphs */
 static boolean connec;          /* presence of -c */
 static boolean verbose;         /* presence of -v */
@@ -182,6 +191,7 @@ boolean footfree;               /* presence of -F */
 boolean cutfree;                /* presence of -L */
 boolean antichain;              /* presence of -A */
 int class1size;                 /* same as n1 */
+int mincommon;                  /* -1 or value of -Y */
 int maxcommon;                  /* -1 or value of -Z */
 static int maxdeg1,maxdeg2,n1,maxn2,mine,maxe,nprune,mod,res,curres;
 static int mindeg1,mindeg2;
@@ -1261,6 +1271,15 @@ genextend(graph *g, int n2, int *deg, int ne, boolean rigid, int xlb, int xub)
                 }
                 if (j >= 0) continue;
             }
+            if (mincommon >= 0)
+            {
+                for (j = n2; --j >= 0;)
+                {
+                    y = x & xval[j];
+                    if (XPOPCOUNT(y) < mincommon) break;
+                }
+                if (j >= 0) continue;
+            }
 	    if (antichain)
 	    {
 		for (j = 0; j < n2; ++j)
@@ -1345,6 +1364,15 @@ genextend(graph *g, int n2, int *deg, int ne, boolean rigid, int xlb, int xub)
                 }
                 if (j >= 0) continue;
             }
+            if (mincommon >= 0)
+            {
+                for (j = n2; --j >= 0;)
+                {
+                    y = x & xval[j];
+                    if (XPOPCOUNT(y) < mincommon) break;
+                }
+                if (j >= 0) continue;
+            }
 	    if (antichain)
 	    {
 		for (j = 0; j < n2; ++j)
@@ -1383,7 +1411,7 @@ int
 main(int argc, char *argv[])
 {
     char *arg;
-    boolean badargs,gotD,gote,gotf,gotmr,gotZ,gotd,gotX;
+    boolean badargs,gotD,gote,gotf,gotmr,gotY,gotZ,gotd,gotX;
     long Dval1,Dval2;
     long dval1,dval2;
     int i,j,imin,imax,argnum,sw;
@@ -1418,13 +1446,14 @@ main(int argc, char *argv[])
     quiet = FALSE;
     footfree = FALSE;
     cutfree = FALSE;
+    antichain = FALSE;
 
     gote = FALSE;
     gotf = FALSE;
     gotmr = FALSE;
     gotD = FALSE;
     gotd = FALSE;
-    gotZ = FALSE;
+    gotY = gotZ = FALSE;
     gotX = FALSE;
     outfilename = NULL;
 
@@ -1454,6 +1483,7 @@ main(int argc, char *argv[])
                 else SWBOOLEAN('a',greout)
                 else SWBOOLEAN('g',graph6)
                 else SWBOOLEAN('s',sparse6)
+                else SWINT('Y',gotY,mincommon,"genbg -Y")
                 else SWINT('Z',gotZ,maxcommon,"genbg -Z")
                 else SWINT('X',gotX,splitlevinc,"geng -X")
                 else SWRANGE('D',":-",gotD,Dval1,Dval2,"genbg -D")
@@ -1522,6 +1552,9 @@ PLUGIN_SWITCHES
     {
         fprintf(stderr,
            ">E genbg: must have n1=1..%d, n1+n2=1..%d\n",MAXN1,MAXN);
+#if WORDSIZE==32
+	fprintf(stderr,"Try genbgL instead.\n");
+#endif
         badargs = TRUE;
     }
 
@@ -1559,13 +1592,8 @@ PLUGIN_SWITCHES
     if (mine < n1*mindeg1) mine = n1*mindeg1;
     if (mine < maxn2*mindeg2) mine = maxn2*mindeg2;
 
-    if (!badargs && (mine > maxe || maxe < 0 || maxdeg1 < 0 || maxdeg2 < 0))
-    {
-        fprintf(stderr,">E genbg: impossible mine,maxe,maxdeg values\n");
-        badargs = TRUE;
-    }
-
     if (!gotZ) maxcommon = -1;
+    if (!gotY) mincommon = -1;
 
     if (!badargs && (mine > maxe || maxe < 0 || maxdeg1 < 0 || maxdeg2 < 0))
     {
@@ -1619,21 +1647,6 @@ PLUGIN_INIT
         gt_abort(NULL);
     }
 
-/*
-    if (!quiet)
-    {
-        fprintf(stderr,">A %s n=%d+%d e=%d:%d d=%d:%d D=%d:%d ",
-                       argv[0],n1,maxn2,mine,maxe,
-                       mindeg1,mindeg2,maxdeg1,maxdeg2);
-        if (simple) fprintf(stderr,"z");
-        if (footfree) fprintf(stderr,"F");
-        if (connec) fprintf(stderr,"c");
-        if (maxcommon >= 0) fprintf(stderr,"Z%d",maxcommon);
-        if (mod > 1) fprintf(stderr," class=%d/%d",res,mod);
-        fprintf(stderr,"\n");
-    }
-*/
-
     if (!quiet)
     {
         msg[0] = '\0';
@@ -1647,8 +1660,10 @@ PLUGIN_INIT
         if (footfree) CATMSG0("F");
         if (antichain) CATMSG0("A");
         if (connec) CATMSG0("c");
+        if (mincommon >= 0) CATMSG1("Y%d",mincommon);
         if (maxcommon >= 0) CATMSG1("Z%d",maxcommon);
         if (cutfree) CATMSG0("L");
+        if (canonise) CATMSG0("l");
         if (mod > 1) CATMSG2(" class=%d/%d",res,mod);
         CATMSG0("\n");
         fputs(msg,stderr);
@@ -1732,7 +1747,7 @@ PLUGIN_INIT
             splitcases,nprune,t2-t1);
 #else
 #ifdef SUMMARY
-    SUMMARY(&nout,t2-t1);
+    SUMMARY(nout,t2-t1);
 #endif
 
     if (!quiet)

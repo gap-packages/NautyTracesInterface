@@ -21,10 +21,6 @@
 #include <nmmintrin.h>
 #endif
 
-#ifndef POPCOUNTMAC
-#define POPCOUNTMAC POPCOUNT
-#endif
-
 #if POPC==0
 #define NEWPOPC(x,c) {c = 0; while(x){++c; x &= x-1;}}
 #endif

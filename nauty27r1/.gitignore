@@ -1,6 +1,7 @@
 NRswitchg
 addedgeg
 amtog
+assembleg
 biplabg
 catg
 complg
@@ -16,9 +17,11 @@ directg
 dreadnaut
 dretodot
 dretog
+edgetransg
 genbg
 genbgL
 geng
+gengL
 genquarticg
 genrang
 genspecialg
@@ -84,6 +87,9 @@ nauty.a
 nauty.o
 nauty1.a
 nauty1.o
+nautycliquer.o
+nautycliquerL.o
+nautycliquerW.o
 nautyL.a
 nautyL.o
 nautyL1.a
@@ -104,5 +110,6 @@ showg
 subdivideg
 traces.o
 twohamg
+underlyingg
 vcolg
 watercluster2

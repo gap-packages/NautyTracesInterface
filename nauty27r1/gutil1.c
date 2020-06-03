@@ -65,6 +65,65 @@ degstats(graph *g, int m, int n, unsigned long *edges, int *mindeg,
 /**************************************************************************/
 
 void
+degstats3(graph *g, int m, int n, unsigned long *edges, int *mindeg,
+     int *mincount, int *maxdeg, int *maxcount, int *odddeg)
+/* Compute degree-related graph properties.
+   *edges = number of edges
+   *mindeg, *mincount = minimum degree and how many there are
+   *maxdeg, *maxcount = maximum degree and how many there are
+   *odddeg = number of vertices of odd degree
+*/
+{
+    setword *pg;
+    int i,j,d,dodd;
+    int mind,mindc,maxd,maxdc;
+    unsigned long ned;
+
+    mind = n;
+    mindc = 0;
+    maxd = 0;
+    maxdc = 0;
+    ned = 0;
+    dodd = 0;
+
+    pg = (setword*)g;
+    for (i = 0; i < n; ++i)
+    {
+        d = 0;
+        for (j = 0; j < m; ++j, ++pg)
+            if (*pg) d += POPCOUNT(*pg);
+
+        if (d == mind)
+            ++mindc;
+        else if (d < mind)
+        {
+            mind = d;
+            mindc = 1;
+        }
+
+        if (d == maxd)
+            ++maxdc;
+        else if (d > maxd)
+        {
+            maxd = d;
+            maxdc = 1;
+        }
+
+        dodd += d % 2;
+        ned += d;
+    }
+
+    *mindeg = mind;
+    *mincount = mindc;
+    *maxdeg = maxd;
+    *maxcount = maxdc;
+    *edges = ned / 2;
+    *odddeg = dodd;
+}
+
+/**************************************************************************/
+
+void
 degstats2(graph *g, boolean digraph, int m, int n,
      unsigned long *edges, int *loops,
      int *minindeg, int *minincount, int *maxindeg, int *maxincount,
@@ -94,6 +153,15 @@ degstats2(graph *g, boolean digraph, int m, int n,
     DYNALLSTAT(int,indeg,indeg_sz);
     DYNALLSTAT(int,outdeg,outdeg_sz);
 #endif
+
+    if (n == 0)
+    {
+        *edges = *loops = 0;
+	*minindeg = *minincount = *maxindeg = *maxincount = 0;
+	*minoutdeg = *minoutcount = *maxoutdeg = *maxoutcount = 0;
+	*eulerian = TRUE;
+	return;
+    }
 
 #if !MAXN
     if (digraph)
@@ -243,6 +311,8 @@ isconnected1(graph *g, int n)
     setword seen,expanded,toexpand;
     int i;
 
+    if (n == 0) return FALSE;
+
     seen = bit[0];
     expanded = 0;
 
@@ -271,6 +341,7 @@ isconnected(graph *g, int m, int n)
     DYNALLSTAT(int,visited,visited_sz);
 #endif
 
+    if (n == 0) return FALSE;
     if (m == 1) return isconnected1(g,n);
 
 #if !MAXN
@@ -307,6 +378,7 @@ isconnected(graph *g, int m, int n)
 boolean
 issubconnected(graph *g, set *sub, int m, int n)
 /* Test if the subset of g induced by sub is connected. Empty is connected. */
+/* Note that the value for empty subgraphs disagrees with isconnected() */
 {
     int i,head,tail,w,subsize;
     set *gw;
@@ -487,6 +559,7 @@ twocolouring(graph *g, int *colour, int m, int n)
     DYNALLOC1(int,queue,queue_sz,n,"twocolouring");
 #endif
 
+    if (n == 0) return TRUE;
     for (i = 0; i < n; ++i) colour[i] = -1;
 
     if (m == 1)
@@ -572,30 +645,101 @@ isbipartite(graph *g, int m, int n)
 int
 bipartiteside(graph *g, int m, int n)
 /* If g is not bipartite, return 0.
-   Otherwise return the size of the smallest of the two parts of
-    some 2-coluring.  Note that this is not isomorphism-invariant
-    if g is disconnected. */
+   Otherwise return the size of the smallest of the two parts
+   of a 2-coluring for which this value is smallest. */
 {
-    boolean isbip;
-    int i,sz;
+    int i,head,tail,v,w,need;
+    set *gw;
+    setword xg;
+    int ans,col[2];
 #if MAXN
+    int queue[MAXN];
     int colour[MAXN];
 #else
+    DYNALLSTAT(int,queue,queue_sz);
     DYNALLSTAT(int,colour,colour_sz);
 #endif
 
 #if !MAXN
+    DYNALLOC1(int,queue,queue_sz,n,"twocolouring");
     DYNALLOC1(int,colour,colour_sz,n,"isbipartite");
 #endif
 
-    isbip = twocolouring(g,colour,m,n);
-    if (!isbip) return 0;
+    if (n == 0) return 0;
+    for (i = 0; i < n; ++i) colour[i] = -1;
+    ans = 0;
 
-    sz = 0;
-    for (i = 0; i < n; ++i) sz += colour[i];
+    if (m == 1)
+    {
+        for (v = 0; v < n; ++v)
+	{
+            if (colour[v] < 0)
+            {
+                queue[0] = v;
+                colour[v] = 0;
+		col[0] = 1; col[1] = 0;
+    
+                head = 0;
+                tail = 1;
+                while (head < tail) 
+                {
+                    w = queue[head++];
+                    need = 1 - colour[w];
+                    xg = g[w];
+		    while (xg)
+                    {
+			TAKEBIT(i,xg);
+                        if (colour[i] < 0)
+                        {
+                            colour[i] = need;
+			    ++col[need];
+                            queue[tail++] = i;
+                        }
+                        else if (colour[i] != need)
+                            return 0;
+                    }
+                }
+		if (col[0] <= col[1]) ans += col[0];
+                else                  ans += col[1];
+            }
+ 	}
+    }
+    else
+    {
+        for (v = 0; v < n; ++v)
+	{
+            if (colour[v] < 0)
+            {
+                queue[0] = v;
+                colour[v] = 0;
+		col[0] = 1; col[1] = 0;
+    
+                head = 0;
+                tail = 1;
+                while (head < tail) 
+                {
+                    w = queue[head++];
+                    need = 1 - colour[w];
+                    gw = GRAPHROW(g,w,m);
+                    for (i = -1; (i = nextelement(gw,m,i)) >= 0;)
+                    {
+                        if (colour[i] < 0)
+                        {
+                            colour[i] = need;
+			    ++col[need];
+                            queue[tail++] = i;
+                        }
+                        else if (colour[i] != need)
+                            return 0;
+                    }
+                }
+		if (col[0] <= col[1]) ans += col[0];
+                else                  ans += col[1];
+            }
+	}
+     }
 
-    if (sz+sz <= n) return sz;
-    else            return n - sz;
+    return ans;
 }
 
 /**************************************************************************/
@@ -617,6 +761,7 @@ girth(graph *g, int m, int n)
     DYNALLOC1(int,dist,dist_sz,n,"girth");
 #endif  
     
+    if (n == 0) return 0;
     best = n+3;
 
     for (v = 0; v < n; ++v)
@@ -673,7 +818,8 @@ find_dist(graph *g, int m, int n, int v, int *dist)
 #if !MAXN
     DYNALLOC1(int,queue,queue_sz,n,"isconnected");
 #endif  
-    
+ 
+    if (n == 0) return;
     for (i = 0; i < n; ++i) dist[i] = n;
 
     queue[0] = v;
@@ -715,6 +861,7 @@ find_dist2(graph *g, int m, int n, int v, int w, int *dist)
     DYNALLOC1(int,queue,queue_sz,n,"isconnected");
 #endif  
     
+    if (n == 0) return;
     for (i = 0; i < n; ++i) dist[i] = n;
 
     queue[0] = v;
@@ -761,6 +908,12 @@ diamstats(graph *g, int m, int n, int *radius, int *diameter)
     DYNALLOC1(int,queue,queue_sz,n,"isconnected");
     DYNALLOC1(int,dist,dist_sz,n,"isconnected");
 #endif
+
+    if (n == 0)
+    {
+	*radius = *diameter = 0;
+	return;
+    }
 
     diam = -1;
     rad = n;
@@ -835,6 +988,8 @@ maxcliques(graph *g, int m, int n)
     int i;
     long ans;
 
+    if (n == 0) return 0;
+
     if (m == 1)
     {
         ans = 0;
@@ -848,4 +1003,84 @@ maxcliques(graph *g, int m, int n)
     }
 
     return ans;
+}
+
+/**************************************************************************/
+
+static void
+maxcsnode1(int *best, graph *g, setword cliq, setword cov, int maxv)
+/* Internal search node.  cov has all the vertices outside cliq that
+ * cover all of cliq.  maxv is the last vertex of cliq.
+ * *best is the largest clique known so far.
+ */
+{
+    int i,s;
+    setword w;
+
+    if (cov == 0) return;
+
+    w = cov & BITMASK(maxv);
+
+    s = POPCOUNT(cliq);
+    if (s + POPCOUNT(w) <= *best) return;
+    if (w)
+    {
+	if (s + 1 > *best) *best = s + 1;
+        while (w)
+        {
+            TAKEBIT(i,w);
+	    maxcsnode1(best,g,cliq|bit[i],cov&g[i]&~bit[i],i);
+        }
+    }
+}
+
+int
+maxcliquesize(graph *g, int m, int n)
+/* Find the largest clique size */
+{
+    int i,best;
+
+    if (n == 0) return 0;
+
+    if (m == 1)
+    {
+        best = 1;
+	for (i = 0; i < n; ++i)
+	    maxcsnode1(&best,g,bit[i],g[i],i);
+    }
+    else
+    {
+	fprintf(stderr,">E maxcliquesize() is only implemented for m=1\n");
+	exit(1);
+    }
+
+    return best;
+}
+
+int
+maxindsetsize(graph *g, int m, int n)
+/* Find the largest independent set size */
+{
+    int i,best;
+    graph gc[WORDSIZE];
+    setword all;
+
+    if (n == 0) return 0;
+
+    if (m == 1)
+    {
+	all = ALLMASK(n);
+	for (i = 0; i < n; ++i) gc[i] = g[i] ^ all ^ bit[i];
+
+        best = 1;
+	for (i = 0; i < n; ++i)
+	    maxcsnode1(&best,gc,bit[i],gc[i],i);
+    }
+    else
+    {
+	fprintf(stderr,">E maxindsetsize() is only implemented for m=1\n");
+	exit(1);
+    }
+
+    return best;
 }
