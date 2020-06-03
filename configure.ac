@@ -11,21 +11,8 @@ dnl ##
 AC_PREREQ([2.68])
 AC_INIT([NautyTracesInterface], [package])
 AC_CONFIG_SRCDIR([src/NautyTracesInterface.c])
-AC_CONFIG_HEADER([src/pkgconfig.h:cnf/pkgconfig.h.in])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_AUX_DIR([cnf])
-
-dnl ##
-dnl ## Get canonical host info
-dnl ##
-AC_CANONICAL_HOST
-
-dnl ##
-dnl ## Setup automake
-dnl ##
-AM_INIT_AUTOMAKE([1.11 -Wall foreign subdir-objects])
-AM_SILENT_RULES([yes])
-AM_PROG_AR
+m4_include([m4/find_gap.m4])
 
 dnl ##
 dnl ## Set the language
@@ -35,32 +22,12 @@ AC_PROG_CC_STDC
 AC_LANG([C])
 
 dnl ##
-dnl ## Setup libtool (for building the GAP kernel extension)
-dnl ##
-LT_PREREQ([2.4.2])
-LT_INIT([disable-static dlopen win32-dll])
-
-dnl ##
 dnl ## Locate the GAP root dir
 dnl ##
 FIND_GAP
 
-dnl ##
-dnl ## Detect Windows resp. Cygwin
-dnl ##
-case $host_os in
-  *cygwin* ) CYGWIN=yes;;
-         * ) CYGWIN=no;;
-esac
-AM_CONDITIONAL([SYS_IS_CYGWIN], [test "$CYGWIN" = "yes"])
-if test "$CYGWIN" = "yes"; then
-  AC_DEFINE(SYS_IS_CYGWIN32, 1, are we on CYGWIN?)
-else
-  AC_DEFINE(SYS_IS_CYGWIN32, 0, are we on CYGWIN?)
-fi
-
 AC_ARG_WITH([nauty],
-    [AC_HELP_STRING([--with-nauty=<path>], [specify root of nauty directory])],
+    [AS_HELP_STRING([--with-nauty=<path>], [specify root of nauty directory])],
     [NAUTY="$with_nauty"],
     [NAUTY="$PWD/nauty26r7"]
 )

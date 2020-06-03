@@ -1,0 +1,14 @@
+#
+# Makefile rules for the orb package
+#
+KEXT_NAME = NautyTracesInterface
+KEXT_SOURCES = src/NautyTracesInterface.c
+
+KEXT_CFLAGS = @NAUTY_CPPFLAGS@
+KEXT_LDFLAGS = @NAUTY_PATH@/nauty.a
+
+KEXT_USE_AUTOCONF = 1
+
+# include shared GAP package build system
+GAPPATH = @GAPROOT@
+include Makefile.gappkg
