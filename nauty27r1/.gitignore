@@ -84,6 +84,7 @@ naututilL1.o
 naututilW.o
 naututilW1.o
 nauty.a
+nauty.h
 nauty.o
 nauty1.a
 nauty1.o
