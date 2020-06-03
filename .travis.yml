@@ -23,7 +23,7 @@ branches:
 
 before_script:
   - git clone https://github.com/gap-system/pkg-ci-scripts.git scripts
-  - cd nauty26r7 && ./configure && make && cd ..
+  - cd nauty27r1 && ./configure && make && cd ..
   - scripts/build_gap.sh
 script:
   - scripts/build_pkg.sh && scripts/run_tests.sh

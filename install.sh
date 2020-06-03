@@ -14,7 +14,7 @@ Actions
 
 Paths
   --gaproot <path>                 Set GAP root path (default is ../..)
-  --nauty <path>                   Path to nauty (default is nauty26r7)
+  --nauty <path>                   Path to nauty (default is nauty27r1)
 
 Notes
 * Please note that NautyTracesInterface needs a patched version of Nauty.
@@ -31,7 +31,7 @@ error() {
 }
 
 CURRENT_DIR=${PWD}
-NAUTY_PATH=${PWD}/nauty26r7
+NAUTY_PATH=${PWD}/nauty27r1
 GAPROOT=../..
 
 while [ x"$1" != x ]; do

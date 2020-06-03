@@ -29,7 +29,7 @@ FIND_GAP
 AC_ARG_WITH([nauty],
     [AS_HELP_STRING([--with-nauty=<path>], [specify root of nauty directory])],
     [NAUTY="$with_nauty"],
-    [NAUTY="$PWD/nauty26r7"]
+    [NAUTY="$PWD/nauty27r1"]
 )
 NAUTY_CPPFLAGS="-I$NAUTY"
 NAUTY_PATH="$NAUTY"
