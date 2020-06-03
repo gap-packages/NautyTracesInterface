@@ -19,8 +19,10 @@
 /doc/*.toc
 /doc/manual.pdf
 
+/autom4te.cache/
 /bin/
 /config.log
 /config.status
 /configure
+/gen/
 /Makefile
