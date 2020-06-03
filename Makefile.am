@@ -15,13 +15,7 @@ NautyTracesInterface_la_SOURCES = src/NautyTracesInterface.c
 NautyTracesInterface_la_CPPFLAGS = $(GAP_CPPFLAGS) $(NAUTY_CPPFLAGS)
 NautyTracesInterface_la_CPLAGS = $(GAP_CFLAGS)
 NautyTracesInterface_la_LDFLAGS = $(GAP_LDFLAGS)
-NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/nauty.o
-NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/nautil.o
-NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/naugraph.o
-NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/schreier.o
-NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/naurng.o
-NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/naugroup.o
-NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/nautinv.o
+NautyTracesInterface_la_LDFLAGS += $(NAUTY_PATH)/nauty.a
 NautyTracesInterface_la_LDFLAGS += -module -avoid-version
 if SYS_IS_CYGWIN
 NautyTracesInterface_la_LDFLAGS += -no-undefined -version-info 0:0:0 -Wl,$(GAPROOT)/bin/$(GAPARCH)/gap.dll
