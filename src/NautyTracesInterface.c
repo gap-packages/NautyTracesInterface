@@ -7,6 +7,9 @@
 #include <nautinv.h>
 #include <nauty.h>
 
+#ifndef SELF_NAME
+#define SELF_NAME CONST_CSTR_STRING(NAME_FUNC(self))
+#endif
 
 static Obj  automorphism_list;
 static Obj  TheTypeNautyInternalGraphObject;
@@ -21,22 +24,39 @@ static void NautyObjCleanFunc(Obj obj)
 {
 }
 
-static Int NautyObjIsMutableFunc(Obj obj)
-{
-    return 0L;
-}
-
 static Obj NautyObjTypeFunc(Obj o)
 {
     return TheTypeNautyInternalGraphObject;
 }
 
-#define IS_NAUTY_GRAPH_OBJ(o) (TNUM_OBJ(o) == T_NAUTY_OBJ)
+static inline int IS_NAUTY_GRAPH_OBJ(Obj o)
+{
+    return TNUM_OBJ(o) == T_NAUTY_OBJ;
+}
 
-#define NAUTY_GRAPH_PTR(o) (graph *)ADDR_OBJ(o)[0]
-#define NAUTY_GRAPH_SIZE(o) (size_t) ADDR_OBJ(o)[1]
-#define NAUTY_GRAPH_ROWS(o) (size_t) ADDR_OBJ(o)[2]
-#define NAUTY_GRAPH_COLS(o) (size_t) ADDR_OBJ(o)[3]
+static inline graph * NAUTY_GRAPH_PTR(Obj o)
+{
+    GAP_ASSERT(IS_NAUTY_GRAPH_OBJ(o));
+    return (graph *)ADDR_OBJ(o)[0];
+}
+
+static inline size_t NAUTY_GRAPH_SIZE(Obj o)
+{
+    GAP_ASSERT(IS_NAUTY_GRAPH_OBJ(o));
+    return (size_t)ADDR_OBJ(o)[1];
+}
+
+static inline size_t NAUTY_GRAPH_ROWS(Obj o)
+{
+    GAP_ASSERT(IS_NAUTY_GRAPH_OBJ(o));
+    return (size_t)ADDR_OBJ(o)[2];
+}
+
+static inline size_t NAUTY_GRAPH_COLS(Obj o)
+{
+    GAP_ASSERT(IS_NAUTY_GRAPH_OBJ(o));
+    return (size_t)ADDR_OBJ(o)[3];
+}
 
 static Obj NEW_NAUTY_GRAPH_OBJ(graph * graph_pointer,
                                size_t  size,
@@ -55,19 +75,14 @@ static Obj NEW_NAUTY_GRAPH_OBJ(graph * graph_pointer,
 static void NautyObjFreeFunc(Obj o)
 {
     //     DYNFREE((graph*)ADDR_OBJ(o)[0],(size_t)ADDR_OBJ(o)[1]);
-    if (ADDR_OBJ(o)[1])
+    if (ADDR_OBJ(o)[1]) {
         free(ADDR_OBJ(o)[0]);
+    }
 }
 
-static void writeautom(int * p, int n)
-/* Called by allgroup.  Just writes the permutation p. */
-{
-    int i;
-
-    for (i = 0; i < n; ++i)
-        printf(" %2d", p[i]);
-    printf("\n");
-}
+#define RequireNautyGraph(funcname, op)                                      \
+    RequireArgumentCondition(funcname, op, IS_NAUTY_GRAPH_OBJ(op),           \
+                             "must be a nauty graph")
 
 static void userautomproc(
     int count, int * perm, int * orbits, int numorbits, int stabvertex, int n)
@@ -80,7 +95,6 @@ static void userautomproc(
     }
 
     AddList(automorphism_list, p);
-    CHANGED_BAG(automorphism_list);
 }
 
 static Obj FuncNAUTY_GRAPH(Obj self,
@@ -89,19 +103,21 @@ static Obj FuncNAUTY_GRAPH(Obj self,
                            Obj nr_vertices_gap,
                            Obj is_directed)
 {
+    RequirePossList(SELF_NAME, source_list);
+    RequirePossList(SELF_NAME, range_list);
+    RequireSameLength(SELF_NAME, source_list, range_list);
+    RequireTrueOrFalse(SELF_NAME, is_directed);
+
     DYNALLSTAT(graph, g, g_sz);
     size_t n, m, len_source, len_range, current_source, current_range, v;
-    n = INT_INTOBJ(nr_vertices_gap);
+    n = GetSmallInt(SELF_NAME, nr_vertices_gap);
     m = SETWORDSNEEDED(n);
     //     DYNALLOC2(graph,g,g_sz,m,n,"malloc");
     g_sz = m * n;
     g = (graph *)calloc(g_sz, sizeof(graph));
     len_source = LEN_PLIST(source_list);
     len_range = LEN_PLIST(range_list);
-    if (len_source != len_range) {
-        ErrorQuit("source and range lists are of different length", 0, 0);
-        return Fail;
-    }
+    GAP_ASSERT(len_source == len_range);
     for (v = 1; v <= len_source; v++) {
         current_source = INT_INTOBJ(ELM_PLIST(source_list, v)) - 1;
         current_range = INT_INTOBJ(ELM_PLIST(range_list, v)) - 1;
@@ -118,6 +134,11 @@ static Obj FuncNAUTY_GRAPH(Obj self,
 static Obj
 FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
 {
+    RequireNautyGraph(SELF_NAME, nauty_graph);
+    RequireTrueOrFalse(SELF_NAME, is_directed);
+    RequireArgumentCondition(SELF_NAME, color_data, color_data == False || IS_DENSE_LIST(color_data),
+                             "must be a dense list or the value 'false'");
+
     DYNALLSTAT(graph, cg, cg_sz);
     DYNALLSTAT(int, lab, lab_sz);
     DYNALLSTAT(int, ptn, ptn_sz);
@@ -155,7 +176,6 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
 
     // Write automorphisms
     automorphism_list = NEW_PLIST(T_PLIST, 0);
-    SET_LEN_PLIST(automorphism_list, 0);
     options.userautomproc = userautomproc;
 
     options.getcanon = TRUE;
@@ -195,14 +215,8 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
         ptr[v] = lab[v];
     }
 
-    Obj return_list = NEW_PLIST(T_PLIST, 2);
-    SET_LEN_PLIST(return_list, 2);
-
-    SET_ELM_PLIST(return_list, 1, automorphism_list);
-    SET_ELM_PLIST(return_list, 2, p);
-
-    automorphism_list = NEW_PLIST(T_PLIST, 0);
-    SET_LEN_PLIST(automorphism_list, 0);
+    Obj return_list = NewPlistFromArgs(automorphism_list, p);
+    automorphism_list = 0;
 
     DYNFREE(cg, cg_sz);
     DYNFREE(lab, lab_sz);
@@ -218,6 +232,11 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
                                     Obj is_directed,
                                     Obj color_data)
 {
+    RequireNautyGraph(SELF_NAME, nauty_graph);
+    RequireTrueOrFalse(SELF_NAME, is_directed);
+    RequireArgumentCondition(SELF_NAME, color_data, color_data == False || IS_DENSE_LIST(color_data),
+                             "must be a dense list or the value 'false'");
+
     DYNALLSTAT(graph, cg, cg_sz);
     DYNALLSTAT(int, lab, lab_sz);
     DYNALLSTAT(int, ptn, ptn_sz);
@@ -267,19 +286,15 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
         EMPTYGRAPH(cg, m, n);
 
     Obj return_list = NEW_PLIST(T_PLIST, LEN_PLIST(color_data));
-    SET_LEN_PLIST(return_list, LEN_PLIST(color_data));
 
-
-    int k;
-    for (k = 0; k < LEN_PLIST(color_data); k++) {
+    for (int k = 1; k <= LEN_PLIST(color_data); k++) {
         automorphism_list = NEW_PLIST(T_PLIST, 0);
-        SET_LEN_PLIST(automorphism_list, 0);
 
         if (color_data != False) {
 
             options.defaultptn = FALSE;
 
-            Obj partition = ELM_PLIST(color_data, k + 1);
+            Obj partition = ELM_PLIST(color_data, k);
 
             Obj obj_lab = ELM_PLIST(partition, 1);
             Obj obj_ptn = ELM_PLIST(partition, 2);
@@ -303,17 +318,10 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
             ptr[v] = lab[v];
         }
 
-        Obj temp = NEW_PLIST(T_PLIST, 2);
-        SET_LEN_PLIST(temp, 2);
-        SET_ELM_PLIST(temp, 1, automorphism_list);
-        SET_ELM_PLIST(temp, 2, p);
-        CHANGED_BAG(temp);
-        SET_ELM_PLIST(return_list, k + 1, temp);
-        CHANGED_BAG(return_list);
+        AddList(return_list, NewPlistFromArgs(automorphism_list, p));
     }
 
-    automorphism_list = NEW_PLIST(T_PLIST, 0);
-    SET_LEN_PLIST(automorphism_list, 0);
+    automorphism_list = 0;
 
     DYNFREE(cg, cg_sz);
     DYNFREE(lab, lab_sz);
@@ -350,9 +358,9 @@ static Int InitKernel(StructInitInfo * module)
     InitMarkFuncBags(T_NAUTY_OBJ, &MarkNoSubBags);
     InitFreeFuncBag(T_NAUTY_OBJ, &NautyObjFreeFunc);
 
-    CopyObjFuncs[T_NAUTY_OBJ] = &NautyObjCopyFunc;
-    CleanObjFuncs[T_NAUTY_OBJ] = &NautyObjCleanFunc;
-    IsMutableObjFuncs[T_NAUTY_OBJ] = &NautyObjIsMutableFunc;
+    CopyObjFuncs[T_NAUTY_OBJ] = NautyObjCopyFunc;
+    CleanObjFuncs[T_NAUTY_OBJ] = NautyObjCleanFunc;
+    IsMutableObjFuncs[T_NAUTY_OBJ] = AlwaysNo;
 
 
     /* return success                                                      */
