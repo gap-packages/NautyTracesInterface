@@ -95,8 +95,7 @@ static Obj FuncNAUTY_GRAPH(Obj self,
     m = SETWORDSNEEDED(n);
     //     DYNALLOC2(graph,g,g_sz,m,n,"malloc");
     g_sz = m * n;
-    g = (graph *)malloc(g_sz * sizeof(graph));
-    EMPTYGRAPH(g, m, n);
+    g = (graph *)calloc(g_sz, sizeof(graph));
     len_source = LEN_PLIST(source_list);
     len_range = LEN_PLIST(range_list);
     if (len_source != len_range) {
@@ -169,7 +168,8 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
     DYNALLOC1(int, ptn, ptn_sz, n, "malloc");
     DYNALLOC1(int, orbits, orbits_sz, n, "malloc");
 
-    EMPTYGRAPH(cg, m, n);
+    if (m > 0 && n > 0)
+        EMPTYGRAPH(cg, m, n);
 
     if (color_data != False) {
 
@@ -263,7 +263,8 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
     DYNALLOC1(int, ptn, ptn_sz, n, "malloc");
     DYNALLOC1(int, orbits, orbits_sz, n, "malloc");
 
-    EMPTYGRAPH(cg, m, n);
+    if (m > 0 && n > 0)
+        EMPTYGRAPH(cg, m, n);
 
     Obj return_list = NEW_PLIST(T_PLIST, LEN_PLIST(color_data));
     SET_LEN_PLIST(return_list, LEN_PLIST(color_data));

@@ -28,3 +28,19 @@ gap> pet_range := pet_nauty[ 2 ];
 gap> NautyDense( pet_source, pet_range, 10, false, false );
 [ [ (2,4)(6,9)(7,10), (2,6)(4,9)(5,8), (2,6,10)(3,5,8)(4,9,7), 
       (1,2,3,5,7)(4,6,8,9,10) ], (2,3,5,7)(4,8,9,6,10) ]
+
+# some graphs without edges, including the empty graph
+gap> NautyDense( [], [], 0, false, false );
+[ [  ], () ]
+gap> NautyDense( [], [], 1, false, false );
+[ [  ], () ]
+gap> NautyDense( [], [], 2, false, false );
+[ [ (1,2) ], () ]
+
+# some graphs without edges, including the empty graph
+gap> NautyDense( [], [], 0, true, false );
+[ [  ], () ]
+gap> NautyDense( [], [], 1, true, false );
+[ [  ], () ]
+gap> NautyDense( [], [], 2, true, false );
+[ [ (1,2) ], () ]
