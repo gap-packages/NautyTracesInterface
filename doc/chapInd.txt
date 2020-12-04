@@ -1,0 +1,28 @@
+  
+  
+  [1XIndex[101X
+  
+  [2XAutomorphismGroup[102X, for IsNautyGraph 1.1-1 
+  [2XAutomorphismGroupGenerators[102X, for IsNautyGraph 1.1-2 
+  [2XCanonicalForm[102X, for IsNautyGraph 1.1-5 
+  [2XCanonicalLabeling[102X, for IsNautyGraph 1.1-3 
+  [2XCanonicalLabelingInverse[102X, for IsNautyGraph 1.1-4 
+  [2XIsomorphicGraphs[102X, for IsNautyGraph, IsNautyGraph 1.2-2 
+  [2XIsomorphismGraphs[102X, for IsNautyGraph, IsNautyGraph 1.2-1 
+  [2XNautyColoredDiGraph[102X, for IsList, IsList 1.2-8 
+  [2XNautyColoredDiGraphWithNodeLabels[102X, for IsList, IsList, IsList 1.2-11 
+  [2XNautyColoredGraph[102X, for IsList, IsList 1.2-7 
+  [2XNautyColoredGraphWithNodeLabels[102X, for IsList, IsList, IsList 1.2-11 
+  [2XNautyDiGraph[102X, for IsList 1.2-5 
+      for IsList, IsInt 1.2-6 
+  [2XNautyDiGraphWithNodeLabels[102X, for IsList, IsList 1.2-11 
+  [2XNautyEdgeColoredGraph[102X, for IsList 1.2-9 
+      for IsList, IsInt 1.2-10 
+  [2XNautyGraph[102X, for IsList 1.2-3 
+      for IsList, IsInt 1.2-4 
+  [2XNautyGraphWithNodeLabels[102X, for IsList, IsList 1.2-11 
+  [2XNodeLabeling[102X, for IsNautyGraphWithNodeLabels 1.1-6 
+  [2XUnderlyingNautyGraph[102X, for IsNautyGraphWithNodeLabels 1.1-7 
+  
+  
+  -------------------------------------------------------
