@@ -2,9 +2,7 @@
 ##
 ##                                NautyTracesInterface package
 ##
-##  Copyright 2017, Sebastian Gutsche, Universität Siegen
-##                  Alice Niemeyer,    RWTH Aachen
-##                  Pascal Schweitzer, RWTH Aachen
+##  Copyright 2017-2018, Sebastian Gutsche, Universität Siegen
 ##
 #############################################################################
 
