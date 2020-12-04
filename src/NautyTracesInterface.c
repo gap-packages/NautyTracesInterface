@@ -84,8 +84,7 @@ static void NautyObjFreeFunc(Obj o)
     RequireArgumentCondition(funcname, op, IS_NAUTY_GRAPH_OBJ(op),           \
                              "must be a nauty graph")
 
-static void userautomproc(
-    int count, int * perm, int * orbits, int numorbits, int stabvertex, int n)
+static Obj PermToGAP(int * perm, int n)
 {
     Obj     p = NEW_PERM4(n);
     UInt4 * ptr = ADDR_PERM4(p);
@@ -94,7 +93,13 @@ static void userautomproc(
         ptr[v] = perm[v];
     }
 
-    AddList(automorphism_list, p);
+    return p;
+}
+
+static void userautomproc(
+    int count, int * perm, int * orbits, int numorbits, int stabvertex, int n)
+{
+    AddList(automorphism_list, PermToGAP(perm, n));
 }
 
 static Obj FuncNAUTY_GRAPH(Obj self,
@@ -155,22 +160,9 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
 
     statsblk stats;
 
-    int   n, m, v;
-    set * gv;
-
-    int nr_edges;
-
-    int len_source;
-    int len_range;
-
-    int current_source;
-    int current_range;
-
-    Obj     p;
-    UInt4 * ptr;
+    int   n, m;
 
     graph * g = NAUTY_GRAPH_PTR(nauty_graph);
-    size_t  g_sz = NAUTY_GRAPH_SIZE(nauty_graph);
     n = NAUTY_GRAPH_ROWS(nauty_graph);
     m = NAUTY_GRAPH_COLS(nauty_graph);
 
@@ -179,6 +171,9 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
     options.userautomproc = userautomproc;
 
     options.getcanon = TRUE;
+
+    if (color_data != False)
+        options.defaultptn = FALSE;
 
     nauty_check(WORDSIZE, m, n, NAUTYVERSIONID);
 
@@ -193,8 +188,6 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
 
     if (color_data != False) {
 
-        options.defaultptn = FALSE;
-
         Obj obj_lab = ELM_PLIST(color_data, 1);
         Obj obj_ptn = ELM_PLIST(color_data, 2);
 
@@ -208,12 +201,7 @@ FuncNAUTY_DENSE(Obj self, Obj nauty_graph, Obj is_directed, Obj color_data)
     densenauty(g, lab, ptn, orbits, &options, &stats, m, n, cg);
 
     // Convert labeling permutation
-    p = NEW_PERM4(n);
-    ptr = ADDR_PERM4(p);
-
-    for (int v = 0; v < n; v++) {
-        ptr[v] = lab[v];
-    }
+    Obj p = PermToGAP(lab, n);
 
     Obj return_list = NewPlistFromArgs(automorphism_list, p);
     automorphism_list = 0;
@@ -253,19 +241,9 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
 
     statsblk stats;
 
-    int   n, m, v;
-    set * gv;
-
-    int nr_edges;
-
-    int len_source;
-    int len_range;
-
-    int current_source;
-    int current_range;
+    int   n, m;
 
     graph * g = NAUTY_GRAPH_PTR(nauty_graph);
-    size_t  g_sz = NAUTY_GRAPH_SIZE(nauty_graph);
     n = NAUTY_GRAPH_ROWS(nauty_graph);
     m = NAUTY_GRAPH_COLS(nauty_graph);
 
@@ -273,6 +251,9 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
     options.userautomproc = userautomproc;
 
     options.getcanon = TRUE;
+
+    if (color_data != False)
+        options.defaultptn = FALSE;
 
     nauty_check(WORDSIZE, m, n, NAUTYVERSIONID);
 
@@ -292,8 +273,6 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
 
         if (color_data != False) {
 
-            options.defaultptn = FALSE;
-
             Obj partition = ELM_PLIST(color_data, k);
 
             Obj obj_lab = ELM_PLIST(partition, 1);
@@ -308,16 +287,8 @@ static Obj FuncNAUTY_DENSE_REPEATED(Obj self,
         // Call nauty
         densenauty(g, lab, ptn, orbits, &options, &stats, m, n, cg);
 
-        Obj     p;
-        UInt4 * ptr;
         // Convert labeling permutation
-        p = NEW_PERM4(n);
-        ptr = ADDR_PERM4(p);
-
-        for (int v = 0; v < n; v++) {
-            ptr[v] = lab[v];
-        }
-
+        Obj p = PermToGAP(lab, n);
         AddList(return_list, NewPlistFromArgs(automorphism_list, p));
     }
 
@@ -383,18 +354,10 @@ static Int InitLibrary(StructInitInfo * module)
  *F  InitInfopl()  . . . . . . . . . . . . . . . . . table of init functions
  */
 static StructInitInfo module = {
-    /* type        = */ MODULE_DYNAMIC,
-    /* name        = */ "NautyTracesInterface",
-    /* revision_c  = */ 0,
-    /* revision_h  = */ 0,
-    /* version     = */ 0,
-    /* crc         = */ 0,
-    /* initKernel  = */ InitKernel,
-    /* initLibrary = */ InitLibrary,
-    /* checkInit   = */ 0,
-    /* preSave     = */ 0,
-    /* postSave    = */ 0,
-    /* postRestore = */ 0
+    .type = MODULE_DYNAMIC,
+    .name = "NautyTracesInterface",
+    .initKernel = InitKernel,
+    .initLibrary = InitLibrary,
 };
 
 StructInitInfo * Init__Dynamic(void)
