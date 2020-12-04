@@ -189,6 +189,7 @@ InstallMethod( ViewObj,
     
 end );
 
+#! TODO: document this
 BindGlobal( "NautyDense",
 function( source_list, range_list, n, is_directed, color_data )
     local graph;
@@ -196,6 +197,7 @@ function( source_list, range_list, n, is_directed, color_data )
     return NAUTY_DENSE( graph, is_directed, color_data );
 end );
 
+#! TODO: document this
 BindGlobal( "NautyDenseRepeated",
 function( source_list, range_list, n, is_directed, color_data )
     local graph;

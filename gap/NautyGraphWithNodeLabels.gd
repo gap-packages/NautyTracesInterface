@@ -9,7 +9,10 @@
 DeclareCategory( "IsNautyGraphWithNodeLabels",
                  IsNautyGraph );
 
+#! TODO: document this
 DeclareAttribute( "NodeLabeling", IsNautyGraphWithNodeLabels );
+
+#! TODO: document this
 DeclareAttribute( "UnderlyingNautyGraph", IsNautyGraphWithNodeLabels );
 
 
