@@ -7,33 +7,25 @@ description: |
 authors:
     - name: Sebastian Gutsche
       url: https://sebasguts.github.io
-    - name: Alice Niemeyer
-      url: http://www.maths.uwa.edu.au/~alice/
-    - name: Pascal Schweitzer
-      url: https://lii.rwth-aachen.de/~schweitzer
 
 maintainers:
-    - name: Sebastian Gutsche
-      url: https://sebasguts.github.io
-    - name: Alice Niemeyer
-      url: http://www.maths.uwa.edu.au/~alice/
-    - name: Pascal Schweitzer
-      url: https://lii.rwth-aachen.de/~schweitzer
+    - name: The GAP Team
+      url: mailto:support@gap-system.org
 
-GAP: ">= 4.9"
+GAP: ">= 4.11"
 
 needed-pkgs:
     - name: "GAPDoc"
       version: ">= 1.5"
       url: "http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc"
 
-www: http://TODO/
+www: https://gap-packages.github.io/NautyTracesInterface/
 readme: README.md
-packageinfo: http://TODO/PackageInfo.g
+packageinfo: https://gap-packages.github.io/NautyTracesInterface/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: http://TODO/NautyTracesInterface-0.2.tar.gz
+      url: https://github.com/gap-packages/NautyTracesInterface/releases/download/v0.2/NautyTracesInterface-0.2.tar.gz
 
 abstract: |
 
@@ -42,23 +34,25 @@ doc-html: doc/chap0.html
 doc-pdf: doc/manual.pdf
 citeas: |
     <p class='BibEntry'>
-    [<span class='BibKey'>GNS18</span>]   <b class='BibAuthor'>Gutsche, S., Niemeyer, A. and Schweitzer, P.</b>,
+    [<span class='BibKey'>GT18</span>]   <b class='BibAuthor'>Gutsche, S. and GAP Team, T.</b>,
      <i class='BibTitle'>NautyTracesInterface, An interface to nauty,
              Version 0.2</i>
      (<span class='BibYear'>2018</span>)<br />
     (<span class='BibNote'>GAP package</span>),
-    <span class='BibHowpublished'><a href="http://TODO/">http://TODO/</a></span>.
+    <span class='BibHowpublished'><a href="https://gap-packages.github.io/NautyTracesInterface/">https://gap-packages.github.io/NautyTracesInterface/</a></span>.
     </p>
     
 
 bibtex: |
     @misc{ NautyTracesInterface0.2,
-      author =           {Gutsche, S. and Niemeyer, A. and Schweitzer, P.},
+      author =           {Gutsche, S. and GAP Team, T.},
       title =            {{NautyTracesInterface}, An interface to nauty, {V}ersion 0.2},
       month =            {Mar},
       year =             {2018},
       note =             {GAP package},
-      howpublished =     {\href {http://TODO/} {\texttt{http://TODO/}}},
-      printedkey =       {GNS18}
+      howpublished =     {\href                {https://gap-packages.github.io/NautyTracesInterface/}
+                          {\texttt{https://gap-packages.github.io/}\discretionary
+                          {}{}{}\texttt{NautyTracesInterface/}}},
+      printedkey =       {GT18}
     }
 
