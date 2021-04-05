@@ -12,6 +12,7 @@ PackageName := "NautyTracesInterface",
 Subtitle := "An interface to nauty",
 Version := "0.2",
 Date := "01/03/2018", # dd/mm/yyyy format
+License := "GPL-2.0-or-later",
 
 Persons := [
   rec(
