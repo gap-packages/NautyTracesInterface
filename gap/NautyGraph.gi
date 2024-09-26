@@ -61,10 +61,27 @@ end );
 
 InstallMethod( NautyGraph,
                [ IsList ],
+	       
                
   function( edges )
-    local nr_nodes;
-    
+    local nr_nodes, e;
+
+    edges := Set(edges);
+    # check the edges are pairs of positive integers
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;	
+    # for undirected graphs remove repeated edges
+    edges := Set(List(edges,e->Set(e)));
+	
     nr_nodes := MaximumList( Flat( edges ) );
     
     return NautyGraph( edges, nr_nodes );
@@ -75,8 +92,26 @@ InstallMethod( NautyGraph,
                [ IsList, IsInt ],
                
   function( edges, nr_nodes )
-    local graph_rec;
+    local graph_rec, e;
+
     
+    edges := Set(edges);
+    # check the edges are pairs of positive integers
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;
+    # for undirected graphs remove repeated edges
+    edges := Set(List(edges,e->Set(e)));
+    
+    nr_nodes := MaximumList(Flat(edges), nr_nodes );
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
                       directed := false );
@@ -89,8 +124,21 @@ InstallMethod( NautyDiGraph,
                [ IsList ],
                
   function( edges )
-    local nr_nodes;
+    local nr_nodes, e;
     
+    edges := Set(edges);
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;
+
     nr_nodes := MaximumList( Flat( edges ) );
     
     return NautyDiGraph( edges, nr_nodes );
@@ -101,8 +149,22 @@ InstallMethod( NautyDiGraph,
                [ IsList, IsInt ],
                
   function( edges, nr_nodes )
-    local graph_rec;
+    local graph_rec, e;
     
+    edges := Set(edges);
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;
+    
+    nr_nodes :=  MaximumList(Flat(edges), nr_nodes );
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
                       directed := true );
@@ -115,9 +177,27 @@ InstallMethod( NautyColoredGraph,
                [ IsList, IsList ],
                
   function( edges, colors )
-    local graph_rec, nr_nodes;
+    local graph_rec, nr_nodes, e;
+
+    edges := Set(edges);
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;
+    # for undirected graphs remove repeated edges
+    edges := Set(List(edges,e->Set(e)));
     
     nr_nodes := Length( colors );
+    if MaximumList(Flat( edges )) <>  nr_nodes then
+        ErrorNoReturn("Not every vertex has a colour");
+    fi;
     
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
@@ -132,9 +212,25 @@ InstallMethod( NautyColoredDiGraph,
                [ IsList, IsList ],
                
   function( edges, colors )
-    local graph_rec, nr_nodes;
+    local graph_rec, nr_nodes, e;
     
+    edges := Set(edges);
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;
+
     nr_nodes := Length( colors );
+    if MaximumList(Flat( edges )) <>  nr_nodes then
+        ErrorNoReturn("Not every vertex has a colour");
+    fi;
     
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
@@ -149,8 +245,24 @@ InstallMethod( NautyEdgeColoredGraph,
                [ IsList ],
                
   function( edges )
-    local nr_nodes;
+    local nr_nodes, e;
     
+    edges := Set(edges);
+    # check the edges are pairs of positive integers
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;
+    # for undirected graphs remove repeated edges
+    edges := Set(List(edges,e->Set(e)));
+
     nr_nodes := MaximumList( Flat( edges ) );
     
     return NautyEdgeColoredGraph( edges, nr_nodes );
@@ -161,8 +273,25 @@ InstallMethod( NautyEdgeColoredGraph,
                [ IsList, IsInt ],
                
   function( edges, nr_nodes )
-    local graph_rec;
+    local graph_rec, e;
     
+    edges := Set(edges);
+    # check the edges are pairs of positive integers
+    for e in edges do
+        if not IsList(e) then
+	    ErrorNoReturn("Edges are lists of lists");
+	fi;
+	if Length(e) <> 2 then
+	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
+	fi;
+	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	    ErrorNoReturn("Edges are positive integers");
+	fi;
+    od;
+    # for undirected graphs remove repeated edges
+    edges := Set(List(edges,e->Set(e)));
+    nr_nodes := MaximumList(Flat(edges), nr_nodes );
+
     graph_rec := rec( nr_nodes := nr_nodes,
                       edge_list := edges,
                       directed := false );
@@ -175,17 +304,44 @@ InstallMethod( ViewObj,
                [ IsNautyGraph and IsDirected ],
                
   function( graph )
-    
-    Print( "<A directed Nauty graph>" );
-    
+
+    local nr_nodes, g;
+
+    if IsNautyGraphWithNodeLabels(graph) then
+        g := UnderlyingNautyGraph(graph);
+    else
+        g := graph;
+    fi;
+    if IsColored(g) then
+        Print( "<A directed vertex-coloured Nauty graph on ", 
+           g!.nr_nodes, " vertices>");
+    else
+            Print( "<A directed Nauty graph on ", 
+           g!.nr_nodes, " vertices>");
+    fi;
+	   
 end );
 
 InstallMethod( ViewObj,
                [ IsNautyGraph ],
                
   function( graph )
+
+    local g;
     
-    Print( "<A Nauty graph>" );
+    if IsNautyGraphWithNodeLabels(graph) then
+        g := UnderlyingNautyGraph(graph);
+    else
+        g := graph;
+    fi;
+
+    if IsColored(g) then
+        Print( "<An  undirected vertex-coloured Nauty graph on ", 
+           g!.nr_nodes, " vertices>");
+    else
+        Print( "<An undirected Nauty graph with on ",
+           g!.nr_nodes, " vertices>");
+    fi;
     
 end );
 
@@ -287,6 +443,71 @@ InstallMethod( AutomorphismGroupGenerators,
     return AutomorphismGroupGenerators( graph );
     
 end );
+
+
+InstallMethod( VerticesOfNautyGraph,
+               [ IsNautyGraph ],
+
+    function( graph )
+
+        local nr_nodes, g;
+
+        if IsNautyGraphWithNodeLabels(graph) then
+	    g := UnderlyingNautyGraph(graph);
+	    nr_nodes := g!.nr_nodes;
+	else
+	    nr_nodes := graph!.nr_nodes;
+	fi;
+        return [1..nr_nodes];
+	
+end);
+
+InstallMethod( VertexColoursOfNautyGraph,
+               [ IsNautyGraph ],
+
+    function( graph )
+
+       local nr_nodes, g;
+       
+        if IsNautyGraphWithNodeLabels(graph) then
+	    g := UnderlyingNautyGraph(graph);
+	else g := graph;
+	fi;
+
+        if IsColored(g) then
+            return g!.colors;
+	else
+    	    return fail;
+	fi;
+	
+end);
+
+InstallMethod( EdgesOfNautyGraph,
+               [ IsNautyGraph ],
+
+    function( graph )
+
+        local edges, g;
+
+        if IsNautyGraphWithNodeLabels(graph) then
+	    g := UnderlyingNautyGraph(graph);
+	    edges := g!.edges;
+	else
+	    edges := graph!.edges;
+	fi;
+        return edges;
+	
+end);
+
+InstallMethod( Edges,
+               [ IsNautyGraph ],
+
+    function( graph )
+
+        return EdgesOfNautyGraph(graph);
+	
+end);
+
 
 InstallMethod( CanonicalLabeling,
                [ IsNautyGraph ],

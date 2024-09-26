@@ -6,6 +6,10 @@
 ##
 #############################################################################
 
+#! @Chapter Graphs with node labels
+#! @Section Working with Nauty Graphs with labels
+#! @SectionLabel Nauty_Graphs_Labels
+
 DeclareCategory( "IsNautyGraphWithNodeLabels",
                  IsNautyGraph );
 
