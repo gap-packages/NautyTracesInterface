@@ -23,18 +23,26 @@ DeclareProperty( "IsColored", IsNautyGraph );
 #!
 #! @BeginGroup AutomorphismGroup
 #! @Description
-#! Given a simple, undirected graph <A>graph</A> which is a
+#! Given a simple (di)graph <A>graph</A> which is a 
 #! <A>nauty graph</A> object (see
-#!  <Ref Sect="Section_NautyGraph"/>), this function computes the
+#! <Ref Sect="Section_NautyGraph"/>), this function computes the
 #! automorphism group of <A>graph</A> as a permutation group on the
-#! vertices of <A>graph</A>. As <A>graph</A> is a simple, undirected
-#! graph, its edges are given as 2-subsets of the vertex set $V$ of
-#! <A>graph</A>. A bijection $\phi$ from $V$ to itself
+#! nodes of <A>graph</A>. As <A>graph</A> is a simple graph, its edges
+#! are given as lists <M>[i,j]</M> of length 2 consisting of a pair
+#! of nodes in the set <M>N</M>. If an edge is a loop, it is
+#! of the form <M>[i,i]</M>. If <M>i,j</M> are different nodes and
+#! the graph is undirected,
+#! <M>[i,j]</M> and <M>[j,i]</M> refer to the same edge, and 
+#! to different edges when  the graph is directed.
+#!  A bijection <M>\phi</M> from <M>N</M> to itself
 #!  is called an <A>automorphism</A> of the
-#! (undirected) graph <A>graph</A> if $\phi$ maps edges of <A>graph</A>
-#! to edges of <A>graph</A>.
+#! (undirected) graph <A>graph</A> if <M>\phi</M> maps edges of <A>graph</A>
+#! to edges of <A>graph</A>, that is  <M>e=[i,j]</M> is an edge of
+#! <A>graph</A> if and only if <M>e=[i^\phi,j^\phi]</M> or, in the
+#! undirected case, 
+#! <M>e=[j^\phi,i^\phi]</M> is an edge of  <A>graph</A>. If
 #! The <A>automorphism group</A> of <A>graph</A> is returned as a
-#! permutation group acting on the set $V$.
+#! permutation group acting on the set <M>N</M>.
 #!
 #! @BeginExampleSession
 #! gap> nautygraph := NautyGraph( [ [1,2],[2,3],[3,4], [4,1] ] );
@@ -43,7 +51,7 @@ DeclareProperty( "IsColored", IsNautyGraph );
 #! Group([ (2,4), (1,2)(3,4) ])
 #! @EndExampleSession
 #!
-#! @Returns a permutation group
+#! @Returns a <K>permutation group</K>
 #! @Arguments graph
 DeclareAttribute( "AutomorphismGroup", IsNautyGraph );
 #! @EndGroup
@@ -117,12 +125,69 @@ DeclareAttribute( "CanonicalLabelingInverse", IsNautyGraph );
 #! TODO: document this
 DeclareAttribute( "CanonicalForm", IsNautyGraph );
 
-#! TODO: document this
+#! @BeginGroup Isomorphism
+#! @Description
+#! Given two nauty (di)graphs <A>graph1</A> and <A>graph2</A> we say that
+#! <A>graph1</A> and <A>graph2</A> are isomorphic, if there is a bijection
+#! <M>\pi</M> from the vertices of  <A>graph1</A> and to the vertices
+#! of <A>graph2</A> such that,  <M>e=[i,j]</M> is an edge of
+#! of <A>graph1</A> if and only if <M>e^\pi=[i^\pi,j^\pi]</M> is an edge of
+#! of <A>graph2</A>. Such a bijection <M>\pi</M> is called a
+#! <B>graph isomorhism</B>.This function tests whether such a bijection 
+#! <M>\pi</M> exists. If so, it returns the permutation <M>\pi</M> and otherwise
+#! <K>fail</K>. If in addition the nauty (di)graphs <A>graph1</A> and
+#! <A>graph2</A> are both vertex coloured, then a bijection <M>\pi</M>
+#! is additionally required to respect the partition of the node colours,
+#! that is, two nodes <M>i, j</M> have the same colour in <A>graph1</A>
+#! if and only if they have the same colour in 
+#!  <A>graph2</A>. 
+#!
+#!
+#! @BeginExampleSession
+#! gap> ng :=  NautyGraph([[1,2],[1,3],[1,4],[1,5],[2,3],[2,4],[5,6],[6,7]]); 
+#! <An undirected Nauty graph with on 7 vertices>
+#! gap> ng2 :=  NautyGraph([[1,2],[1,3],[1,4],[1,6],[2,3],[2,4],[5,6],[5,7]]);
+#! <An undirected Nauty graph with on 7 vertices>
+#! gap> IsomorphismGraphs(ng,ng2);
+#! (5,6)
+#! @EndExampleSession
+#!
+#! @Returns a <K>Permutation</K>
+#! @Arguments  graph, graph
 DeclareOperation( "IsomorphismGraphs", [ IsNautyGraph, IsNautyGraph ] );
+#! @EndGroup
 
-#! TODO: document this
+
+#! @BeginGroup Isomorphism
+#! @Description
+#! Given two nauty (di)graphs <A>graph1</A> and <A>graph2</A> we say that
+#! <A>graph1</A> and <A>graph2</A> are isomorphic, if there is a bijection
+#! <M>\pi</M> from the vertices of  <A>graph1</A> and to the vertices
+#! of <A>graph2</A> such that,  <M>e=[i,j]</M> is an edge of
+#! of <A>graph1</A> if and only if <M>e^\pi=[i^\pi,j^\pi]</M> is an edge of
+#! of <A>graph2</A>. Such a bijection <M>\pi</M> is called a
+#! <B>graph isomorhism</B>.This function tests whether such a bijection 
+#! <M>\pi</M> exists. If so, it returns <K>true</K> and otherwise
+#! <K>false</K>. If in addition the nauty (di)graphs <A>graph1</A> and
+#! <A>graph2</A> are both vertex coloured, then a bijection <M>\pi</M>
+#! is additionally required to respect the partition of the node colours,
+#! that is, two nodes <M>i, j</M> have the same colour in <A>graph1</A>
+#! if and only if they have the same colour in 
+#!  <A>graph2</A>. 
+
+#!
+#! @BeginExampleSession
+#! gap> ng :=  NautyGraph([[1,2],[1,3],[1,4],[1,5],[2,3],[2,4],[5,6],[6,7]]); 
+#! <An undirected Nauty graph with on 7 vertices>
+#! gap> ng2 :=  NautyGraph([[1,2],[1,3],[1,4],[1,6],[2,3],[2,4],[5,6],[5,7]]);
+#! <An undirected Nauty graph with on 7 vertices>
+#! gap> IsomorphicGraphs(ng,ng2);
+#! true
+#! @EndExampleSession
+#! @Returns a <K>true</K> or <K>false</K>
+#! @Arguments  graph, graph
 DeclareOperation( "IsomorphicGraphs", [ IsNautyGraph, IsNautyGraph ] );
-
+#! @EndGroup
 
 ## Constructors
 DeclareGlobalFunction( "CREATE_NAUTY_GRAPH_OBJECT" );
@@ -151,7 +216,7 @@ DeclareGlobalFunction( "CREATE_NAUTY_EDGE_COLORED_GRAPH" );
 #! [ [ 1, 2 ], [ 1, 4 ], [ 2, 3 ], [ 3, 4 ] ]
 #! @EndExampleSession
 #!
-#! @Returns a nauty graph object
+#! @Returns a <K>NautyGraph</K>
 #! @Arguments  list
 #! @Arguments  list integer
 DeclareOperation( "NautyGraph", [ IsList ] );
@@ -180,7 +245,7 @@ DeclareOperation( "NautyGraph", [ IsList, IsInt ] );
 #! Group([ (1,2,3,4) ])
 #! @EndExampleSession
 #!
-#! @Returns a nauty graph object
+#! @Returns a <K>NautyGraph</K>
 #! @Arguments  list
 #! @Arguments  list integer
 DeclareOperation( "NautyDiGraph", [ IsList ] );
@@ -210,7 +275,7 @@ DeclareOperation( "NautyDiGraph", [ IsList, IsInt ] );
 #! Group([ (2,4), (1,3) ])
 #! @EndExampleSession
 #!
-#! @Returns a nauty graph object
+#! @Returns a <K>NautyGraph</K>
 #! @Arguments  list
 #! @Arguments  list integer
 DeclareOperation( "NautyColoredGraph", [ IsList, IsList ] );

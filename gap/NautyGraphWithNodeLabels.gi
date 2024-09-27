@@ -13,6 +13,24 @@ BindGlobal( "TheTypeOfNautyGraphsWithNodeLabels",
         NewType( TheFamilyOfNautyGraphs,
                 IsNautyGraphWithNodeLabelsRep ) );
 
+##############################################################################
+##
+## This function takes a list node_labels and a list edges, where
+## the first is a dense list of positive integers
+## and edges are pairs of positive integers.
+## The list node_labels has to have the same length as the number
+## of nodes of a graph. Suppose the nodes are [1 .. nr].
+## node_labels defines a permutation on the nodes, as for example
+## created by a canonical labelling, whereby
+## node_label[i] = j means that the i-th node should be known as j.
+## This function rewrites the edges as given by the labels in node_label
+## into the names of the original nodes. For example, 
+## if e = [j1, j2] is an edge, then in the names given by node_labels
+## it becomes [i1, i2] = [nodePos[j1], nodePos[j2] ], where
+## nodePos[j] = i; In other words, node_labels defines a permutation
+## <M>\pi</M> and for <M> \psi=\pi^{-1}</M> this function returns
+## the images of <A>edges</A> under <M>\psi</M>.
+
 BindGlobal( "NAUTYTRACESINTERFACE_Translate_Edge_List",
   function( node_labels, edges )
     local new_edges, nodePos, i, edge;
@@ -45,6 +63,7 @@ InstallMethod( NautyGraphWithNodeLabels,
     
     ObjectifyWithAttributes( labeled_graph, TheTypeOfNautyGraphsWithNodeLabels,
                              NodeLabeling, labeling,
+			     IsDirected, false,
                              UnderlyingNautyGraph, underlying_graph );
     
     return labeled_graph;
@@ -65,6 +84,7 @@ InstallMethod( NautyDiGraphWithNodeLabels,
     
     ObjectifyWithAttributes( labeled_graph, TheTypeOfNautyGraphsWithNodeLabels,
                              NodeLabeling, labeling,
+			     IsDirected, true,
                              UnderlyingNautyGraph, underlying_graph );
     
     return labeled_graph;
@@ -85,6 +105,7 @@ InstallMethod( NautyColoredGraphWithNodeLabels,
     
     ObjectifyWithAttributes( labeled_graph, TheTypeOfNautyGraphsWithNodeLabels,
                              NodeLabeling, labeling,
+			     IsDirected, false,
                              UnderlyingNautyGraph, underlying_graph );
     
     return labeled_graph;
@@ -105,8 +126,9 @@ InstallMethod( NautyColoredDiGraphWithNodeLabels,
     
     ObjectifyWithAttributes( labeled_graph, TheTypeOfNautyGraphsWithNodeLabels,
                              NodeLabeling, labeling,
+			     IsDirected, true,
                              UnderlyingNautyGraph, underlying_graph );
-    
+
     return labeled_graph;
     
 end );
