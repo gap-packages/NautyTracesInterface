@@ -6,24 +6,32 @@
 ##
 #############################################################################
 
+#! @Chapter Nauty Graphs with labels
 #! @Section Working with Nauty Graphs with labels
 #! @SectionLabel Nauty_Graphs_Labels
 
-The package NautyTracesInterface allows also to work with graphs whose nodes
-are labelled. This feature is useful when working with graphs whose set of
-nodes is not equal to a set <M>\{1,\ldots, n\}</M> for some positive
-integer <M>n</M>. For example, consider the graph on the nodes
-<M>N=\{2,4,6\}</M>  with edges <M>[ [2,4], [4,6], [2,6] ]</M>. To work with
-this graph in nauty and traces, it is converted to a graph with nodes
-<M>\{1, \ldots, 6\}</M>. However, we can also rename the nodes by introducing
-labels and record in a list <A>labels</A>  the map that maps the new names
-to the given names, i.e. <M>labels = [ 2, 4, 6]</M>. The function
-<A>NautyGraphWithNodeLabels</A> called with the edges
-<M>[ [2,4], [4,6], [2,6] ]</M> and the list of labels
-<M>[ 2, 4, 6]</M> then returns a graph on 3 nodes.
 
 DeclareCategory( "IsNautyGraphWithNodeLabels",
                  IsNautyGraph );
+
+#! The package NautyTracesInterface allows working with graphs whose nodes
+#! are labelled. This feature is useful when working with graphs whose set of
+#! nodes is not equal to a set <M>\{1,\ldots, n\}</M> for some positive
+#! integer <M>n</M>. For example, consider the (di) graph on the nodes
+#! <M>N=\{2,4,6\}</M>  with edges <M>[ [2,4], [4,6], [2,6] ]</M>. To work with
+#! this graph in nauty and traces directly, it is considerted to be a graph
+#! with nodes <M>\{1, \ldots, 6\}</M>. However, using <A>node labels</A> we
+#! can view this as a graph on three nodes, namely <M>1,2,3</M> and attach
+#! a label to each of these nodes. The labels are recorde in a list
+#! <A>labels</A>  and map the default nodes <M>\{1,\ldots, |N|\}</M> to
+#! the set of nodes on which the edges are defined. In this example,
+#! <M>labels = [ 2, 4, 6]</M>. The function  <A>NautyGraphWithNodeLabels</A>
+#! called with the edges
+#! <M>[ [2,4], [4,6], [2,6] ]</M> and  labels
+#! <M>[ 2, 4, 6]</M> then returns a graph on 3 nodes. The graph on the
+#! default node set is called the <A>underlying nauty graph</A>.
+
+
 
 #! @BeginGroup
 #! @Description
@@ -77,44 +85,43 @@ DeclareAttribute( "UnderlyingNautyGraph", IsNautyGraphWithNodeLabels );
 ## Constructors
 #! @BeginGroup
 #! @Description
-#! Construct a nauty (di)graph with node labels and optional vertex coloring.
-#! This object has an underlying nauty graph. Suppose we have a graph on
-#! <A>nr</A> nodes given by a list <A>edges</A> of edges and we want to
-#! reorder the nodes such that the <A>i</A>th node becomes node <A>j</A>.
-#! This function constructs a graph on nodes with the new names and
-#! the corresponding edges.
-#! 
+#! Construct a nauty (di)graph with node labels and optional vertex coloring,
+#! which is an  object that has an underlying nauty graph.
+#! Suppose we have
+#! a graph given by a list <A>edges</A> of edges, where each edge is a list
+#! of two positive integers.
 #!
 #! Arguments:
-#! * labels: dense list of positive integers which is a permutation <M>\pi</M> of
-#!   <A>[1..nr]</A>, where nr is the number of nodes. If <A>i</A> is a node
-#!   in the underlying nauty graph, then <A>labels[i] = j</A>  means that the
-#!    <A>i</A>-th node has label  <A>j</A>.  Let <M>\psi=\pi^{-1}</M>.
-#!  * edges: dense list of edges, encoded as pairs of positive integers,
-#!   each interpreted as a node label. In particular, if <M>[j_1,j_2]</M> is
-#!   an edge in the list <A>edges</A>, then the underlying nauty graph
-#!   contains the edge  <M>[j_1^\psi, j_2^\psi ]</M>.
-#! * coloring (optional): dense list of colors (positive integers), 
-#!      indexed by the nodes of the underlying nauty graph
+#!  * <A>edges</A>: dense list of edges, encoded as pairs of positive integers.
+#!    Let <M>N</M> denote the set of all (not necessarily consecutive) positive
+#!     integers occuring in the
+#!    entries of <A>edges</A>. 
+#! * <A>labels</A>: dense list of positive integers which is a map
+#!   <M>label</M> from  <M>[1\ldots |N|]</M> to <M>M</M>.
+#! * <A>coloring</A> (optional): dense list of colours (positive integers),
+#!      indexed by the nodes of the underlying nauty graph, that is
+#!   <A>coloring</A> is a map from <M>[1\ldots |N|]</M> to a set of node
+#!  colours.
 #! 
-#! This function is useful, for example, if we are given graphs on a set
-#! of nodes <M>N</M> which is a subset of a possibly much larger set
-#! <M>\{1, \ldots, nr\}</M> and we would like to translate the nodes and
+#! This function constructs
+#! a nauty graph <M>\Gamma</M> on  the nodes <M>\{1,\ldots, |N|\}</M>, such
+#! that <M>e=[i,j]</M> is an edge of <M>\Gamma</M> if and only if
+#! <M>[label[i[,label[j]]</M> is in the input list <A>edges</A>.
+#! 
+#! This function is useful, for example, if we are given a graph on a set
+#! of nodes <M>N</M>  which is not equal to the set
+#! <M>\{1, \ldots, |N|\}</M> and we would like to translate the nodes and
 #! edges of the graph to the node set <M>\{1, \ldots, |N|\}</M> to obtain
-#! a compacted graph. The permutation 
-#! <M>\psi</M> maps the given nodes to <M>\{1, \ldots, |N|\}</M> and
-#! maps the edges accordingly. The permutation <M>\pi</M> allows us to
-#! recover the original graph from the underlying (compacted) nautygraph.
+#! a more compact description of the  graph.
 #!
 #! @BeginExampleSession
-#! gap> labels :=  ListPerm((1,4,2,3,5));;
-#! gap> ng :=  NautyDiGraphWithNodeLabels( [[1,2],[1,3],[1,4] [1,5]], labels);
-#! <An undirected Nauty graph with on 5 vertices>
-#! gap> EdgesOfNautyGraph(ng);
-#! [ [ 5, 1 ], [ 5, 2 ], [ 5, 3 ], [ 5, 4 ] ]
-#! gap> psi := (1,4,2,3,5)^(-1);;
-#! gap> 1^psi;
-#! 5
+#! gap> ng :=  NautyDiGraphWithNodeLabels( [[1,8],[1,12],[1,7],[1,5]],
+#!              [7,12,5,1,8]);
+#! <A directed Nauty graph on 5 vertices>
+#! gap> ung := UnderlyingNautyGraph(ng);
+#! <A directed Nauty graph on 5 vertices>
+#! gap> EdgesOfNautyGraph(ung);
+#! [ [ 4, 1 ], [ 4, 2 ], [ 4, 3 ], [ 4, 5 ] ]
 #! @EndExampleSession
 #! @Returns a <K>NautyGraph</K>
 #! @Arguments edges, labeling

@@ -133,7 +133,7 @@ DeclareAttribute( "CanonicalForm", IsNautyGraph );
 #! of <A>graph2</A> such that,  <M>e=[i,j]</M> is an edge of
 #! of <A>graph1</A> if and only if <M>e^\pi=[i^\pi,j^\pi]</M> is an edge of
 #! of <A>graph2</A>. Such a bijection <M>\pi</M> is called a
-#! <B>graph isomorhism</B>.This function tests whether such a bijection 
+#! <A>graph isomorhism</A>. This function tests whether such a bijection 
 #! <M>\pi</M> exists. If so, it returns the permutation <M>\pi</M> and otherwise
 #! <K>fail</K>. If in addition the nauty (di)graphs <A>graph1</A> and
 #! <A>graph2</A> are both vertex coloured, then a bijection <M>\pi</M>
