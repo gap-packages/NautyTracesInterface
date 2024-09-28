@@ -44,7 +44,27 @@ BindGlobal("TheTypeNautyInternalGraphObject", NewType( NautyInternalFamily, IsNa
 DeclareGlobalFunction( "NautyGraphFromEdges" );
 #! @EndGroup
 
+
+#! @BeginGroup NautyColorData
+#! @Description
+#! This function takes as input a list of colours, which are non-negative
+#! integers. The list is interpreted as a map from the nodes of a graph
+#! to the colour of the node. This function returns two lists, called
+#! <A>node_list</A> and <A>color_list</A>. The list
+#! <A>node_list</A> is a permutation of the nodes sorted by the colour
+#! of the node as specified in the input. The second list
+#! <A>color_list</A> contains only <M>0,1</M>. The two lists together encode
+#! the colour partition of the nodes, namely the list  <A>color_list</A>
+#! contains a <M>0</M> in position <M>i</M>,  if 
+#! <A>node_list</A><M>[i]</M> and <A>node_list</A><M>[i+1]</M> have
+#! different colours. Thus, if the first entry  <M>0</M> in
+#! <A>color_list</A> occurs in position <M>j</M>, then the nodes stored
+#! in <A>node_list</A><M>[k]</M> for <M>1 \le k \le j</M> all have colour
+#! <A>list</A><M>[1]</M>.
+#! @Returns two lists
+#! @Arguments  list
 DeclareGlobalFunction( "NautyColorData" );
+#! @EndGroup
 
 DeclareGlobalFunction( "NautyGraphDataForColoredEdges" );
 
