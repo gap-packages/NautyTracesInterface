@@ -18,6 +18,8 @@ DeclareCategory( "IsNautyGraph",
 DeclareProperty( "IsDirected", IsNautyGraph );
 DeclareProperty( "IsColored", IsNautyGraph );
 
+DeclareCategory( "IsNautyGraphWithNodeLabels",
+                 IsNautyGraph );
 
 
 #!
@@ -187,6 +189,7 @@ DeclareOperation( "IsomorphismGraphs", [ IsNautyGraph, IsNautyGraph ] );
 #! @Returns a <K>true</K> or <K>false</K>
 #! @Arguments  graph, graph
 DeclareOperation( "IsomorphicGraphs", [ IsNautyGraph, IsNautyGraph ] );
+DeclareOperation( "IsIsomorphicGraphs", [ IsNautyGraph, IsNautyGraph ] );
 #! @EndGroup
 
 ## Constructors

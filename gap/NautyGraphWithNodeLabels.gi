@@ -6,12 +6,13 @@
 ##
 #############################################################################
 
-DeclareRepresentation( "IsNautyGraphWithNodeLabelsRep",
-                       IsNautyGraphWithNodeLabels and IsAttributeStoringRep, [ ] );
 
-BindGlobal( "TheTypeOfNautyGraphsWithNodeLabels",
-        NewType( TheFamilyOfNautyGraphs,
-                IsNautyGraphWithNodeLabelsRep ) );
+# DeclareRepresentation( "IsNautyGraphWithNodeLabelsRep",
+#                        IsNautyGraphWithNodeLabels and IsAttributeStoringRep, [ ] );
+
+# BindGlobal( "TheTypeOfNautyGraphsWithNodeLabels",
+#         NewType( TheFamilyOfNautyGraphs,
+#                 IsNautyGraphWithNodeLabelsRep ) );
 
 ##############################################################################
 ##
@@ -20,14 +21,14 @@ BindGlobal( "TheTypeOfNautyGraphsWithNodeLabels",
 ## and edges are pairs of positive integers.
 ## The list node_labels has to have the same length as the number
 ## of nodes of a graph. Suppose the nodes are [1 .. nr].
-## node_labels defines a permutation on the nodes, as for example
+## node_labels defines a map on the nodes, as for example
 ## created by a canonical labelling, whereby
 ## node_label[i] = j means that the i-th node should be known as j.
 ## This function rewrites the edges as given by the labels in node_label
 ## into the names of the original nodes. For example, 
 ## if e = [j1, j2] is an edge, then in the names given by node_labels
 ## it becomes [i1, i2] = [nodePos[j1], nodePos[j2] ], where
-## nodePos[j] = i; In other words, node_labels defines a permutation
+## nodePos[j] = i; In other words, node_labels defines a map
 ## <M>\pi</M> and for <M> \psi=\pi^{-1}</M> this function returns
 ## the images of <A>edges</A> under <M>\psi</M>.
 
@@ -48,6 +49,7 @@ BindGlobal( "NAUTYTRACESINTERFACE_Translate_Edge_List",
     return new_edges;
     
 end );
+
 
 InstallMethod( NautyGraphWithNodeLabels,
                [ IsList, IsList ],
@@ -158,6 +160,91 @@ InstallMethod( CanonicalLabeling,
     return translated_labeling;
     
 end );
+
+InstallMethod( CanonicalForm,
+               [ IsNautyGraphWithNodeLabelsRep ],
+               
+  function( graph )
+
+    return CanonicalForm(UnderlyingNautyGraph(graph));
+    
+end );
+
+
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraphWithNodeLabelsRep, IsNautyGraphWithNodeLabelsRep ],
+               
+  function( graph1, graph2 )
+      local labels1, labels2, iso;
+
+      iso := IsomorphismGraphs(
+          UnderlyingNautyGraph(graph1),UnderlyingNautyGraph(graph2));
+    return iso;
+end );
+
+## TODO
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraphWithNodeLabelsRep and IsColored,
+	          IsNautyGraphWithNodeLabelsRep and IsColored ],
+               
+  function( graph1, graph2 )
+    local color1, color2, perm1, perm2;
+    
+    perm1 := CanonicalLabeling( graph1 );
+    perm2 := CanonicalLabeling( graph2 );
+    
+    color1 := Permuted( graph1!.colors, perm1^(-1) );
+    color2 := Permuted( graph2!.colors, perm2^(-1) );
+    
+    if color1 = color2 then
+        return NAUTYTRACESINTERFACE_IsomorphismGraphsOnlyEdges( graph1, graph2 );
+    fi;
+    
+    return fail;
+    
+end );
+
+InstallMethod( IsomorphismGraphs, 
+    [ IsNautyGraphWithNodeLabelsRep and IsColored and HasCanonicalForm, 
+        IsNautyGraphWithNodeLabelsRep and IsColored and HasCanonicalForm ],
+  function( graph1, graph2 )
+    local can1, can2;
+
+    can1 := CanonicalForm( graph1 );
+    can2 := CanonicalForm( graph2 );
+    if can1!.colors = can2!.colors and can1!.edges = can2!.edges then
+        return CanonicalLabelingInverse( graph1 ) * CanonicalLabeling( graph2 );
+    fi;
+    return fail;
+end );
+
+InstallMethod( IsomorphicGraphs,
+               [ IsNautyGraphWithNodeLabelsRep, IsNautyGraphWithNodeLabelsRep ],
+               
+  function( graph1, graph2 )
+    local isomorphism;
+    
+    isomorphism := IsomorphismGraphs( graph1, graph2 );
+    
+    return isomorphism <> fail;
+    
+end );
+
+# Isomorphisms for node labelled graphs
+
+InstallMethod( IsomorphicGraphs,
+               [ IsNautyGraphWithNodeLabelsRep, IsNautyGraphWithNodeLabelsRep ],
+               
+  function( graph1, graph2 )
+    local isomorphism;
+    
+    isomorphism := IsomorphismGraphs( graph1, graph2 );
+    
+    return isomorphism <> fail;
+    
+end );
+
+
 
 InstallMethod( AutomorphismGroupGenerators,
                [ IsNautyGraphWithNodeLabels ],

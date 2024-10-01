@@ -25,6 +25,14 @@ BindGlobal( "TheTypeOfNautyEdgeColoredGraphs",
         NewType( TheFamilyOfNautyGraphs,
                 IsNautyEdgeColoredGraphRep ) );
 
+#new
+DeclareRepresentation( "IsNautyGraphWithNodeLabelsRep",
+                       IsNautyGraphWithNodeLabels and IsAttributeStoringRep, [ ] );
+
+BindGlobal( "TheTypeOfNautyGraphsWithNodeLabels",
+        NewType( TheFamilyOfNautyGraphs,
+                IsNautyGraphWithNodeLabelsRep ) );
+
 InstallGlobalFunction( CREATE_NAUTY_GRAPH_OBJECT,
   function( record )
     local edges, colors;
@@ -487,11 +495,12 @@ InstallMethod( EdgesOfNautyGraph,
 
     function( graph )
 
-        local edges, g;
+        local edges, g, labels;
 
         if IsNautyGraphWithNodeLabels(graph) then
 	    g := UnderlyingNautyGraph(graph);
-	    edges := g!.edges;
+	    labels := NodeLabeling(graph);
+	    edges := List(g!.edges, e->List(e, j->labels[j]));
 	else
 	    edges := graph!.edges;
 	fi;
@@ -580,6 +589,7 @@ InstallMethod( CanonicalForm,
     return new_graph;
     
 end );
+
 
 InstallMethod( CanonicalForm,
                [ IsNautyEdgeColoredGraphRep ],
@@ -689,6 +699,20 @@ end );
 
 InstallMethod( IsomorphicGraphs,
                [ IsNautyGraphRep, IsNautyGraphRep ],
+               
+  function( graph1, graph2 )
+    local isomorphism;
+    
+    isomorphism := IsomorphismGraphs( graph1, graph2 );
+    
+    return isomorphism <> fail;
+    
+end );
+
+# Isomorphisms for node labelled graphs
+
+InstallMethod( IsomorphicGraphs,
+               [ IsNautyGraphWithNodeLabelsRep, IsNautyGraphWithNodeLabelsRep ],
                
   function( graph1, graph2 )
     local isomorphism;

@@ -11,8 +11,8 @@
 #! @SectionLabel Nauty_Graphs_Labels
 
 
-DeclareCategory( "IsNautyGraphWithNodeLabels",
-                 IsNautyGraph );
+#DeclareCategory( "IsNautyGraphWithNodeLabels",
+#                 IsNautyGraph );
 
 #! The package NautyTracesInterface allows working with graphs whose nodes
 #! are labelled. This feature is useful when working with graphs whose set of
@@ -61,7 +61,7 @@ DeclareAttribute( "NodeLabeling", IsNautyGraphWithNodeLabels );
 #! <A>labels[i] = j</A>  means that the  <M>i</M>-th node has label  <M>j</M>. 
 #!  Suppose <A>graph</A> was constructed with
 #!  <K>NautyDiGraphWithNodeLabels(edges, labels)</K>. Let <M>\pi</M> be
-#! the permutation of the nodes  <A>[1..nr]</A> given by <A>labels</A> and
+#! the map of the nodes  <A>[1..nr]</A> given by <A>labels</A> and
 #! <M>\psi=\pi^{-1}</M>. If <M>[j_1,j_2]</M> is
 #!  an edge in the list <A>edges</A>, then the underlying nauty graph
 #!  contains the edge  <M>[j_1^\psi, j_2^\psi ]</M>.
