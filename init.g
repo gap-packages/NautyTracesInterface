@@ -5,12 +5,9 @@
 #
 ReadPackage( "NautyTracesInterface", "gap/NautyTracesInterface.gd");
 
-_PATH_SO:=Filename(DirectoriesPackagePrograms("NautyTracesInterface"), "NautyTracesInterface.so");
-if _PATH_SO <> fail then
-    LoadDynamicModule(_PATH_SO);
+if not LoadKernelExtension("NautyTracesInterface") then
+  Error("failed to load the NautyTracesInterface package kernel extension");
 fi;
-Unbind(_PATH_SO);
-
 
 ReadPackage( "NautyTracesInterface", "gap/NautyGraph.gd");
 

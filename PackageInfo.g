@@ -72,29 +72,24 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.11",
+  GAP := ">= 4.12",
   NeededOtherPackages := [ [ "GAPDoc", ">= 1.5" ] ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
 
 AvailabilityTest := function()
-      local so_file;
-      so_file := Filename(DirectoriesPackagePrograms("NautyTracesInterface"),
-                              "NautyTracesInterface.so");
-      if (not "NautyTracesInterface" in SHOW_STAT()) and so_file = fail then
-         LogPackageLoadingMessage(PACKAGE_WARNING,
-                                  ["the kernel module is not compiled, ", 
-                                   "the package cannot be loaded."] );
-         return fail;
-      fi;
-      return true;
-    end,
+  if not IsKernelExtensionAvailable("NautyTracesInterface") then
+    LogPackageLoadingMessage(PACKAGE_WARNING,
+                             ["the kernel module is not compiled, ",
+                              "the package cannot be loaded."]);
+    return false;
+  fi;
+  return true;
+end,
 
 TestFile := "tst/testall.g",
 
 #Keywords := [ "TODO" ],
 
 ));
-
-
