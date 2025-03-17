@@ -118,14 +118,69 @@ DeclareOperation( "Vertices", [IsNautyGraph] );
 DeclareAttribute( "VertexColoursOfNautyGraph", IsNautyGraph);
 #! @EndGroup
 
-#! TODO: document this
-DeclareAttribute( "CanonicalLabeling", IsNautyGraph );
 
-#! TODO: document this
-DeclareAttribute( "CanonicalLabelingInverse", IsNautyGraph );
 
-#! TODO: document this
+#! @BeginGroup CanonicalForm
+#! @Description
+#! Given a  nauty graph <A>graph</A>, this function returns a graph
+#! <A>cangraph</A> which lies in the same orbit as <A>graph</A> under the
+#! automorphism group of <A>graph</A>.   For the
+#! definition of which graph in the orbit is the canonical representatives
+#! see the documentation of Nauty and Traces. The computation of
+#! the canonical representative is performed by the Nauty and Traces.
+#!
+#! @BeginExampleSession
+#! gap> ng := NautyGraph( [ [1,3], [2,3], [2,5], [4,5], [5,1] ] );
+#! <A Nauty graph with on 5 vertices>
+#! gap> canrep := CanonicalForm(ng);
+#! <An undirected Nauty graph with on 5 vertices>
+#! gap> EdgesOfNautyGraph(canrep);
+#! [ [ 1, 5 ], [ 2, 4 ], [ 2, 5 ], [ 3, 4 ], [ 3, 5 ] ]
+#! @EndExampleSession
+#!
+#! @Returns a graph
+#! @Arguments graph
 DeclareAttribute( "CanonicalForm", IsNautyGraph );
+#! @EndGroup
+
+#! @BeginGroup CanonicalLabeling
+#! @Description
+#! Given a  nauty graph <A>graph</A>, the function <A>CanonicalLabeling</A>
+#! returns a permutation
+#! <A>perm</A> of the  vertices of <A>graph</A> which lies in the
+#! automorphism group of <A>graph</A>. If <A>perm</A> is
+#! applied to the canoncial representative of <A>graph</A> (see
+#! <A>CanonicalForm</A>), by mapping the vertices under <A>perm</A> and
+#! mapping the edges accordingly, the resulting graph is input <A>graph</A>.
+#! The function <A>CanonicalLabelingInverse</A> returns the inverse
+#! permutation of <A>perm</A>.
+#! For the definition of the canonical representatives in the orbit of
+#! a graph under its automorphism group, see the documentation of
+#! Nauty and Traces. The computation of
+#! the canonical representative is performed by the Nauty and Traces.
+#!
+#! @BeginExampleSession
+#! gap> ng := NautyGraph( [ [1,3], [2,3], [2,5], [4,5], [5,1] ] );
+#! <A Nauty graph with on 5 vertices>
+#! gap> perm := CanonicalLabeling(ng);
+#! (1,4,3,2)
+#! gap> canrep := NautyGraph(OnSetsSets(EdgesOfNautyGraph(ng), p^-1));
+#! <An undirected Nauty graph with on 5 vertices>
+#! gap> EdgesOfNautyGraph(canrep);
+#! [ [ 1, 5 ], [ 2, 4 ], [ 2, 5 ], [ 3, 4 ], [ 3, 5 ] ]
+#! gap> CanonicalLabeling(canrep);
+#! ()
+#! @EndExampleSession
+#!
+#! @Returns a permutation
+#! @Arguments graph
+DeclareAttribute( "CanonicalLabeling", IsNautyGraph );
+#! @Arguments graph
+DeclareAttribute( "CanonicalLabelingInverse", IsNautyGraph );
+#! @EndGroup
+
+
+
 
 #! @BeginGroup Isomorphism
 #! @Description
@@ -220,8 +275,8 @@ DeclareGlobalFunction( "CREATE_NAUTY_EDGE_COLORED_GRAPH" );
 #! @EndExampleSession
 #!
 #! @Returns a <K>NautyGraph</K>
-#! @Arguments  list
-#! @Arguments  list integer
+#! @Arguments  edges
+#! @Arguments  edges nr
 DeclareOperation( "NautyGraph", [ IsList ] );
 DeclareOperation( "NautyGraph", [ IsList, IsInt ] );
 #! @EndGroup
@@ -249,8 +304,8 @@ DeclareOperation( "NautyGraph", [ IsList, IsInt ] );
 #! @EndExampleSession
 #!
 #! @Returns a <K>NautyGraph</K>
-#! @Arguments  list
-#! @Arguments  list integer
+#! @Arguments  edges
+#! @Arguments  edges nr
 DeclareOperation( "NautyDiGraph", [ IsList ] );
 DeclareOperation( "NautyDiGraph", [ IsList, IsInt ] );
 #! @EndGroup
@@ -279,16 +334,68 @@ DeclareOperation( "NautyDiGraph", [ IsList, IsInt ] );
 #! @EndExampleSession
 #!
 #! @Returns a <K>NautyGraph</K>
-#! @Arguments  list
-#! @Arguments  list integer
+#! @Arguments  edges
+#! @Arguments  edges colours
 DeclareOperation( "NautyColoredGraph", [ IsList, IsList ] );
+#! @EndGroup
+
+#! @BeginGroup NautyColoredDiGraph
+#! @Description
+#! This function creates a nauty graph object for an undirected
+#! vertex coloured graph without
+#! multiple edges, but possibly with loops, whose edges are given by the
+#! list <A>edges</A>. The list
+#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
+#! the two (possibly equal) vertices of the edges. If two edges are
+#! equal or reversed to each other the graph created will still
+#! only have a single undirected edge. The graph created is on
+#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
+#! occurring in one of the edges.  The list <A>colours</A> must be a
+#! list of length <A>nr</A> whose entries are positive integers. The
+#! vertex <A>i</A> has colour  <A>colours[i]</A>.
+#!
+#!
+#! @BeginExampleSession
+#! gap> nautygraph := NautyColoredGraph( [ [1,2],[2,3],[3,4], [4,1] ], [1,2,1,2] );
+#! <A Nauty graph with on 4 vertices>
+#! gap> AutomorphismGroup(nautygraph);
+#! Group([ (2,4), (1,3) ])
+#! @EndExampleSession
+#!
+#! @Returns a <K>NautyGraph</K>
+#! @Arguments  edges colours
 DeclareOperation( "NautyColoredDiGraph", [ IsList, IsList ] );
 #! @EndGroup
 
-
-#! TODO: document this
+#! @BeginGroup NautyEdgeColoredGraph
+#! @Description
+#! This function creates a nauty graph object for an undirected
+#! edge coloured graph without
+#! multiple edges, but possibly with loops. The edges of the graph
+#! are specified in  the argument <A>edgeclasses</A> as follows.
+#! <A>edgeclasses</A> is a list of lists <M>L_i</M>, where each list
+#! <M>L_i</M> is a list of edges, that is <M>L_i</M> is a list 
+#! a list whose entries are lists of length 2, consisting of
+#! the two (possibly equal) vertices of the edges. If two edges are
+#! equal or reversed to each other the graph created will still
+#! only have a single undirected edge. The graph created is on
+#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
+#! occurring in one of the edges.  The edges in the <M>i</M>th list
+#! <M>L_i</M> have colour <M>i</M>.
+#!
+#!
+#! @BeginExampleSession
+#! gap> nautygraph := NautyEdgeColoredGraph( [ [[1,2],[2,3]],[[3,4], [4,1]] ], [1,4] );
+#! <A Nauty graph with on 4 vertices>
+#! gap> AutomorphismGroup(nautygraph);
+#! Group([ (2,4), (1,3) ])
+#! @EndExampleSession
+#!
+#! @Returns a <K>NautyGraph</K>
+#! @Arguments  edgeclasses colours
 DeclareOperation( "NautyEdgeColoredGraph", [ IsList ] );
-DeclareOperation( "NautyEdgeColoredGraph", [ IsList, IsInt ] );
+DeclareOperation( "NautyEdgeColoredGraph", [ IsList, IsInt] );
+#! @EndGroup
 
 DeclareGlobalFunction( "CALL_NAUTY_ON_GRAPH_AND_SET_PROPERTIES" );
 DeclareGlobalFunction( "CALL_NAUTY_ON_EDGE_COLORED_GRAPH" );

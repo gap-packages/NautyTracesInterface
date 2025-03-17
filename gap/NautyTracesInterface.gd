@@ -39,8 +39,7 @@ BindGlobal("TheTypeNautyInternalGraphObject", NewType( NautyInternalFamily, IsNa
 #! @EndExampleSession
 #!
 #! @Returns a nauty graph object
-#! @Arguments  list
-#! @Arguments  list integer
+#! @Arguments  edges
 DeclareGlobalFunction( "NautyGraphFromEdges" );
 #! @EndGroup
 
