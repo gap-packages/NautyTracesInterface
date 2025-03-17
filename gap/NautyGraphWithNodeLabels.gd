@@ -22,9 +22,10 @@
 #! this graph in nauty and traces directly, it is considerted to be a graph
 #! with nodes <M>\{1, \ldots, 6\}</M>. However, using <A>node labels</A> we
 #! can view this as a graph on three nodes, namely <M>1,2,3</M> and attach
-#! a label to each of these nodes. The labels are recorde in a list
-#! <A>labels</A>  and map the default nodes <M>\{1,\ldots, |N|\}</M> to
-#! the set of nodes on which the edges are defined. In this example,
+#! a label to each of these nodes. The labels are recorded in a list
+#! <A>labels</A>  which defines a map from the default nodes
+#! <M>\{1,\ldots, |N|\}</M> to the set of nodes on which the edges are
+#! defined. In this example,
 #! <M>labels = [ 2, 4, 6]</M>. The function  <A>NautyGraphWithNodeLabels</A>
 #! called with the edges
 #! <M>[ [2,4], [4,6], [2,6] ]</M> and  labels
@@ -56,16 +57,20 @@ DeclareAttribute( "NodeLabeling", IsNautyGraphWithNodeLabels );
 #! @BeginGroup
 #! @Description
 #! A nauty (di)graph <A>graph</A> with node labels <A>labels</A> is
-#! a nauty graph object containing an <A>underlying nauty graph</A>. 
+#! a nauty graph object containing an <A>underlying nauty graph</A>.
+#! The graph has a set <M>N</M> of nodes and edges between these nodes.
+#! The underlying nauty graph has nodes <M> \{1, \ldots, |N| \}</M>.
 #! If <M>i</M> is a node in the underlying nauty graph, then
-#! <A>labels[i] = j</A>  means that the  <M>i</M>-th node has label  <M>j</M>. 
-#!  Suppose <A>graph</A> was constructed with
-#!  <K>NautyDiGraphWithNodeLabels(edges, labels)</K>. Let <M>\pi</M> be
-#! the map of the nodes  <A>[1..nr]</A> given by <A>labels</A> and
-#! <M>\psi=\pi^{-1}</M>. If <M>[j_1,j_2]</M> is
-#!  an edge in the list <A>edges</A>, then the underlying nauty graph
-#!  contains the edge  <M>[j_1^\psi, j_2^\psi ]</M>.
-
+#! <A>labels[i] = j</A>  means that the  <M>i</M>-th node has label  <M>j</M>,
+#! where <M>j\in N.</M> Thus <A>labels</A>  is a bijection from
+#! <M> \{1, \ldots, |N| \}</M> to <M>N</M>.
+#!  Suppose <A>graph</A> has benn constructed with
+#!  <K>NautyDiGraphWithNodeLabels(edges, labels)</K>. 
+#! The underlying nauty graph <M>\Gamma</M> on  the nodes
+#! <M>\{1,\ldots, nr\}</M>, is defined such
+#! that <M>e=[i,j]</M> is an edge of <M>\Gamma</M> if and only if
+#! <M>[label[i[,label[j]]</M> is in the input list <A>edges</A>.
+#!
 #! @BeginExampleSession
 #! gap> labels := [4,3,5,2,1];;
 #! gap> ng := NautyDiGraphWithNodeLabels([[1,2],[1,3],[1,4],[1,5]], labels);
@@ -106,7 +111,7 @@ DeclareAttribute( "UnderlyingNautyGraph", IsNautyGraphWithNodeLabels );
 #! This function constructs
 #! a nauty graph <M>\Gamma</M> on  the nodes <M>\{1,\ldots, |N|\}</M>, such
 #! that <M>e=[i,j]</M> is an edge of <M>\Gamma</M> if and only if
-#! <M>[label[i[,label[j]]</M> is in the input list <A>edges</A>.
+#! <M>[label[i],label[j]]</M> is in the input list <A>edges</A>.
 #! 
 #! This function is useful, for example, if we are given a graph on a set
 #! of nodes <M>N</M>  which is not equal to the set
@@ -118,6 +123,8 @@ DeclareAttribute( "UnderlyingNautyGraph", IsNautyGraphWithNodeLabels );
 #! gap> ng :=  NautyDiGraphWithNodeLabels( [[1,8],[1,12],[1,7],[1,5]],
 #!              [7,12,5,1,8]);
 #! <A directed Nauty graph on 5 vertices>
+#! gap> EdgesOfNautyGraph(ng);
+#! [ [ 1, 7 ], [ 1, 12 ], [ 1, 5 ], [ 1, 8 ] ]
 #! gap> ung := UnderlyingNautyGraph(ng);
 #! <A directed Nauty graph on 5 vertices>
 #! gap> EdgesOfNautyGraph(ung);

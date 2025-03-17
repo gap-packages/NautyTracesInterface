@@ -61,6 +61,7 @@ InstallGlobalFunction( CREATE_NAUTY_EDGE_COLORED_GRAPH,
   function( record )
     
     ObjectifyWithAttributes( record, TheTypeOfNautyEdgeColoredGraphs,
+                             IsColored, false,
                              IsDirected, record.directed );
     
     return record;
@@ -458,15 +459,17 @@ InstallMethod( VerticesOfNautyGraph,
 
     function( graph )
 
-        local nr_nodes, g;
+        local nr_nodes, g, labels;
 
         if IsNautyGraphWithNodeLabels(graph) then
 	    g := UnderlyingNautyGraph(graph);
-	    nr_nodes := g!.nr_nodes;
+   	    labels := NodeLabeling(graph);
+	    nr_nodes := g!.nr_nodes; 
+	    return Set(List([1..nr_nodes], j->labels[j]));
 	else
 	    nr_nodes := graph!.nr_nodes;
+            return [1..nr_nodes];
 	fi;
-        return [1..nr_nodes];
 	
 end);
 

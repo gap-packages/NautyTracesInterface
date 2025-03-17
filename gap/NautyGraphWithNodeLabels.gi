@@ -56,6 +56,10 @@ InstallMethod( NautyGraphWithNodeLabels,
                
   function( edges, labeling )
     local new_edges, nr_nodes, labeled_graph, underlying_graph;
+
+    if not IsDuplicateFreeList(labeling) then
+        ErrorNoReturn("NautyGraphWithNodeLabels: labelling must be duplicate free");
+    fi;
     
     new_edges := NAUTYTRACESINTERFACE_Translate_Edge_List( labeling, edges );
     
@@ -175,10 +179,52 @@ InstallMethod( IsomorphismGraphs,
                [ IsNautyGraphWithNodeLabelsRep, IsNautyGraphWithNodeLabelsRep ],
                
   function( graph1, graph2 )
-      local labels1, labels2, iso;
+      local labels1, labels2, iso, p, i;
 
       iso := IsomorphismGraphs(
           UnderlyingNautyGraph(graph1),UnderlyingNautyGraph(graph2));
+
+      if iso = fail then return fail; fi;
+
+      # now translate the isomorphism
+      labels1:= NodeLabeling(graph1);
+      labels2:= NodeLabeling(graph2);
+      # if graph1 and graph2 are on the same notes as their underlying
+      # graph, just return the permutation defining the isomorphism
+      if labels1 = [1..Length(labels1)] and labels2 = [1..Length(labels2)] then
+          return iso;
+      fi;
+      # otherwise, we return a partial permutation
+      return LeftQuotient(PartialPerm([1..Length(labels1)],labels1),iso)
+             * PartialPerm([1..Length(labels1)],labels2) ;
+
+end );
+
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraphWithNodeLabelsRep, IsNautyGraphRep ],
+               
+  function( graph1, graph2 )
+      local labels1, labels2, iso;
+
+      iso := IsomorphismGraphs(
+          UnderlyingNautyGraph(graph1),graph2);
+      if iso = fail then return fail; fi;
+      if labels1 = [1..Length(labels1)] then
+          return iso;
+      fi;
+      labels1:= NodeLabeling(graph1);
+      return LeftQuotient(PartialPerm([1..Length(labels1)],labels1),iso);
+end );
+
+
+InstallMethod( IsomorphismGraphs,
+               [ IsNautyGraphRep, IsNautyGraphWithNodeLabelsRep ],
+               
+  function( graph1, graph2 )
+      local labels1, labels2, iso;
+
+      iso := IsomorphismGraphs(
+          graph1,UnderlyingNautyGraph(graph2));
     return iso;
 end );
 
