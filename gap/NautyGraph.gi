@@ -73,25 +73,13 @@ InstallMethod( NautyGraph,
 	       
                
   function( edges )
-    local nr_nodes, e;
+               local nr_nodes, fl;
 
-    edges := Set(edges);
-    # check the edges are pairs of positive integers
-    for e in edges do
-        if not IsList(e) then
+    fl := Flat(edges);
+    if not IsHomogeneousList(fl) or not IsInt(fl[1]) then
 	    ErrorNoReturn("Edges are lists of lists");
-	fi;
-	if Length(e) <> 2 then
-	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
-	fi;
-	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
-	    ErrorNoReturn("Edges are positive integers");
-	fi;
-    od;	
-    # for undirected graphs remove repeated edges
-    edges := Set(List(edges,e->Set(e)));
-	
-    nr_nodes := MaximumList( Flat( edges ) );
+    fi;
+    nr_nodes := MaximumList(fl);
     
     return NautyGraph( edges, nr_nodes );
     
@@ -120,7 +108,6 @@ InstallMethod( NautyGraph,
     # for undirected graphs remove repeated edges
     edges := Set(List(edges,e->Set(e)));
     
-    nr_nodes := MaximumList(Flat(edges), nr_nodes );
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
                       directed := false );
@@ -133,22 +120,13 @@ InstallMethod( NautyDiGraph,
                [ IsList ],
                
   function( edges )
-    local nr_nodes, e;
+    local nr_nodes, e, fl;
     
-    edges := Set(edges);
-    for e in edges do
-        if not IsList(e) then
+    fl := Flat(edges);
+    if not IsHomogeneousList(fl) or not IsInt(fl[1]) then
 	    ErrorNoReturn("Edges are lists of lists");
-	fi;
-	if Length(e) <> 2 then
-	    ErrorNoReturn("Edges are lists of length 2 of positive integers");
-	fi;
-	if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
-	    ErrorNoReturn("Edges are positive integers");
-	fi;
-    od;
-
-    nr_nodes := MaximumList( Flat( edges ) );
+    fi;
+    nr_nodes := MaximumList(fl);
     
     return NautyDiGraph( edges, nr_nodes );
     
@@ -172,8 +150,7 @@ InstallMethod( NautyDiGraph,
 	    ErrorNoReturn("Edges are positive integers");
 	fi;
     od;
-    
-    nr_nodes :=  MaximumList(Flat(edges), nr_nodes );
+        
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
                       directed := true );
@@ -187,7 +164,7 @@ InstallMethod( NautyColoredGraph,
                [ IsList, IsList ],
                
   function( edges, colors )
-    local graph_rec, nr_nodes, e;
+    local graph_rec, nr_nodes, e, fl;
 
     edges := Set(edges);
     for e in edges do
@@ -205,7 +182,12 @@ InstallMethod( NautyColoredGraph,
     edges := Set(List(edges,e->Set(e)));
     
     nr_nodes := Length( colors );
-    if MaximumList(Flat( edges )) <>  nr_nodes then
+    fl := Flat(edges);
+    if not IsHomogeneousList(fl) or not IsInt(fl[1]) then
+	    ErrorNoReturn("Edges are lists of lists");
+    fi;
+               
+    if MaximumList(fl) <>  nr_nodes then
         ErrorNoReturn("The list of colours has to be in bijection to vertices");
     fi;
     
@@ -217,6 +199,7 @@ InstallMethod( NautyColoredGraph,
     return CREATE_NAUTY_GRAPH_OBJECT( graph_rec );
     
 end );
+
 
 # a vertex colored graph
 InstallMethod( NautyColoredDiGraph,
@@ -289,6 +272,51 @@ InstallMethod( NautyEdgeColoredGraph,
     graph_rec := rec( nr_nodes := nr_nodes,
                       edge_list := edgeclasses,
                       directed := false );
+    
+    return CREATE_NAUTY_EDGE_COLORED_GRAPH( graph_rec );
+    
+end );
+
+InstallMethod( NautyEdgeColoredDiGraph,
+               [ IsList ],
+               
+  function( edgeclasses )
+    local nr_nodes, e, edges;
+    
+    nr_nodes := MaximumList( Flat( edgeclasses ) );
+    
+    return NautyEdgeColoredDiGraph( edgeclasses, nr_nodes );
+    
+end );
+
+
+InstallMethod( NautyEdgeColoredDiGraph,
+               [ IsList, IsInt ],
+               
+  function( edgeclasses, nr_nodes )
+    local graph_rec, e, edges;
+    
+
+    # check the edgeclasses are lists of edges
+    for edges in edgeclasses do
+        for e in edges do
+            # an edge is a pair of positive integers
+            if not IsList(e) then
+	        ErrorNoReturn("Edges are lists of lists");
+	    fi;
+	    if Length(e) <> 2 then
+	        ErrorNoReturn("Edges are lists of length 2");
+	    fi;
+            if not IsPosInt(e[1]) or not IsPosInt(e[2]) then
+	        ErrorNoReturn("Edges are positive integers");
+	    fi;
+	od;
+    od;
+
+
+    graph_rec := rec( nr_nodes := nr_nodes,
+                      edge_list := edgeclasses,
+                      directed := true );
     
     return CREATE_NAUTY_EDGE_COLORED_GRAPH( graph_rec );
     

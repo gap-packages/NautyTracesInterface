@@ -395,6 +395,8 @@ DeclareOperation( "NautyColoredDiGraph", [ IsList, IsList ] );
 #! @Arguments  edgeclasses colours
 DeclareOperation( "NautyEdgeColoredGraph", [ IsList ] );
 DeclareOperation( "NautyEdgeColoredGraph", [ IsList, IsInt] );
+DeclareOperation( "NautyEdgeColoredDiGraph", [ IsList ] );
+DeclareOperation( "NautyEdgeColoredDiGraph", [ IsList, IsInt] );
 #! @EndGroup
 
 DeclareGlobalFunction( "CALL_NAUTY_ON_GRAPH_AND_SET_PROPERTIES" );
