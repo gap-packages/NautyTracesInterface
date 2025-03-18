@@ -3,4 +3,4 @@ g2 := NautyEdgeColoredGraph( [[[3,11],[9,10],[4,7],[1,2],[5,12],[6,8]],[[7,11],[
 
 IsomorphismGraphs(g1,g2);
 
-Assert( IsomorphismGraphs(g1,g2) = (1,2)(3,5)(4,9,10,12,8)(6,11), "Edge-coloured isomorhism fails");
+Assert(0, IsomorphismGraphs(g1,g2) = (1,2)(3,5)(4,9,10,12,8)(6,11), "Edge-coloured isomorphism fails");
