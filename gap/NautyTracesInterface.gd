@@ -16,7 +16,7 @@ NautyInternalFamily := NewFamily( "NautyInternalFamily" );
 
 BindGlobal("TheTypeNautyInternalGraphObject", NewType( NautyInternalFamily, IsNautyInternalGraphObject ));
 
-#! @BeginGroup NautyGraphFromEdges
+#! @BeginGroup NautyGraphEdge
 #! @Description
 #! This function takes as input a list
 #! <A>edges</A>  whose entries are lists of length 2, consisting of
@@ -44,7 +44,7 @@ DeclareGlobalFunction( "NautyGraphFromEdges" );
 #! @EndGroup
 
 
-#! @BeginGroup NautyColorData
+#! @BeginGroup NautyColor
 #! @Description
 #! This function takes as input a list of colours, which are non-negative
 #! integers. The list is interpreted as a map from the nodes of a graph

@@ -140,3 +140,30 @@ DeclareOperation( "NautyColoredGraphWithNodeLabels", [ IsList, IsList, IsList ] 
 #! @Arguments edges, colors labeling
 DeclareOperation( "NautyColoredDiGraphWithNodeLabels", [ IsList, IsList, IsList ] );
 #! @EndGroup
+
+
+#! @BeginGroup
+#! @Description
+#! Returns the list of node labels for a  nauty (di)graph with node labels or fail else.
+#! 
+#! Nauty graphs with node labels are useful, for example, if we are given a graph on a set
+#! of nodes <M>N</M>  which is not equal to the set
+#! <M>\{1, \ldots, |N|\}</M> and we would like to translate the nodes and
+#! edges of the graph to the node set <M>\{1, \ldots, |N|\}</M> to obtain
+#! a more compact description of the  graph.
+#!
+#! @BeginExampleSession
+#! gap> ng :=  NautyDiGraphWithNodeLabels( [[1,8],[1,12],[1,7],[1,5]],
+#!              [7,12,5,1,8]);
+#! <A directed Nauty graph on 5 vertices>
+#! gap> EdgesOfNautyGraph(ng);
+#! [ [ 1, 7 ], [ 1, 12 ], [ 1, 5 ], [ 1, 8 ] ]
+#! gap> ung := UnderlyingNautyGraph(ng);
+#! <A directed Nauty graph on 5 vertices>
+#! gap> EdgesOfNautyGraph(ung);
+#! [ [ 4, 1 ], [ 4, 2 ], [ 4, 3 ], [ 4, 5 ] ]
+#! @EndExampleSession
+#! @Returns a <K>List</K>
+DeclareOperation( "NautyGraphNodeLabels", [ IsNautyGraph ] );
+#! @Arguments graph
+#! @EndGroup

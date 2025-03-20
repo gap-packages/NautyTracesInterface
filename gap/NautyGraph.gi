@@ -346,7 +346,7 @@ InstallMethod( ViewObj,
 	   
 end );
 
-InstallMethod( ViewObj,
+InstallMethod( ViewObj, "for a nauty graph",
                [ IsNautyGraph ],
                
   function( graph )
@@ -371,6 +371,77 @@ InstallMethod( ViewObj,
     fi;
     
 end );
+
+
+InstallMethod( Display, "for a nauty graph",
+               [ IsNautyGraph ],
+    function(graph)
+
+
+               local g, vert, edg, i, col, c,  j, colcol, cnt, dir, nodel;
+    
+    if IsNautyGraphWithNodeLabels(graph) then
+        g := UnderlyingNautyGraph(graph);
+        nodel := NautyGraphNodeLabels(graph);
+    else
+        g := graph;
+        nodel := false;
+    fi;
+
+    dir := "undirected";
+    if IsDirected(g) then dir := "directed"; fi;           
+    if IsColored(g) then
+        Print( "Nauty Graph (",dir, " vertex-coloured)\n");
+    elif  IsNautyEdgeColoredGraphRep  (g) then
+        Print( "Nauty Graph (", dir, " edge-coloured with ", Length(g!.edge_list), " colours )\n ");
+    else
+        Print( "Nauty Graph (",dir,")\n");
+
+    fi;
+
+    vert := VerticesOfNautyGraph(graph);
+
+    if IsColored(g) then
+        col := g!.colors;
+        colcol := Collected(col);
+        Print("Vertices (", Length(vert), ") by colours: \n");
+        for j in [1..Length(colcol)] do
+            c := colcol[j][1]; # the colour
+            Print(" (", c, "):  [ " );
+            cnt := 0;
+            for i in [1..Length(vert)] do
+               if col[i] = c then
+                   Print(vert[i]);
+                   cnt := cnt+1;
+                   if cnt < colcol[j][2] then
+                       Print(",");
+                   else Print("]\n");
+                   fi;
+               fi;
+
+            od;
+        od;
+        if nodel<>false then Print("Vertex labels :", nodel, "\n"); fi;
+        edg := EdgesOfNautyGraph(graph);
+        Print("Edges (", Length(edg), "): ", edg, "\n");
+    elif IsNautyEdgeColoredGraphRep(g) then
+        Print("Vertices (", Length(vert), "): ", vert, "\n");
+        if nodel<>false then Print("Vertex labels :", nodel, "\n"); fi;
+        edg := g!.edge_list;
+        Print("Edges (", Length(EdgesOfNautyGraph(graph)), ") by colour: \n");
+        for i in [1..Length(edg)] do
+            Print( "(",i,") ", edg[i],"\n");
+        od;
+    else
+        Print("Vertices (", Length(vert), "): ", vert, "\n");
+        if nodel<>false then Print("Vertex labels :", nodel, "\n"); fi;
+        edg := EdgesOfNautyGraph(graph);
+        Print("Edges (", Length(edg), "): ", edg, "\n");
+    fi;
+    
+end );
+               
+
 
 #! TODO: document this
 BindGlobal( "NautyDense",
@@ -516,12 +587,18 @@ InstallMethod( EdgesOfNautyGraph,
 
     function( graph )
 
-        local edges, g, labels;
+        local edges, g, labels, i, edg;
 
         if IsNautyGraphWithNodeLabels(graph) then
 	    g := UnderlyingNautyGraph(graph);
 	    labels := NodeLabeling(graph);
 	    edges := List(g!.edges, e->List(e, j->labels[j]));
+        elif IsNautyEdgeColoredGraphRep(graph) then
+              edg := graph!.edge_list;
+              edges := [];
+              for i in [1 .. Length(edg)] do
+                  Append(edges, edg[i]);
+              od;
 	else
 	    edges := graph!.edges;
 	fi;

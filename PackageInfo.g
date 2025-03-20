@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "NautyTracesInterface",
 Subtitle := "An interface to nauty",
-Version := "0.2",
-Date := "01/03/2018", # dd/mm/yyyy format
+Version := "0.3",
+Date := "20/03/2025", # dd/mm/yyyy format
 License := "GPL-2.0-or-later",
 
 Persons := [
@@ -93,7 +93,7 @@ AvailabilityTest := function()
 
 TestFile := "tst/testall.g",
 
-#Keywords := [ "TODO" ],
+Keywords := [ "Graph Isomorphism via Nauty" ],
 
 ));
 

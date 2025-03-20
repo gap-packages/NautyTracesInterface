@@ -149,6 +149,15 @@ BindGlobal( "NAUTYTRACESINTERFACE_Translate_Permutation",
     
 end );
 
+InstallMethod( NautyGraphNodeLabels,
+               [ IsNautyGraph ],
+    function( graph )
+               if IsNautyGraphWithNodeLabels(graph) then
+                   return graph!.NodeLabeling;
+               else return fail;
+               fi;
+end );
+
 InstallMethod( CanonicalLabeling,
                [ IsNautyGraphWithNodeLabels ],
                
@@ -323,3 +332,5 @@ InstallMethod( AutomorphismGroup,
     return Group( AutomorphismGroupGenerators( graph ) );
     
 end );
+
+

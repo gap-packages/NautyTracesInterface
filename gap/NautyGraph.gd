@@ -212,10 +212,6 @@ DeclareAttribute( "CanonicalLabelingInverse", IsNautyGraph );
 #! @Returns a <K>Permutation</K>
 #! @Arguments  graph, graph
 DeclareOperation( "IsomorphismGraphs", [ IsNautyGraph, IsNautyGraph ] );
-#! @EndGroup
-
-
-#! @BeginGroup Isomorphism
 #! @Description
 #! Given two nauty (di)graphs <A>graph1</A> and <A>graph2</A> we say that
 #! <A>graph1</A> and <A>graph2</A> are isomorphic, if there is a bijection
