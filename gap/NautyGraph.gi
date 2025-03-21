@@ -92,7 +92,6 @@ InstallMethod( NautyGraph,
     local graph_rec, e;
 
     
-    edges := Set(edges);
     # check the edges are pairs of positive integers
     for e in edges do
         if not IsList(e) then
@@ -105,8 +104,6 @@ InstallMethod( NautyGraph,
 	    ErrorNoReturn("Edges are positive integers");
 	fi;
     od;
-    # for undirected graphs remove repeated edges
-    edges := Set(List(edges,e->Set(e)));
     
     graph_rec := rec( nr_nodes := nr_nodes,
                       edges := edges,
@@ -138,7 +135,6 @@ InstallMethod( NautyDiGraph,
   function( edges, nr_nodes )
     local graph_rec, e;
     
-    edges := Set(edges);
     for e in edges do
         if not IsList(e) then
 	    ErrorNoReturn("Edges are lists of lists");
@@ -166,7 +162,6 @@ InstallMethod( NautyColoredGraph,
   function( edges, colors )
     local graph_rec, nr_nodes, e, fl;
 
-    edges := Set(edges);
     for e in edges do
         if not IsList(e) then
 	    ErrorNoReturn("Edges are lists of lists");
@@ -178,8 +173,6 @@ InstallMethod( NautyColoredGraph,
 	    ErrorNoReturn("Edges are positive integers");
 	fi;
     od;
-    # for undirected graphs remove repeated edges
-    edges := Set(List(edges,e->Set(e)));
     
     nr_nodes := Length( colors );
     fl := Flat(edges);
@@ -268,7 +261,6 @@ InstallMethod( NautyEdgeColoredGraph,
 	od;
     od;
 
-    edgeclasses := List(edgeclasses, edges -> List(edges,e->Set(e)));
     graph_rec := rec( nr_nodes := nr_nodes,
                       edge_list := edgeclasses,
                       directed := false );
@@ -660,7 +652,7 @@ InstallMethod( CanonicalForm,
             fi;
         od;
     fi;
-    edges := Set( permEdges );
+#    edges := Set( permEdges );
     
     if IsColored( graph ) then
         colors := graph!.colors;
