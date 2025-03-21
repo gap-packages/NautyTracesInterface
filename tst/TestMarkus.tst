@@ -44,9 +44,9 @@ gap> color2 := [ 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
 
 #
 gap> g1 := NautyColoredGraph( edges1, color1 );
-<A Nauty graph>
+<An  undirected vertex-coloured Nauty graph on 32 vertices>
 gap> g2 := NautyColoredGraph( edges2, color2 );
-<A Nauty graph>
+<An  undirected vertex-coloured Nauty graph on 32 vertices>
 
 #
 gap> p1 := CanonicalLabeling( g1 );

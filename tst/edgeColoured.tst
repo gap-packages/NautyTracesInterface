@@ -15,3 +15,14 @@ fail
 gap> g4 := NautyEdgeColoredGraph( [[[1,6],[2,3],[4,5],[8,9],[7,12],[10,11]],[[1,2],[3,4],[5,6],[7,8],[9,10],[11,12]],[[2,9],[3,8],[4,7],[5,12]]] );;
 gap> IsomorphicGraphs(g1,g4);
 false
+gap> g5 := NautyEdgeColoredGraph( [[[1,2],[3,10],[11,12],[4,9],[5,6]],[[7,8]],[[1,12],[2,3],[10,11],[4,5],[6,7],[8,9]],[[3,4],[9,10]]],12);;
+gap> IsomorphicGraphs(g1,g5);
+false
+gap> g6 := NautyEdgeColoredDiGraph( [[[1,6],[2,3],[4,5],[8,9],[7,12],[10,11]],[[1,2],[3,4],[5,6],[7,8],[9,10],[11,12]],[[2,9],[3,8],[4,7],[5,12]]] );;
+gap>  IsomorphismGraphs(g4,g6);
+fail
+gap> AutomorphismGroup(g4);
+Group([ (1,6)(2,5)(3,4)(7,8)(9,12)(10,11), (1,10)(2,9)(3,8)(4,7)(5,12)(6,11) ])
+gap> AutomorphismGroup(g6);
+Group(())
+
