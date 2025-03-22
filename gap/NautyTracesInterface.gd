@@ -24,7 +24,7 @@ BindGlobal("TheTypeNautyInternalGraphObject", NewType( NautyInternalFamily, IsNa
 #! two lists, the first is a list of vertices (source vertices)
 #! where an edge originates and the second a list of corresponding vertices
 #! (range vertices) where an edge terminates.
-#! Note that when the grap is undirected, the source vertex will always
+#! Note that when the graph is undirected, the source vertex will always
 #! be less than or equal to the range.
 #!
 #! @BeginExampleSession
@@ -38,7 +38,7 @@ BindGlobal("TheTypeNautyInternalGraphObject", NewType( NautyInternalFamily, IsNa
 #! [ [ 1, 2, 3, 3, 4 ], [ 2, 3, 2, 4, 1 ] ]
 #! @EndExampleSession
 #!
-#! @Returns a nauty graph object
+#! @Returns a list of two lists 
 #! @Arguments  edges
 DeclareGlobalFunction( "NautyGraphFromEdges" );
 #! @EndGroup

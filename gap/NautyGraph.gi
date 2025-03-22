@@ -652,7 +652,7 @@ InstallMethod( CanonicalForm,
             fi;
         od;
     fi;
-#    edges := Set( permEdges );
+    edges := Set( permEdges );
     
     if IsColored( graph ) then
         colors := graph!.colors;

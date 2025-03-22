@@ -78,7 +78,18 @@ DeclareAttribute( "NodeLabeling", IsNautyGraphWithNodeLabels );
 #! gap> NodeLabeling(ng);
 #! [ 4, 3, 5, 2, 1 ]
 #! EdgesOfNautyGraph(UnderlyingNautyGraph(ng));
-#! [ [ 5, 1 ], [ 5, 2 ], [ 5, 3 ], [ 5, 4 ] ]
+#! [ [ 5, 4 ], [ 5, 2 ], [ 5, 1 ], [ 5, 3 ] ]
+#! gap> labels := [10,11,12,13,9];;
+#! gap> ng := NautyDiGraphWithNodeLabels([[10,11],[10,12],[10,13],[10,9]], labels);
+#! <A directed Nauty graph on 5 vertices>
+#! gap> EdgesOfNautyGraph(ng);
+#! [ [ 10, 11 ], [ 10, 12 ], [ 10, 13 ], [ 10, 9 ] ]
+#! gap> EdgesOfNautyGraph(UnderlyingNautyGraph(ng));
+#! [ [ 1, 2 ], [ 1, 3 ], [ 1, 4 ], [ 1, 5 ] ]
+#! gap> VerticesOfNautyGraph(ng);
+#! [ 9, 10, 11, 12, 13 ]
+#! gap> VerticesOfNautyGraph(UnderlyingNautyGraph(ng));
+#! [ 1 .. 5 ]
 #! @EndExampleSession
 #! @Returns a <K>list</K>
 #! @Arguments graph
@@ -90,7 +101,7 @@ DeclareAttribute( "UnderlyingNautyGraph", IsNautyGraphWithNodeLabels );
 ## Constructors
 #! @BeginGroup
 #! @Description
-#! Construct a nauty (di)graph with node labels and optional vertex coloring,
+#! Construct a nauty (di)graph with node labels and optional vertex colouring,
 #! which is an  object that has an underlying nauty graph.
 #! Suppose we have
 #! a graph given by a list <A>edges</A> of edges, where each edge is a list
@@ -103,9 +114,9 @@ DeclareAttribute( "UnderlyingNautyGraph", IsNautyGraphWithNodeLabels );
 #!    entries of <A>edges</A>. 
 #! * <A>labels</A>: dense list of positive integers which is a map
 #!   <M>label</M> from  <M>[1\ldots |N|]</M> to <M>M</M>.
-#! * <A>coloring</A> (optional): dense list of colours (positive integers),
+#! * <A>colouring</A> (optional): dense list of colours (positive integers),
 #!      indexed by the nodes of the underlying nauty graph, that is
-#!   <A>coloring</A> is a map from <M>[1\ldots |N|]</M> to a set of node
+#!   <A>colouring</A> is a map from <M>[1\ldots |N|]</M> to a set of node
 #!  colours.
 #! 
 #! This function constructs
@@ -124,21 +135,23 @@ DeclareAttribute( "UnderlyingNautyGraph", IsNautyGraphWithNodeLabels );
 #!              [7,12,5,1,8]);
 #! <A directed Nauty graph on 5 vertices>
 #! gap> EdgesOfNautyGraph(ng);
-#! [ [ 1, 7 ], [ 1, 12 ], [ 1, 5 ], [ 1, 8 ] ]
+#! [ [ 1, 8 ], [ 1, 12 ], [ 1, 7 ], [ 1, 5 ] ]
 #! gap> ung := UnderlyingNautyGraph(ng);
 #! <A directed Nauty graph on 5 vertices>
 #! gap> EdgesOfNautyGraph(ung);
-#! [ [ 4, 1 ], [ 4, 2 ], [ 4, 3 ], [ 4, 5 ] ]
+#! [ [ 4, 5 ], [ 4, 2 ], [ 4, 1 ], [ 4, 3 ] ]
 #! @EndExampleSession
 #! @Returns a <K>NautyGraph</K>
 #! @Arguments edges, labeling
 DeclareOperation( "NautyGraphWithNodeLabels", [ IsList, IsList ] );
 #! @Arguments edges, labeling
 DeclareOperation( "NautyDiGraphWithNodeLabels", [ IsList, IsList ] );
-#! @Arguments edges, colors, labeling
+#! @Arguments edges, colours, labeling
 DeclareOperation( "NautyColoredGraphWithNodeLabels", [ IsList, IsList, IsList ] );
-#! @Arguments edges, colors labeling
+#! @Arguments edges, colours labeling
 DeclareOperation( "NautyColoredDiGraphWithNodeLabels", [ IsList, IsList, IsList ] );
+#! DeclareSynonym("NautyColouredGraphWithNodeLabels",NautyColouredGraphWithNodeLabels);
+#! DeclareSynonym("NautyColouredDiGraphWithNodeLabels",NautyColouredDiGraphWithNodeLabels);
 #! @EndGroup
 
 
@@ -157,11 +170,9 @@ DeclareOperation( "NautyColoredDiGraphWithNodeLabels", [ IsList, IsList, IsList 
 #!              [7,12,5,1,8]);
 #! <A directed Nauty graph on 5 vertices>
 #! gap> EdgesOfNautyGraph(ng);
-#! [ [ 1, 7 ], [ 1, 12 ], [ 1, 5 ], [ 1, 8 ] ]
-#! gap> ung := UnderlyingNautyGraph(ng);
-#! <A directed Nauty graph on 5 vertices>
-#! gap> EdgesOfNautyGraph(ung);
-#! [ [ 4, 1 ], [ 4, 2 ], [ 4, 3 ], [ 4, 5 ] ]
+#! [ [ 1, 8 ], [ 1, 12 ], [ 1, 7 ], [ 1, 5 ] ]
+#! gap> NautyGraphNodeLabels(ng);
+#! [ 7, 12, 5, 1, 8 ]
 #! @EndExampleSession
 #! @Returns a <K>List</K>
 DeclareOperation( "NautyGraphNodeLabels", [ IsNautyGraph ] );

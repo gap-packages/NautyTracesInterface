@@ -22,6 +22,160 @@ DeclareCategory( "IsNautyGraphWithNodeLabels",
                  IsNautyGraph );
 
 
+#! @BeginGroup NautyGraph
+#! @Description
+#! This function creates a nauty graph object for an undirected graph without
+#! multiple edges, but possibly with loops,
+#! whose edges are given by the list <A>edges</A>. The list
+#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
+#! the two (possibly equal) vertices of the edges. If two edges are either
+#! equal or one is the reversed of the other, the graph created will still
+#! only have a single undirected edge. The graph created is on
+#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
+#! occurring in one of the edges. If the function is called with a second
+#! argument <A>nr</A> then <A>nr</A> must be a positive integer which is at
+#! least equal to the maximal entry occurring in one of the edges. 
+#!
+#!
+#! @BeginExampleSession
+#! gap> ng := NautyGraph( [ [1,2], [2,3], [3,4], [4,1], [3,2] ] );
+#! <An undirected Nauty graph with on 4 vertices>
+#! gap>     
+#! [ [ 1, 2 ], [ 2, 3 ], [ 3, 4 ], [ 4, 1 ], [ 3, 2 ] ]
+#! @EndExampleSession
+#!
+#! @Returns a <K>NautyGraph</K>
+#! @Arguments  edges
+#! @Arguments  edges nr
+DeclareOperation( "NautyGraph", [ IsList ] );
+DeclareOperation( "NautyGraph", [ IsList, IsInt ] );
+#! @EndGroup
+
+#! @BeginGroup NautyDiGraph
+#! @Description
+#! This function creates a nauty graph object for a directed graph without
+#! multiple edges, but possibly with loops, whose edges are given by the
+#! list <A>edges</A>. The list
+#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
+#! the two (possibly equal) vertices of the edges. If two edges are
+#! equal the graph created will still
+#! only have a single directed edge. The graph created is on
+#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
+#! occurring in one of the edges. If the function is called with a second
+#! argument <A>nr</A> then <A>nr</A> must be a positive integer which is at
+#! least equal to the maximal entry occurring in one of the edges. 
+#!
+#!
+#! @BeginExampleSession
+#! gap> nautygraph := NautyDiGraph( [ [1,2],[2,3],[3,4], [4,1] ] );
+#! <A directed Nauty graph on 4 vertices>
+#! gap> AutomorphismGroup(nautygraph);
+#! Group([ (1,2,3,4) ])
+#! @EndExampleSession
+#!
+#! @Returns a <K>NautyGraph</K>
+#! @Arguments  edges
+#! @Arguments  edges nr
+DeclareOperation( "NautyDiGraph", [ IsList ] );
+DeclareOperation( "NautyDiGraph", [ IsList, IsInt ] );
+#! @EndGroup
+
+#! @BeginGroup NautyColoredGraph
+#! @Description
+#! This function creates a nauty graph object for an undirected
+#! vertex coloured graph without
+#! multiple edges, but possibly with loops, whose edges are given by the
+#! list <A>edges</A>. The list
+#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
+#! the two (possibly equal) vertices of the edges. If two edges are
+#! equal or reversed to each other the graph created will still
+#! only have a single undirected edge. The graph created is on
+#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
+#! occurring in one of the edges.  The list <A>colours</A> must be a
+#! list of length <A>nr</A> whose entries are positive integers. The
+#! vertex <A>i</A> has colour  <A>colours[i]</A>.
+#!
+#!
+#! @BeginExampleSession
+#! gap> nautygraph := NautyColoredGraph( [ [1,2],[2,3],[3,4], [4,1] ], [1,2,1,2] );
+#! <An  undirected vertex-coloured Nauty graph on 4 vertices>
+#! gap> AutomorphismGroup(nautygraph);
+#! Group([ (2,4), (1,3) ])
+#! @EndExampleSession
+#!
+#! @Returns a <K>NautyGraph</K>
+#! @Arguments  edges
+#! @Arguments  edges colours
+DeclareOperation( "NautyColoredGraph", [ IsList, IsList ] );
+#! DeclareSynonym( "NautyColouredGraph", NautyColoredGraph );
+#! @EndGroup
+
+#! @BeginGroup NautyColouredDiGraph
+#! @Description
+#! This function creates a nauty graph object for an undirected
+#! vertex coloured graph without
+#! multiple edges, but possibly with loops, whose edges are given by the
+#! list <A>edges</A>. The list
+#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
+#! the two (possibly equal) vertices of the edges. If two edges are
+#! equal or reversed to each other the graph created will still
+#! only have a single undirected edge. The graph created is on
+#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
+#! occurring in one of the edges.  The list <A>colours</A> must be a
+#! list of length <A>nr</A> whose entries are positive integers. The
+#! vertex <A>i</A> has colour  <A>colours[i]</A>.
+#!
+#!
+#! @BeginExampleSession
+#! gap> nautygraph := NautyColoredGraph( [ [1,2],[2,3],[3,4], [4,1] ], [1,2,1,2] );
+#! <An  undirected vertex-coloured Nauty graph on 4 vertices>
+#! gap> AutomorphismGroup(nautygraph);
+#! Group([ (2,4), (1,3) ])
+#! @EndExampleSession
+#!
+#! @Returns a <K>NautyGraph</K>
+#! @Arguments  edges colours
+DeclareOperation( "NautyColoredDiGraph", [ IsList, IsList ] );
+#! DeclareSynonym( "NautyColouredDiGraph", NautyColoredDiGraph );
+#! @EndGroup
+
+#! @BeginGroup NautyEdgeColoredGraph
+#! @Description
+#! This function creates a nauty graph object for an undirected
+#! edge coloured graph without
+#! multiple edges, but possibly with loops. The edges of the graph
+#! are specified in  the argument <A>edgeclasses</A> as follows.
+#! <A>edgeclasses</A> is a list of lists <M>L_i</M>, where each list
+#! <M>L_i</M> is a list of edges, that is <M>L_i</M> is a list 
+#! a list whose entries are lists of length 2, consisting of
+#! the two (possibly equal) vertices of the edges. If two edges are
+#! equal or reversed to each other the graph created will still
+#! only have a single undirected edge. The graph created is on
+#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
+#! occurring in one of the edges.  The edges in the <M>i</M>th list
+#! <M>L_i</M> have colour <M>i</M>.
+#!
+#!
+#! @BeginExampleSession
+#! gap> nautygraph := NautyEdgeColoredGraph( [ [[1,2],[2,3]],[[3,4], [4,1]]]);
+#! <An undirected edge-coloured Nauty graph on 4 vertices and 2 edge colours>
+#! gap> AutomorphismGroup(nautygraph);
+#! Group([ (1,3) ])
+#! @EndExampleSession
+#!
+#! @Returns a <K>NautyGraph</K>
+#! @Arguments  edgeclasses colours
+DeclareOperation( "NautyEdgeColoredGraph", [ IsList ] );
+DeclareOperation( "NautyEdgeColoredGraph", [ IsList, IsInt] );
+DeclareOperation( "NautyEdgeColoredDiGraph", [ IsList ] );
+DeclareOperation( "NautyEdgeColoredDiGraph", [ IsList, IsInt] );
+#! DeclareSynonym( "NautyEdgeColouredGraph", NautyEdgeColoredGraph );
+#! DeclareSynonym( "NautyEdgeColouredDiGraph", NautyEdgeColoredDiGraph );
+#! @EndGroup
+
+DeclareGlobalFunction( "CALL_NAUTY_ON_GRAPH_AND_SET_PROPERTIES" );
+DeclareGlobalFunction( "CALL_NAUTY_ON_EDGE_COLORED_GRAPH" );
+
 #!
 #! @BeginGroup AutomorphismGroup
 #! @Description
@@ -48,7 +202,7 @@ DeclareCategory( "IsNautyGraphWithNodeLabels",
 #!
 #! @BeginExampleSession
 #! gap> nautygraph := NautyGraph( [ [1,2],[2,3],[3,4], [4,1] ] );
-#! <A Nauty graph>
+#! <An undirected Nauty graph with on 4 vertices>
 #! gap> AutomorphismGroup(nautygraph);
 #! Group([ (2,4), (1,2)(3,4) ])
 #! @EndExampleSession
@@ -71,7 +225,7 @@ DeclareAttribute( "AutomorphismGroupGenerators", IsNautyGraph );
 #!
 #! @BeginExampleSession
 #! gap> nautygraph := NautyGraph( [ [1,2],[2,3],[3,4], [4,1] ] );
-#! <A Nauty graph with on 4 vertices>
+#! <An undirected Nauty graph with on 4 vertices>
 #! gap> EdgesOfNautyGraph(nautygraph);
 #! [ [ 1, 2 ], [ 2, 3 ], [ 3, 4 ], [ 4, 1 ] ]
 #! @EndExampleSession
@@ -89,9 +243,9 @@ DeclareAttribute( "Edges", IsNautyGraph );
 #!
 #! @BeginExampleSession
 #! gap> nautygraph := NautyGraph( [ [1,2],[2,3],[3,4], [4,1] ] );
-#! <A Nauty graph with on 4 vertices>
+#! #! <An undirected Nauty graph with on 4 vertices>
 #! gap> VerticesOfNautyGraph(nautygraph);
-#! [ [ 1, 2 ], [ 2, 3 ], [ 3, 4 ], [ 4, 1 ] ]
+#! [ 1 .. 4 ]
 #! @EndExampleSession
 #!
 #! @Returns a list of positive integers
@@ -108,7 +262,7 @@ DeclareOperation( "Vertices", [IsNautyGraph] );
 #!
 #! @BeginExampleSession
 #! gap> ng := NautyColoredGraph( [ [1,2], [2,3], [3,4], [4,1], [3,2] ], [1,2,1,2] );
-#! <A Nauty graph with on 4 vertices>
+#! <An  undirected vertex-coloured Nauty graph on 4 vertices>
 #! gap> VertexColoursOfNautyGraph(ng);
 #! [ 1, 2, 1, 2 ]
 #! @EndExampleSession
@@ -131,7 +285,7 @@ DeclareAttribute( "VertexColoursOfNautyGraph", IsNautyGraph);
 #!
 #! @BeginExampleSession
 #! gap> ng := NautyGraph( [ [1,3], [2,3], [2,5], [4,5], [5,1] ] );
-#! <A Nauty graph with on 5 vertices>
+#! <An undirected Nauty graph with on 5 vertices>
 #! gap> canrep := CanonicalForm(ng);
 #! <An undirected Nauty graph with on 5 vertices>
 #! gap> EdgesOfNautyGraph(canrep);
@@ -161,15 +315,15 @@ DeclareAttribute( "CanonicalForm", IsNautyGraph );
 #!
 #! @BeginExampleSession
 #! gap> ng := NautyGraph( [ [1,3], [2,3], [2,5], [4,5], [5,1] ] );
-#! <A Nauty graph with on 5 vertices>
+#! <An undirected Nauty graph with on 5 vertices>
 #! gap> perm := CanonicalLabeling(ng);
 #! (1,4,3,2)
-#! gap> canrep := NautyGraph(OnSetsSets(EdgesOfNautyGraph(ng), p^-1));
+#! gap> canrep := NautyGraph(List(Set(EdgesOfNautyGraph(ng)),i->OnTuples(i,perm^-1)));
 #! <An undirected Nauty graph with on 5 vertices>
-#! gap> EdgesOfNautyGraph(canrep);
-#! [ [ 1, 5 ], [ 2, 4 ], [ 2, 5 ], [ 3, 4 ], [ 3, 5 ] ]
-#! gap> CanonicalLabeling(canrep);
-#! ()
+#! gap>  EdgesOfNautyGraph(canrep);
+#! [ [ 2, 4 ], [ 3, 4 ], [ 3, 5 ], [ 1, 5 ], [ 5, 2 ] ]
+#! gap> CanonicalLabeling(ng);     
+#! (1,4,3,2)
 #! @EndExampleSession
 #!
 #! @Returns a permutation
@@ -248,152 +402,3 @@ DeclareGlobalFunction( "CREATE_NAUTY_GRAPH_OBJECT" );
 DeclareGlobalFunction( "CREATE_NAUTY_EDGE_COLORED_GRAPH" );
 
 
-#! @BeginGroup NautyGraph
-#! @Description
-#! This function creates a nauty graph object for an undirected graph without
-#! multiple edges, but possibly with loops,
-#! whose edges are given by the list <A>edges</A>. The list
-#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
-#! the two (possibly equal) vertices of the edges. If two edges are either
-#! equal or one is the reversed of the other, the graph created will still
-#! only have a single undirected edge. The graph created is on
-#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
-#! occurring in one of the edges. If the function is called with a second
-#! argument <A>nr</A> then <A>nr</A> must be a positive integer which is at
-#! least equal to the maximal entry occurring in one of the edges. 
-#!
-#!
-#! @BeginExampleSession
-#! gap> ng := NautyGraph( [ [1,2], [2,3], [3,4], [4,1], [3,2] ] );
-#! <A Nauty graph with on 4 vertices>
-#! gap> EdgesOfNautyGraph(ng);       
-#! [ [ 1, 2 ], [ 1, 4 ], [ 2, 3 ], [ 3, 4 ] ]
-#! @EndExampleSession
-#!
-#! @Returns a <K>NautyGraph</K>
-#! @Arguments  edges
-#! @Arguments  edges nr
-DeclareOperation( "NautyGraph", [ IsList ] );
-DeclareOperation( "NautyGraph", [ IsList, IsInt ] );
-#! @EndGroup
-
-#! @BeginGroup NautyDiGraph
-#! @Description
-#! This function creates a nauty graph object for a directed graph without
-#! multiple edges, but possibly with loops, whose edges are given by the
-#! list <A>edges</A>. The list
-#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
-#! the two (possibly equal) vertices of the edges. If two edges are
-#! equal the graph created will still
-#! only have a single directed edge. The graph created is on
-#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
-#! occurring in one of the edges. If the function is called with a second
-#! argument <A>nr</A> then <A>nr</A> must be a positive integer which is at
-#! least equal to the maximal entry occurring in one of the edges. 
-#!
-#!
-#! @BeginExampleSession
-#! gap> nautygraph := NautyDiGraph( [ [1,2],[2,3],[3,4], [4,1] ] );
-#! <A Nauty graph>
-#! gap> AutomorphismGroup(nautygraph);
-#! Group([ (1,2,3,4) ])
-#! @EndExampleSession
-#!
-#! @Returns a <K>NautyGraph</K>
-#! @Arguments  edges
-#! @Arguments  edges nr
-DeclareOperation( "NautyDiGraph", [ IsList ] );
-DeclareOperation( "NautyDiGraph", [ IsList, IsInt ] );
-#! @EndGroup
-
-#! @BeginGroup NautyColoredGraph
-#! @Description
-#! This function creates a nauty graph object for an undirected
-#! vertex coloured graph without
-#! multiple edges, but possibly with loops, whose edges are given by the
-#! list <A>edges</A>. The list
-#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
-#! the two (possibly equal) vertices of the edges. If two edges are
-#! equal or reversed to each other the graph created will still
-#! only have a single undirected edge. The graph created is on
-#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
-#! occurring in one of the edges.  The list <A>colours</A> must be a
-#! list of length <A>nr</A> whose entries are positive integers. The
-#! vertex <A>i</A> has colour  <A>colours[i]</A>.
-#!
-#!
-#! @BeginExampleSession
-#! gap> nautygraph := NautyColoredGraph( [ [1,2],[2,3],[3,4], [4,1] ], [1,2,1,2] );
-#! <A Nauty graph with on 4 vertices>
-#! gap> AutomorphismGroup(nautygraph);
-#! Group([ (2,4), (1,3) ])
-#! @EndExampleSession
-#!
-#! @Returns a <K>NautyGraph</K>
-#! @Arguments  edges
-#! @Arguments  edges colours
-DeclareOperation( "NautyColoredGraph", [ IsList, IsList ] );
-#! @EndGroup
-
-#! @BeginGroup NautyColoredDiGraph
-#! @Description
-#! This function creates a nauty graph object for an undirected
-#! vertex coloured graph without
-#! multiple edges, but possibly with loops, whose edges are given by the
-#! list <A>edges</A>. The list
-#! <A>edges</A> is  a list whose entries are lists of length 2, consisting of
-#! the two (possibly equal) vertices of the edges. If two edges are
-#! equal or reversed to each other the graph created will still
-#! only have a single undirected edge. The graph created is on
-#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
-#! occurring in one of the edges.  The list <A>colours</A> must be a
-#! list of length <A>nr</A> whose entries are positive integers. The
-#! vertex <A>i</A> has colour  <A>colours[i]</A>.
-#!
-#!
-#! @BeginExampleSession
-#! gap> nautygraph := NautyColoredGraph( [ [1,2],[2,3],[3,4], [4,1] ], [1,2,1,2] );
-#! <A Nauty graph with on 4 vertices>
-#! gap> AutomorphismGroup(nautygraph);
-#! Group([ (2,4), (1,3) ])
-#! @EndExampleSession
-#!
-#! @Returns a <K>NautyGraph</K>
-#! @Arguments  edges colours
-DeclareOperation( "NautyColoredDiGraph", [ IsList, IsList ] );
-#! @EndGroup
-
-#! @BeginGroup NautyEdgeColoredGraph
-#! @Description
-#! This function creates a nauty graph object for an undirected
-#! edge coloured graph without
-#! multiple edges, but possibly with loops. The edges of the graph
-#! are specified in  the argument <A>edgeclasses</A> as follows.
-#! <A>edgeclasses</A> is a list of lists <M>L_i</M>, where each list
-#! <M>L_i</M> is a list of edges, that is <M>L_i</M> is a list 
-#! a list whose entries are lists of length 2, consisting of
-#! the two (possibly equal) vertices of the edges. If two edges are
-#! equal or reversed to each other the graph created will still
-#! only have a single undirected edge. The graph created is on
-#! the vertices  <A>1, .., nr, </A> where <A>nr</A> is the maximal entry
-#! occurring in one of the edges.  The edges in the <M>i</M>th list
-#! <M>L_i</M> have colour <M>i</M>.
-#!
-#!
-#! @BeginExampleSession
-#! gap> nautygraph := NautyEdgeColoredGraph( [ [[1,2],[2,3]],[[3,4], [4,1]] ], [1,4] );
-#! <A Nauty graph with on 4 vertices>
-#! gap> AutomorphismGroup(nautygraph);
-#! Group([ (2,4), (1,3) ])
-#! @EndExampleSession
-#!
-#! @Returns a <K>NautyGraph</K>
-#! @Arguments  edgeclasses colours
-DeclareOperation( "NautyEdgeColoredGraph", [ IsList ] );
-DeclareOperation( "NautyEdgeColoredGraph", [ IsList, IsInt] );
-DeclareOperation( "NautyEdgeColoredDiGraph", [ IsList ] );
-DeclareOperation( "NautyEdgeColoredDiGraph", [ IsList, IsInt] );
-#! @EndGroup
-
-DeclareGlobalFunction( "CALL_NAUTY_ON_GRAPH_AND_SET_PROPERTIES" );
-DeclareGlobalFunction( "CALL_NAUTY_ON_EDGE_COLORED_GRAPH" );
