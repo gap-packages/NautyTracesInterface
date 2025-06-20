@@ -2,7 +2,7 @@
  * NautyTracesInterface: An interface to nauty
  */
 
-#include "compiled.h" /* GAP headers */
+#include "gap_all.h" /* GAP headers */
 #include <naugroup.h>
 #include <nautinv.h>
 #include <nauty.h>
