@@ -10,7 +10,7 @@
 #! @ChapterLabel NautyGraphs
 #!
 #! @Section Working with Nauty Graphs 
-#! @SectionLabel Section_NautyGraph
+#! @SectionLabel NautyGraph
 
 DeclareCategory( "IsNautyGraph",
                  IsObject );
