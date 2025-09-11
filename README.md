@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/gap-packages/NautyTracesInterface/workflows/CI/badge.svg?branch=master)](https://github.com/gap-packages/NautyTracesInterface/actions?query=workflow%3ACI+branch%3Amaster)
+[![CI](https://github.com/gap-packages/NautyTracesInterface/actions/workflows/CI.yml/badge.svg)](https://github.com/gap-packages/NautyTracesInterface/actions/workflows/CI.yml)
 [![Code Coverage](https://codecov.io/github/gap-packages/NautyTracesInterface/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/NautyTracesInterface)
 
 # The GAP 4 package `NautyTracesInterface`
