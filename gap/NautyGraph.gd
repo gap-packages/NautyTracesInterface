@@ -402,3 +402,5 @@ DeclareGlobalFunction( "CREATE_NAUTY_GRAPH_OBJECT" );
 DeclareGlobalFunction( "CREATE_NAUTY_EDGE_COLORED_GRAPH" );
 
 
+##
+DeclareGlobalFunction( "NautyDense" );

@@ -436,7 +436,7 @@ end );
 
 
 #! TODO: document this
-BindGlobal( "NautyDense",
+InstallGlobalFunction( "NautyDense",
 function( source_list, range_list, n, is_directed, color_data )
     local graph;
     graph := NAUTY_GRAPH( source_list, range_list, n, is_directed );
